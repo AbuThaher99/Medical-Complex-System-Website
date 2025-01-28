@@ -1,0 +1,119 @@
+<div class="dashboard-content">
+  <!-- User Information Section -->
+  <div class="user-info-section">
+    <h2>User Information</h2>
+    <form (ngSubmit)="updateUserInfo()">
+      <!-- Profile Image Upload -->
+      <div class="form-group">
+        <label for="profileImage">Profile Image</label>
+        <div class="profile-image-container">
+          <img
+            [src]="user?.image || './assets/profile.png'"
+            alt="Profile Image"
+            class="profile-image-preview"
+          />
+          <input
+            type="file"
+            id="profileImage"
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            style="display: none;"
+          />
+          <label for="profileImage" class="upload-button">
+            <i class="fas fa-upload"></i> Change Image
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          [(ngModel)]="user.firstName"
+          name="firstName"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          [(ngModel)]="user.lastName"
+          name="lastName"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="user.email"
+          name="email"
+          disabled
+        />
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input
+          type="text"
+          id="phone"
+          [(ngModel)]="user.phone"
+          name="phone"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input
+          type="text"
+          id="address"
+          [(ngModel)]="user.address"
+          name="address"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="dateOfBirth">Date of Birth</label>
+        <input
+          type="date"
+          id="dateOfBirth"
+          [(ngModel)]="user.dateOfBirth"
+          name="dateOfBirth"
+          required
+        />
+      </div>
+      <button type="submit" class="save-button">Save Changes</button>
+    </form>
+  </div>
+
+  <!-- Change Password Section -->
+  <div class="change-password-section">
+    <h2>Change Password</h2>
+    <form (ngSubmit)="changePassword()">
+      <div class="form-group">
+        <label for="oldPassword">Old Password</label>
+        <input
+          type="password"
+          id="oldPassword"
+          [(ngModel)]="password.oldPassword"
+          name="oldPassword"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <input
+          type="password"
+          id="newPassword"
+          [(ngModel)]="password.newPassword"
+          name="newPassword"
+          required
+        />
+      </div>
+      <button type="submit" class="save-button">Change Password</button>
+    </form>
+  </div>
+</div>

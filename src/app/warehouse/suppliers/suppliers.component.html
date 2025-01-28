@@ -1,0 +1,129 @@
+<div class="filter-container">
+  <form [formGroup]="filterForm">
+    <div class="form-group">
+      <label for="search">Search</label>
+      <input
+        type="text"
+        id="search"
+        formControlName="search"
+        placeholder="Search by name, phone, or address"
+      />
+    </div>
+    <div class="form-group">
+      <label for="companyName">Company Name</label>
+      <input
+        type="text"
+        id="companyName"
+        formControlName="companyName"
+        placeholder="Filter by company name"
+      />
+    </div>
+  </form>
+
+  <div class="table-container">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Company Name</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let supplier of suppliers">
+        <td>{{ supplier.name }}</td>
+        <td>{{ supplier.companyName }}</td>
+        <td>{{ supplier.phone }}</td>
+        <td>{{ supplier.address }}</td>
+        <td class="actions">
+          <button class="btn-update" (click)="openEditModal(supplier)">Update</button>
+          <button class="btn-delete" (click)="onDelete(supplier)">Delete</button>
+          <button class="btn-medicines" (click)="openMedicinesModal(supplier)">
+            Show Medicines
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div *ngIf="showEditModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Update Supplier</h2>
+    <form (ngSubmit)="saveUpdatedSupplier()">
+      <div>
+        <label for="name">Name:</label>
+        <input
+          id="name"
+          [(ngModel)]="selectedSupplier.name"
+          name="name"
+          required
+        />
+      </div>
+      <div>
+        <label for="companyName">Company Name:</label>
+        <input
+          id="companyName"
+          [(ngModel)]="selectedSupplier.companyName"
+          name="companyName"
+          required
+        />
+      </div>
+      <div>
+        <label for="phone">Phone:</label>
+        <input
+          id="phone"
+          [(ngModel)]="selectedSupplier.phone"
+          name="phone"
+          required
+        />
+      </div>
+      <div>
+        <label for="address">Address:</label>
+        <input
+          id="address"
+          [(ngModel)]="selectedSupplier.address"
+          name="address"
+          required
+        />
+      </div>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</div>
+
+<!-- Show Medicines Modal -->
+<div *ngIf="showMedicinesModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeMedicinesModal()">&times;</span>
+    <h2>Medicines for {{ selectedSupplier.name }}</h2>
+    <table *ngIf="medicines.length > 0" class="medicines-table">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Buy Price</th>
+        <th>Purchase Price</th>
+        <th>Expiration Date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let medicine of medicines">
+        <td>{{ medicine.name }}</td>
+        <td>{{ medicine.buyPrice }}</td>
+        <td>{{ medicine.purchasePrice }}</td>
+        <td>{{ medicine.expirationDate | date: 'shortDate' }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <p *ngIf="medicines.length === 0">No medicines found for this supplier.</p>
+  </div>
+</div>
+
+<div class="pagination">
+  <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
+  <span>Page {{ page }} of {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+</div>

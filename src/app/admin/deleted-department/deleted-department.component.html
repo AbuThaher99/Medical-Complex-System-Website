@@ -1,0 +1,56 @@
+<div class="deleted-departments-container">
+  <h2>Deleted Departments</h2>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchInputChange($event)"
+    placeholder="Search by name..."
+    />
+  </div>
+
+  <!-- Departments Table -->
+  <table class="deleted-departments-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Head</th>
+      <th>Secretary</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let department of deletedDepartments">
+      <td>{{ department.id }}</td>
+      <td>{{ department.name }}</td>
+      <td>{{ department.headId?.firstName }} {{ department.headId?.lastName }}</td>
+      <td>{{ department.secretaryId?.firstName }} {{ department.secretaryId?.lastName }}</td>
+      <td class="action-buttons">
+        <button class="restore-btn" (click)="restoreDepartment(department.id)">
+          Restore
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Section -->
+  <div class="pagination-section">
+    <button
+      (click)="onPageChange(page - 1)"
+      [disabled]="page === 1 || totalDepartments === 0"
+    >
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ Math.ceil(totalDepartments / size) }}</span>
+    <button
+      (click)="onPageChange(page + 1)"
+      [disabled]="page === Math.ceil(totalDepartments / size)"
+    >
+      Next
+    </button>
+  </div>
+</div>

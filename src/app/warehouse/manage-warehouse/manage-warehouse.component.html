@@ -1,0 +1,86 @@
+<div class="warehouse-container">
+  <h2>Warehouse Store</h2>
+
+  <!-- Warehouse Stores Table -->
+  <table class="warehouse-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Medicine Name</th>
+      <th>Quantity</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let store of warehouseStores">
+      <td>{{ store.id }}</td>
+      <td>{{ store.medicine?.name }}</td>
+      <td>{{ store.quantity }}</td>
+      <td class="action-buttons">
+        <button class="edit-btn" (click)="openEditModal(store)">Increase Quantity</button>
+        <button class="dec-btn" (click)="openDecreaseModal(store)">Decrease Quantity</button>
+        <button class="delete-btn" (click)="deleteWarehouseStore(store.id)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Section -->
+  <div class="pagination-section">
+    <button
+      (click)="onPageChange(page - 1)"
+      [disabled]="page === 1 || totalItems === 0"
+    >
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ Math.ceil(totalItems / size) }}</span>
+    <button
+      (click)="onPageChange(page + 1)"
+      [disabled]="page === Math.ceil(totalItems / size)"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
+<!-- Increase Quantity Modal -->
+<div *ngIf="showEditModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Increase Quantity</h2>
+    <form (ngSubmit)="updateQuantity()">
+      <div>
+        <label for="increaseQuantity">Quantity:</label>
+        <input
+          type="number"
+          id="increaseQuantity"
+          name="quantity"
+          min="1"
+          required
+        />
+      </div>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</div>
+
+<!-- Decrease Quantity Modal -->
+<div *ngIf="showDecreaseModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeDecreaseModal()">&times;</span>
+    <h2>Decrease Quantity</h2>
+    <form (ngSubmit)="decreaseQuantity()">
+      <div>
+        <label for="decreaseQuantity">Quantity:</label>
+        <input
+          type="number"
+          id="decreaseQuantity"
+          name="quantity"
+          min="1"
+          required
+        />
+      </div>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</div>

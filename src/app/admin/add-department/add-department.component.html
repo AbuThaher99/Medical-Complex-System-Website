@@ -1,0 +1,53 @@
+<div class="add-department">
+  <h2>Add Department</h2>
+  <form [formGroup]="addDepartmentForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Department Name</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Enter department name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="head">Head (Doctor)</label>
+      <select
+        id="head"
+        formControlName="headId"
+        (change)="displaySelectedHeadInfo($event.target.value)"
+        required
+      >
+        <option value="" disabled>{{ isLoadingHeads ? 'Loading...' : 'Select a Head' }}</option>
+        <option *ngFor="let head of heads" [value]="head.id">
+          {{ head.displayText }}
+        </option>
+      </select>
+      <div *ngIf="selectedHeadInfo" class="user-info">
+        {{ selectedHeadInfo }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="secretary">Secretary</label>
+      <select
+        id="secretary"
+        formControlName="secretaryId"
+        (change)="displaySelectedSecretaryInfo($event.target.value)"
+        required
+      >
+        <option value="" disabled>{{ isLoadingSecretaries ? 'Loading...' : 'Select a Secretary' }}</option>
+        <option *ngFor="let secretary of secretaries" [value]="secretary.id">
+          {{ secretary.displayText }}
+        </option>
+      </select>
+      <div *ngIf="selectedSecretaryInfo" class="user-info">
+        {{ selectedSecretaryInfo }}
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="addDepartmentForm.invalid">Add Department</button>
+  </form>
+</div>

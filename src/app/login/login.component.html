@@ -1,0 +1,48 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Welcome Back!</h2>
+    <p>Please log in to your account</p>
+
+    <!-- Login Form -->
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email Input -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="credentials.email"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <!-- Password Input -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="credentials.password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" class="login-button" [disabled]="isLoading">
+        {{ isLoading ? 'Logging in...' : 'Log In' }}
+      </button>
+    </form>
+
+    <!-- Error Message -->
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+    <!-- Sign Up Link -->
+    <div class="signup-link">
+      Don't have an account? <a href="#">Sign up</a>
+    </div>
+  </div>
+</div>

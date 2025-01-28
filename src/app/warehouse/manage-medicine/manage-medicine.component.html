@@ -1,0 +1,121 @@
+<div class="medicine-container">
+  <h2>Manage Medicines</h2>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <input
+      type="text"
+      [(ngModel)]="search"
+      (input)="onSearch()"
+      placeholder="Search medicines..."
+    />
+  </div>
+
+  <!-- Medicines Table -->
+  <table class="medicine-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Buy Price</th>
+      <th>Purchase Price</th>
+      <th>Expiration Date</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let medicine of medicines">
+      <td>{{ medicine.id }}</td>
+      <td>{{ medicine.name }}</td>
+      <td>{{ medicine.buyPrice }}</td>
+      <td>{{ medicine.purchasePrice }}</td>
+      <td>{{ medicine.expirationDate | date: 'mediumDate' }}</td>
+      <td class="action-buttons">
+        <button class="edit-btn" (click)="openEditModal(medicine)">Edit</button>
+        <button class="delete-btn" (click)="deleteMedicine(medicine.id)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Section -->
+  <div class="pagination-section">
+    <button
+      (click)="onPageChange(page - 1)"
+      [disabled]="page === 1 || totalMedicines === 0"
+    >
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ Math.ceil(totalMedicines / size) }}</span>
+    <button
+      (click)="onPageChange(page + 1)"
+      [disabled]="page === Math.ceil(totalMedicines / size)"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
+<!-- Edit Medicine Modal -->
+<!-- Edit Medicine Modal -->
+<div *ngIf="showEditModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Edit Medicine</h2>
+    <form (ngSubmit)="saveEdit()">
+      <div>
+        <label for="name">Name:</label>
+        <input
+          id="name"
+          [(ngModel)]="editingMedicine.name"
+          name="name"
+          required
+        />
+      </div>
+      <div>
+        <label for="buyPrice">Buy Price:</label>
+        <input
+          type="number"
+          id="buyPrice"
+          [(ngModel)]="editingMedicine.buyPrice"
+          name="buyPrice"
+          required
+        />
+      </div>
+      <div>
+        <label for="purchasePrice">Purchase Price:</label>
+        <input
+          type="number"
+          id="purchasePrice"
+          [(ngModel)]="editingMedicine.purchasePrice"
+          name="purchasePrice"
+          required
+        />
+      </div>
+      <div>
+        <label for="expirationDate">Expiration Date:</label>
+        <input
+          type="date"
+          id="expirationDate"
+          [(ngModel)]="editingMedicine.expirationDate"
+          name="expirationDate"
+          required
+        />
+      </div>
+      <div>
+        <label for="supplier">Supplier:</label>
+        <select
+          id="supplier"
+          [(ngModel)]="editingMedicine.supplier.id"
+          name="supplier"
+          required
+        >
+          <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+            {{ supplier.name }} - {{ supplier.companyName }}
+          </option>
+        </select>
+      </div>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</div>

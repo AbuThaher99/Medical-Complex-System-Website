@@ -1,0 +1,192 @@
+<div class="add-user-container">
+  <h2>Add New User</h2>
+  <form (ngSubmit)="onSubmit()">
+    <!-- Common Fields -->
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input
+        type="text"
+        id="firstName"
+        [(ngModel)]="user.firstName"
+        name="firstName"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input
+        type="text"
+        id="lastName"
+        [(ngModel)]="user.lastName"
+        name="lastName"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="user.email"
+        name="email"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input
+        type="text"
+        id="address"
+        [(ngModel)]="user.address"
+        name="address"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input
+        type="text"
+        id="phone"
+        [(ngModel)]="user.phone"
+        name="phone"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="dateOfBirth">Date of Birth</label>
+      <input
+        type="date"
+        id="dateOfBirth"
+        [(ngModel)]="user.dateOfBirth"
+        name="dateOfBirth"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        [(ngModel)]="user.password"
+        name="password"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role" [(ngModel)]="user.role" name="role" required (change)="onRoleChange()">
+        <option value="ADMIN">Admin</option>
+        <option value="DOCTOR">Doctor</option>
+        <option value="SECRETARY">Secretary</option>
+        <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
+        <option value="PATIENT">Patient</option>
+      </select>
+    </div>
+
+    <!-- Doctor Specific Fields -->
+    <div *ngIf="user.role === 'DOCTOR'" class="doctor-fields">
+      <div class="form-group">
+        <label for="specialization">Specialization</label>
+        <select id="specialization" [(ngModel)]="doctor.specialization" name="specialization" required>
+          <option value="CARDIOLOGIST">Cardiologist</option>
+          <option value="DERMATOLOGIST">Dermatologist</option>
+          <option value="NEUROLOGIST">Neurologist</option>
+          <option value="ORTHOPEDIST">Orthopedist</option>
+          <option value="PEDIATRICIAN">Pediatrician</option>
+          <option value="PSYCHIATRIST">Psychiatrist</option>
+          <option value="SURGEON">Surgeon</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="beginTime">Begin Time</label>
+        <input
+          type="time"
+          id="beginTime"
+          [(ngModel)]="doctor.beginTime"
+          name="beginTime"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="endTime">End Time</label>
+        <input
+          type="time"
+          id="endTime"
+          [(ngModel)]="doctor.endTime"
+          name="endTime"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Patient Specific Fields -->
+    <div *ngIf="user.role === 'PATIENT'" class="patient-fields">
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input
+          type="number"
+          id="age"
+          [(ngModel)]="patient.age"
+          name="age"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="bloodType">Blood Type</label>
+        <select id="bloodType" [(ngModel)]="patient.bloodType.id" name="bloodType" required>
+          <option value="1">A_POSITIVE</option>
+          <option value="2">A_NEGATIVE</option>
+          <option value="3">B_POSITIVE</option>
+          <option value="4">B_NEGATIVE</option>
+          <option value="5">O_POSITIVE</option>
+          <option value="6">O_NEGATIVE</option>
+          <option value="7">AB_POSITIVE</option>
+          <option value="8">AB_NEGATIVE</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Salary Fields (Hidden for Patient) -->
+    <div *ngIf="user.role !== 'PATIENT'" class="salary-fields">
+      <div class="form-group">
+        <label for="salaryType">Salary Type</label>
+        <select id="salaryType" [(ngModel)]="user.salary.salaryType" name="salaryType" required>
+          <option value="MONTHLY">Monthly</option>
+          <option value="HOURLY">Hourly</option>
+        </select>
+      </div>
+      <div *ngIf="user.salary.salaryType === 'MONTHLY'" class="form-group">
+        <label for="salaryAmount">Salary Amount</label>
+        <input
+          type="number"
+          id="salaryAmount"
+          [(ngModel)]="user.salary.salaryAmount"
+          name="salaryAmount"
+          required
+        />
+      </div>
+      <div *ngIf="user.salary.salaryType === 'HOURLY'" class="form-group">
+        <label for="hourRate">Hour Rate</label>
+        <input
+          type="number"
+          id="hourRate"
+          [(ngModel)]="user.salary.hourRate"
+          name="hourRate"
+          required
+        />
+      </div>
+      <div *ngIf="user.salary.salaryType === 'HOURLY'" class="form-group">
+        <label for="hourWork">Hours Worked</label>
+        <input
+          type="number"
+          id="hourWork"
+          [(ngModel)]="user.salary.hourWork"
+          name="hourWork"
+          required
+        />
+      </div>
+    </div>
+
+    <button type="submit" class="submit-button">Add User</button>
+  </form>
+</div>

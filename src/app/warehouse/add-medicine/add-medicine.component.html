@@ -1,0 +1,73 @@
+<div class="add-medicine-container">
+  <h2>Add New Medicine</h2>
+  <form (ngSubmit)="onSubmit()" #medicineForm="ngForm">
+    <!-- Name Field -->
+    <div class="form-group">
+      <label for="name">Medicine Name</label>
+      <input
+        type="text"
+        id="name"
+        [(ngModel)]="medicine.name"
+        name="name"
+        required
+        placeholder="Enter medicine name"
+      />
+    </div>
+
+    <!-- Buy Price Field -->
+    <div class="form-group">
+      <label for="buyPrice">Buy Price</label>
+      <input
+        type="number"
+        id="buyPrice"
+        [(ngModel)]="medicine.buyPrice"
+        name="buyPrice"
+        required
+        placeholder="Enter buy price"
+      />
+    </div>
+
+    <!-- Purchase Price Field -->
+    <div class="form-group">
+      <label for="purchasePrice">Purchase Price</label>
+      <input
+        type="number"
+        id="purchasePrice"
+        [(ngModel)]="medicine.purchasePrice"
+        name="purchasePrice"
+        required
+        placeholder="Enter purchase price"
+      />
+    </div>
+
+    <!-- Expiration Date Field -->
+    <div class="form-group">
+      <label for="expirationDate">Expiration Date</label>
+      <input
+        type="date"
+        id="expirationDate"
+        [(ngModel)]="medicine.expirationDate"
+        name="expirationDate"
+        required
+      />
+    </div>
+
+    <!-- Supplier Dropdown -->
+    <div class="form-group">
+      <label for="supplier">Supplier</label>
+      <select
+        id="supplier"
+        [(ngModel)]="medicine.supplier.id"
+        name="supplier"
+        required
+      >
+        <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+          {{ supplier.name }} - {{ supplier.companyName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="!medicineForm.valid">Add Medicine</button>
+  </form>
+</div>

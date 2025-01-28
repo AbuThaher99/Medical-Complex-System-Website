@@ -1,0 +1,58 @@
+<div class="deleted-departments-container">
+  <h2>Deleted Medicines</h2>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <input
+      type="text"
+      [(ngModel)]="search"
+      (input)="onSearch()"
+      placeholder="Search deleted medicines..."
+    />
+  </div>
+
+  <!-- Deleted Medicines Table -->
+  <table class="deleted-departments-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Buy Price</th>
+      <th>Purchase Price</th>
+      <th>Expiration Date</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let medicine of deletedMedicines">
+      <td>{{ medicine.id }}</td>
+      <td>{{ medicine.name }}</td>
+      <td>{{ medicine.buyPrice }}</td>
+      <td>{{ medicine.purchasePrice }}</td>
+      <td>{{ medicine.expirationDate | date: 'mediumDate' }}</td>
+      <td class="action-buttons">
+        <button class="restore-btn" (click)="restoreMedicine(medicine.id)">
+          Restore
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Section -->
+  <div class="pagination-section">
+    <button
+      (click)="onPageChange(page - 1)"
+      [disabled]="page === 1 || totalDeletedMedicines === 0"
+    >
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ Math.ceil(totalDeletedMedicines / size) }}</span>
+    <button
+      (click)="onPageChange(page + 1)"
+      [disabled]="page === Math.ceil(totalDeletedMedicines / size)"
+    >
+      Next
+    </button>
+  </div>
+</div>

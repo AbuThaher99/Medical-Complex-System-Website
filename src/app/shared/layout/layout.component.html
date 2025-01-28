@@ -1,0 +1,145 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-left">
+      <!-- <h1>Welcome to Your Dashboard, {{ user?.firstName }}!</h1> -->
+    </div>
+
+    <!-- User Profile and Logout Dropdown -->
+    <div class="header-right">
+      <div class="user-profile" (click)="toggleDropdown()">
+        <img
+          [src]="user?.image || './assets/profile.png'"
+          alt="User Image"
+          class="user-image"
+        />
+        <span class="user-name">{{ user?.firstName }} {{ user?.lastName }}</span>
+        <i class="fas fa-caret-down"></i>
+      </div>
+
+      <!-- Dropdown Menu -->
+      <div class="dropdown-menu" *ngIf="isDropdownOpen">
+        <ul>
+          <li>
+            <a (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <!-- Navigation Sidebar -->
+    <nav class="dashboard-nav">
+      <ul>
+        <li>
+          <a routerLink="/dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+        </li>
+        <li *ngIf="role === 'ADMIN'">
+          <a routerLink="/admin/add-user">
+            <i class="fas fa-user-plus"></i> Add Users
+          </a>
+        </li>
+        <li *ngIf="role === 'ADMIN'">
+          <a routerLink="/admin/delete-user">
+            <i class="fas fa-user-minus"></i> Deleted Users
+          </a>
+        </li>
+        <li *ngIf="role === 'ADMIN'">
+          <a routerLink="/admin/manageuser">
+            <i class="fas fa-users"></i> Get All Users
+          </a>
+        </li>
+        <li *ngIf="role === 'ADMIN'">
+          <a routerLink="/admin/departments">
+            <i class="fas fa-building"></i> Get All Departments
+          </a>
+        </li>
+        <li *ngIf="role === 'ADMIN'">
+          <a routerLink="/admin/add-department">
+            <i class="fas fa-plus-circle"></i> Add Department
+          </a>
+        </li>
+        <li *ngIf="role === 'ADMIN'">
+          <a routerLink="/admin/deleted-department">
+            <i class="fas fa-trash-restore"></i> Deleted Department
+          </a>
+        </li>
+        <li *ngIf="role === 'DOCTOR'">
+          <a routerLink="/doctor">
+            <i class="fas fa-user-md"></i> Doctor Dashboard
+          </a>
+        </li>
+        <li *ngIf="role === 'PATIENT'">
+          <a routerLink="/patient">
+            <i class="fas fa-user-injured"></i> Patient Dashboard
+          </a>
+        </li>
+        <li *ngIf="role === 'SECRETARY'">
+          <a routerLink="/secretary">
+            <i class="fas fa-clipboard-list"></i> Secretary Dashboard
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/add-supplier">
+            <i class="fas fa-truck"></i> Add Suppliers
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/suppliers">
+            <i class="fas fa-boxes"></i> Manage Suppliers
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/deleted-suppliers">
+            <i class="fas fa-trash-alt"></i> Deleted Suppliers
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/add-medicine">
+            <i class="fas fa-pills"></i> Add Medicine
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/manage-medicine">
+            <i class="fas fa-capsules"></i> Manage Medicine
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/deleted-medicine">
+            <i class="fas fa-trash-restore"></i> Deleted Medicine
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/add-warehouse">
+            <i class="fas fa-warehouse"></i> Add to Warehouse
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/manage-warehouse">
+            <i class="fas fa-cogs"></i> Manage Warehouse
+          </a>
+        </li>
+        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'">
+          <a routerLink="/warehouse/deleted-warehouse">
+            <i class="fas fa-trash-alt"></i> Deleted Warehouse
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Dynamic Content -->
+    <div class="dashboard-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<!--  <footer class="dashboard-footer">-->
+<!--    <p>&copy; 2025 Your Company. All rights reserved.</p>-->
+<!--  </footer>-->
+</div>

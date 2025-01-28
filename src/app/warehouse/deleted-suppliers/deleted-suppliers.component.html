@@ -1,0 +1,57 @@
+<div class="filter-container">
+  <form [formGroup]="filterForm">
+    <div class="form-group">
+      <label for="search">Search</label>
+      <input
+        type="text"
+        id="search"
+        formControlName="search"
+        placeholder="Search by name, phone, or address"
+      />
+    </div>
+    <div class="form-group">
+      <label for="companyName">Company Name</label>
+      <input
+        type="text"
+        id="companyName"
+        formControlName="companyName"
+        placeholder="Filter by company name"
+      />
+    </div>
+  </form>
+
+  <!-- Integrated Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Company Name</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let supplier of deletedSuppliers">
+        <td>{{ supplier.name }}</td>
+        <td>{{ supplier.companyName }}</td>
+        <td>{{ supplier.phone }}</td>
+        <td>{{ supplier.address }}</td>
+        <td>
+          <button class="btn-restore" (click)="restoreSupplier(supplier.id)">
+            Restore
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+  <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
+  <span>Page {{ page }} of {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+</div>

@@ -1,0 +1,42 @@
+<div class="deleted-warehouse-container">
+  <h2>Deleted Warehouse Stores</h2>
+
+  <!-- Deleted Warehouse Stores Table -->
+  <table class="deleted-warehouse-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Medicine Name</th>
+      <th>Quantity</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let store of deletedWarehouseStores">
+      <td>{{ store.id }}</td>
+      <td>{{ store.medicine?.name }}</td>
+      <td>{{ store.quantity }}</td>
+      <td class="action-buttons">
+        <button class="restore-btn" (click)="restoreWarehouseStore(store.id)">Restore</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Section -->
+  <div class="pagination-section">
+    <button
+      (click)="onPageChange(page - 1)"
+      [disabled]="page === 1 || totalItems === 0"
+    >
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ Math.ceil(totalItems / size) }}</span>
+    <button
+      (click)="onPageChange(page + 1)"
+      [disabled]="page === Math.ceil(totalItems / size)"
+    >
+      Next
+    </button>
+  </div>
+</div>

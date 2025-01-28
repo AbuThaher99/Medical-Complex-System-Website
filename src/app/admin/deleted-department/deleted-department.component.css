@@ -1,0 +1,161 @@
+/* General Container */
+.deleted-departments-container {
+  padding: 20px;
+  background-color: #f4f4f4; /* Lighter background for a clean look */
+  border-radius: 12px; /* Softer corners for modern design */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  margin: 20px auto;
+  max-width: 1200px; /* Constrain container width */
+}
+
+/* Section Title */
+.deleted-departments-container h2 {
+  font-size: 26px; /* Larger font for better emphasis */
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* Search Section */
+.search-section {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+}
+
+.search-section input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px; /* Increased font size for readability */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-section input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Subtle glow effect */
+}
+
+.search-section button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 20px; /* Larger padding for better usability */
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.2s ease;
+}
+
+.search-section button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Lift effect for hover */
+}
+
+.search-section button:active {
+  background-color: #004494;
+  transform: translateY(0); /* Reset position on click */
+}
+
+/* Departments Table */
+.deleted-departments-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 12px; /* Rounded corners for table */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  overflow: hidden;
+}
+
+.deleted-departments-table th,
+.deleted-departments-table td {
+  padding: 14px 16px; /* Increased padding for better spacing */
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.deleted-departments-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.deleted-departments-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.deleted-departments-table tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.action-buttons .restore-btn {
+  background-color: #4caf50; /* Green for restore */
+  color: white;
+  padding: 10px 14px; /* Increased padding for better usability */
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.action-buttons .restore-btn:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+.action-buttons .restore-btn:active {
+  background-color: #3e8e41; /* Darker green when clicked */
+  transform: translateY(0); /* Reset position */
+}
+
+/* Pagination Section */
+.pagination-section {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.pagination-section button {
+  margin: 0 8px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-section button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Lift effect */
+}
+
+.pagination-section button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-section span {
+  font-size: 16px; /* Larger font for better visibility */
+  font-weight: bold;
+  color: #333;
+}

@@ -1,0 +1,242 @@
+/* General Container */
+.manage-user-container {
+  padding: 20px;
+  background-color: #f4f4f4; /* Slightly brighter background */
+  border-radius: 12px; /* Softer rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  margin: 20px auto;
+  max-width: 1200px; /* Constrain container width for better readability */
+}
+
+/* Section Title */
+.manage-user-container h2 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* Search and Filter Section */
+.search-filter-section {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.search-filter-section input,
+.search-filter-section select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px; /* Larger font for better readability */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-filter-section input:focus,
+.search-filter-section select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+.search-filter-section button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 20px; /* Increased padding for better usability */
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search-filter-section button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.search-filter-section button:active {
+  background-color: #004494;
+  transform: translateY(0);
+}
+
+/* User Table */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  overflow: hidden; /* Ensures rounded corners are applied */
+}
+
+.user-table th,
+.user-table td {
+  padding: 14px 16px; /* Increased padding for better spacing */
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.user-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.user-table tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.action-buttons .view-btn,
+.action-buttons .delete-btn {
+  padding: 10px 14px; /* Larger padding for better usability */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-buttons .view-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.action-buttons .view-btn:hover {
+  background-color: #138496;
+  transform: translateY(-2px);
+}
+
+.action-buttons .delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.action-buttons .delete-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+/* Pagination Section */
+.pagination-section {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.pagination-section button {
+  margin: 0 8px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-section button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.pagination-section button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-section span {
+  font-size: 16px; /* Slightly larger font for better visibility */
+  font-weight: bold;
+  color: #333;
+}
+
+
+/* User Details Modal */
+.user-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 90%;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.modal-content .user-info p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.modal-content .user-info p strong {
+  color: #333;
+}
+
+.close-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.close-button:hover {
+  background-color: #0056b3;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
