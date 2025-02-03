@@ -28,6 +28,9 @@ import { DeletedMedicineComponent } from './warehouse/deleted-medicine/deleted-m
 import { AddWarehouseComponent } from './warehouse/add-warehouse/add-warehouse.component';
 import { ManageWarehouseComponent } from './warehouse/manage-warehouse/manage-warehouse.component';
 import { DeletedWarehouseComponent } from './warehouse/deleted-warehouse/deleted-warehouse.component';
+import { AddTreatmentComponent } from './doctor/add-treatment/add-treatment.component';
+import { TreatmentsComponent } from './doctor/treatments/treatments.component';
+import { PatientsComponent } from './secretary/patients/patients.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +58,9 @@ import { DeletedWarehouseComponent } from './warehouse/deleted-warehouse/deleted
     AddWarehouseComponent,
     ManageWarehouseComponent,
     DeletedWarehouseComponent,
+    AddTreatmentComponent,
+    TreatmentsComponent,
+    PatientsComponent,
   ],
     imports: [
         BrowserModule,

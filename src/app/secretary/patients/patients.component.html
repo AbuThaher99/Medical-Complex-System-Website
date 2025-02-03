@@ -1,0 +1,101 @@
+<div class="patients-container">
+  <h2>Manage Patients</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search patients by Doctor"
+      (input)="onSearch($event)"
+    />
+    <div class="dropdown">
+      <!-- Search Input -->
+      <input
+        type="text"
+        placeholder="Search doctors..."
+        (input)="filterDoctors($event)"
+        (click)="toggleDropdown()"
+        class="dropdown-search"
+      />
+
+      <!-- Dropdown List -->
+      <div *ngIf="dropdownOpen" class="dropdown-content">
+        <label *ngFor="let doctor of filteredDoctors">
+          <input
+            type="checkbox"
+            [value]="doctor.id"
+            [checked]="selectedDoctorIds.includes(doctor.id)"
+            (change)="onDoctorCheckboxChange($event, doctor.id)"
+          />
+          {{ doctor.id }} - {{ doctor.user.firstName }} {{ doctor.user.lastName }} - {{ doctor.user.email }}
+        </label>
+      </div>
+    </div>
+
+
+
+
+
+    <!-- Patients Table -->
+  <table class="patients-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Address</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let patient of patients">
+      <td>{{ patient.id }}</td>
+      <td>{{ patient.user.firstName }} {{ patient.user.lastName }}</td>
+      <td>{{ patient.user.email }}</td>
+      <td>{{ patient.user.phone }}</td>
+      <td>{{ patient.user.address }}</td>
+      <td class="action-buttons">
+        <button class="edit-btn" (click)="getPatientById(patient.user.id)">View</button>
+        <button
+          class="delete-btn"
+          (click)="deletePatient(patient.user.email)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="onPageChange(page - 1)" [disabled]="page === 1">
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ Math.ceil(totalElements / size) }}</span>
+    <button
+      (click)="onPageChange(page + 1)"
+      [disabled]="page === Math.ceil(totalElements / size)"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
+<!-- Patient Details Modal -->
+<div *ngIf="showPatientModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closePatientModal()">&times;</span>
+    <h2>Patient Details</h2>
+    <p><strong>ID:</strong> {{ selectedPatient?.id }}</p>
+    <p><strong>Name:</strong> {{ selectedPatient?.user.firstName }}
+      {{ selectedPatient?.user.lastName }}</p>
+    <p><strong>Email:</strong> {{ selectedPatient?.user.email }}</p>
+    <p><strong>Phone:</strong> {{ selectedPatient?.user.phone }}</p>
+    <p><strong>Address:</strong> {{ selectedPatient?.user.address }}</p>
+    <p><strong>Age:</strong> {{ selectedPatient?.age }}</p>
+    <p><strong>Blood Type:</strong> {{ selectedPatient?.bloodType }}</p>
+  </div>
+</div>
+</div>

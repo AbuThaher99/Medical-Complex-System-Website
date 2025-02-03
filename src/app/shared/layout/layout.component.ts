@@ -16,13 +16,20 @@ export class LayoutComponent implements OnInit {
   }; // Initialize user data
   role: string | null = null; // Initialize role
   isDropdownOpen: boolean = false;
-
+  adminSubNavOpen: boolean = false;
+  warehouseSubNavOpen: boolean = false;
   constructor(private http: HttpClient, private router: Router,private configService: ConfigService) {}
 
   ngOnInit(): void {
     this.fetchUserDetails(); // Fetch user details when the component initializes
   }
+  toggleAdminSubNav(): void {
+    this.adminSubNavOpen = !this.adminSubNavOpen;
+  }
 
+  toggleWarehouseSubNav(): void {
+    this.warehouseSubNavOpen = !this.warehouseSubNavOpen;
+  }
   fetchUserDetails(): void {
     const url = `${this.configService.apiUrl}auth/getUser`; // Replace with your API endpoint
     const accessToken = localStorage.getItem('access_token');

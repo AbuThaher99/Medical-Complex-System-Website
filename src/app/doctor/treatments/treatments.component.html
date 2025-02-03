@@ -1,0 +1,99 @@
+<div class="treatments-container">
+  <h2>Manage Treatments</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" placeholder="Search treatments..." (input)="onSearch($event)" />
+
+    <!-- Multi-select dropdown with search -->
+    <div class="dropdown" #dropdown>
+      <input type="text" placeholder="Search patients..." (input)="onSearchPatients($event)" (focus)="loadPatientsForFilter()" (blur)="hidePatientDropdown($event)" />
+      <div class="dropdown-content" *ngIf="showPatientFilterDropdown">
+        <label *ngFor="let patient of filteredPatients">
+          <input type="checkbox" [checked]="selectedPatientIds.includes(patient.id)" (change)="onPatientSelectionChange(patient.id, $event.target.checked)" />
+          {{ patient.displayText }}
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Treatments Table -->
+  <table class="treatments-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Patient</th>
+      <th>Doctor</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let treatment of treatments">
+      <td>{{ treatment.id }}</td>
+      <td>{{ treatment.treatmentDate | date: 'mediumDate' }}</td>
+      <td>{{ treatment.patient?.user?.firstName }} {{ treatment.patient?.user?.lastName }}</td>
+      <td>{{ treatment.doctor?.user?.firstName }} {{ treatment.doctor?.user?.lastName }}</td>
+      <td>{{ treatment.diseaseDescription }}</td>
+      <td>${{ treatment.price }}</td>
+      <td class="action-buttons">
+        <button class="edit-btn" (click)="openEditModal(treatment)">Edit</button>
+        <button class="delete-btn" (click)="deleteTreatment(treatment.id)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="onPageChange(page - 1)" [disabled]="page === 1">Previous</button>
+    <span>Page {{ page }} of {{ Math.ceil(totalTreatments / size) }}</span>
+    <button (click)="onPageChange(page + 1)" [disabled]="page === Math.ceil(totalTreatments / size)">Next</button>
+  </div>
+</div>
+
+<!-- Edit Treatment Modal -->
+<div *ngIf="showEditModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Edit Treatment</h2>
+    <form (ngSubmit)="saveEdit()">
+
+      <label>Date:</label>
+      <input type="date" [(ngModel)]="editingTreatment.treatmentDate" name="treatmentDate" required />
+
+      <div class="modal-dropdown">
+        <label for="doctor">Doctor:</label>
+        <select id="doctor" [(ngModel)]="editingTreatment.doctor.id" name="doctor">
+          <option *ngFor="let doctor of doctors" [value]="doctor.id">
+            {{ doctor.displayText }}
+          </option>
+        </select>
+      </div>
+
+      <div class="modal-dropdown">
+        <label for="patient">Patient:</label>
+        <select id="patient" [(ngModel)]="editingTreatment.patient.id" name="patient">
+          <option *ngFor="let patient of patients" [value]="patient.id">
+            {{ patient.displayText }}
+          </option>
+        </select>
+      </div>
+
+      <label>Description:</label>
+      <textarea [(ngModel)]="editingTreatment.diseaseDescription" name="diseaseDescription" required></textarea>
+
+      <label>Note:</label>
+      <textarea [(ngModel)]="editingTreatment.note" name="note"></textarea>
+
+      <label>Price:</label>
+      <input type="number" [(ngModel)]="editingTreatment.price" name="price" required />
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</div>
+
