@@ -23,6 +23,9 @@ import {DeletedMedicineComponent} from "./warehouse/deleted-medicine/deleted-med
 import {AddWarehouseComponent} from "./warehouse/add-warehouse/add-warehouse.component";
 import {ManageWarehouseComponent} from "./warehouse/manage-warehouse/manage-warehouse.component";
 import {DeletedWarehouseComponent} from "./warehouse/deleted-warehouse/deleted-warehouse.component";
+import {AddTreatmentComponent} from "./doctor/add-treatment/add-treatment.component";
+import {TreatmentsComponent} from "./doctor/treatments/treatments.component";
+import {PatientsComponent} from "./secretary/patients/patients.component";
 
 const routes: Routes = [
   {
@@ -50,6 +53,9 @@ const routes: Routes = [
       {path: 'warehouse/add-warehouse', component: AddWarehouseComponent,},
       {path: 'warehouse/manage-warehouse', component: ManageWarehouseComponent,},
       {path: 'warehouse/deleted-warehouse', component: DeletedWarehouseComponent,},
+      {path: 'doctor/add-treatment', component: AddTreatmentComponent,},
+      {path: 'doctor/treatments', component: TreatmentsComponent,},
+      {path:'secretary/patients', component: PatientsComponent,},
 
     ],
   },

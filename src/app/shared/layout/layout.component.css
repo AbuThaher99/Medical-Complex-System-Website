@@ -181,7 +181,23 @@ body {
   background-color: #374151;
   padding-left: 1.5rem;
 }
+.dashboard-nav .has-submenu > a {
+  cursor: pointer;
+}
 
+.dashboard-nav .submenu {
+  list-style-type: none;
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.dashboard-nav .submenu li {
+  margin: 5px 0;
+}
+
+.dashboard-nav .submenu a {
+  font-size: 14px;
+}
 .dashboard-nav a i {
   font-size: 1.3rem;
 }

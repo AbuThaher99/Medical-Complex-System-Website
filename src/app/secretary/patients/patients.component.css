@@ -1,0 +1,399 @@
+/* General Container */
+.patients-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Title */
+.patients-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Filters Section */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.filters select {
+  min-width: 220px;
+}
+
+/* patients Table */
+.patients-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.patients-table th,
+.patients-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.patients-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.patients-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.patients-table tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+}
+
+.dropdown-content {
+  position: absolute;
+  background: white;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.dropdown-content label {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown-content label:hover {
+  background: #f1f1f1;
+}
+
+.dropdown-content input {
+  margin-right: 8px;
+}
+
+
+.hint-text {
+  font-size: 12px;
+  color: gray;
+  margin-top: 5px;
+}
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.action-buttons .edit-btn,
+.action-buttons .delete-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons .edit-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.action-buttons .edit-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.action-buttons .delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.action-buttons .delete-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+/* Pagination Section */
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Modal Styling */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 40%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+  text-align: left;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+  border-color: #0052cc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 82, 204, 0.3);
+}
+
+.modal-content button {
+  margin-top: 15px;
+  background-color: #0052cc;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-content button:hover {
+  background-color: #003a99;
+  transform: translateY(-2px);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 80%;
+  }
+
+  .patients-container {
+    max-width: 90%;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 90%;
+  }
+
+  .patients-container {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+}
+.modal-dropdown {
+  position: relative;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Dropdown button */
+.modal-dropdown select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover & focus effects */
+.modal-dropdown select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Dropdown list */
+.modal-dropdown .dropdown-list {
+  position: absolute;
+  width: 100%;
+  max-height: 200px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(-5px);
+}
+
+/* Show dropdown */
+.modal-dropdown.open .dropdown-list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Dropdown options */
+.modal-dropdown .dropdown-list label {
+  display: block;
+  padding: 10px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Hover effect */
+.modal-dropdown .dropdown-list label:hover {
+  background: #f1f1f1;
+}
+
+/* Selected option */
+.modal-dropdown .dropdown-list input:checked + label {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+/* Scrollbar styling */
+.modal-dropdown .dropdown-list {
+  scrollbar-width: thin;
+  scrollbar-color: #007bff #f1f1f1;
+}
+
+.modal-dropdown .dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-dropdown .dropdown-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.modal-dropdown .dropdown-list::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 10px;
+}
+
+.modal-dropdown .dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
+}
