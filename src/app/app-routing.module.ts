@@ -26,6 +26,14 @@ import {DeletedWarehouseComponent} from "./warehouse/deleted-warehouse/deleted-w
 import {AddTreatmentComponent} from "./doctor/add-treatment/add-treatment.component";
 import {TreatmentsComponent} from "./doctor/treatments/treatments.component";
 import {PatientsComponent} from "./secretary/patients/patients.component";
+import {PatientMedicinesComponent} from "./secretary/patient-medicines/patient-medicines.component";
+import {AddDonorComponent} from "./secretary/add-donor/add-donor.component";
+import {DonorsComponent} from "./secretary/donors/donors.component";
+import {DeletedDonorComponent} from "./secretary/deleted-donor/deleted-donor.component";
+import {DonationsComponent} from "./secretary/donations/donations.component";
+import {TakeBloodComponent} from "./secretary/take-blood/take-blood.component";
+import {PatientBloodComponent} from "./secretary/patient-blood/patient-blood.component";
+import {DeletedPatientBloodComponent} from "./secretary/deleted-patient-blood/deleted-patient-blood.component";
 
 const routes: Routes = [
   {
@@ -56,7 +64,14 @@ const routes: Routes = [
       {path: 'doctor/add-treatment', component: AddTreatmentComponent,},
       {path: 'doctor/treatments', component: TreatmentsComponent,},
       {path:'secretary/patients', component: PatientsComponent,},
-
+      {path:'secretary/patient-medicines', component: PatientMedicinesComponent,},
+      {path: 'secretary/add-donor', component: AddDonorComponent,},
+      {path: 'secretary/donors', component: DonorsComponent },
+      {path: 'secretary/deleted-donor', component: DeletedDonorComponent },
+      {path: 'secretary/donations', component: DonationsComponent },
+      {path: 'secretary/take-blood', component: TakeBloodComponent },
+      {path: 'secretary/patient-blood', component: PatientBloodComponent },
+      {path: 'secretary/deleted-patient-blood', component: DeletedPatientBloodComponent },
     ],
   },
 

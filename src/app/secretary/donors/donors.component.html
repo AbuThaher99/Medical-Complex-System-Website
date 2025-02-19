@@ -1,0 +1,149 @@
+<div class="donor-container">
+  <h2>Manage Donors</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" placeholder="Search Donors..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+    <select [(ngModel)]="bloodType" (change)="onSearchChange()">
+      <option value="">All Blood Types</option>
+      <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+    </select>
+    <select [(ngModel)]="gender" (change)="onSearchChange()">
+      <option value="">All Genders</option>
+      <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+    </select>
+
+    <div class="dropdown">
+      <input
+        type="text"
+        placeholder="Search Donors..."
+        [(ngModel)]="donorSearchQuery"
+        (input)="filterDonors()"
+        (focus)="showDonorDropdown = true"
+        (blur)="hideDropdown($event)"
+      />
+      <div class="dropdown-content" *ngIf="showDonorDropdown" (scroll)="onDropdownScroll($event)">
+        <label *ngFor="let donor of filteredDonors">
+          <input
+            type="checkbox"
+            [checked]="selectedDonorIds.includes(donor.id)"
+            (change)="toggleDonorSelection(donor.id, $event)"
+          />
+          {{ donor.id }} - {{ donor.name }}
+        </label>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- Donors Table -->
+  <table class="donor-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Blood Type</th>
+      <th>Gender</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let donor of donors">
+      <td>{{ donor.id }}</td>
+      <td>{{ donor.name }}</td>
+      <td>{{ donor.phone }}</td>
+      <td>{{ donor.bloodType }}</td>
+      <td>{{ donor.gender }}</td>
+      <td class="action-buttons">
+        <button class="edit-btn" (click)="openEditModal(donor)">Edit</button>
+        <button class="delete-btn" (click)="deleteDonor(donor.id)">Delete</button>
+        <button class="add-medicine-btn" (click)="openAddDonationModal(donor)">Add Donation</button>
+        <button class="view-donations-btn" (click)="openViewDonationsModal(donor)">View Donations</button>
+
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="page = page - 1; loadDonors()" [disabled]="page === 1">Previous</button>
+    <span>Page {{ page }} of {{ totalPages }}</span>
+    <button (click)="page = page + 1; loadDonors()" [disabled]="page === totalPages">Next</button>
+  </div>
+</div>
+
+<!-- Edit Donor Modal -->
+<div class="modal" *ngIf="showEditModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Edit Donor</h2>
+    <form (ngSubmit)="updateDonor()">
+      <label>Name:</label>
+      <input type="text" [(ngModel)]="editingDonor.name" name="name" required />
+
+      <label>Phone:</label>
+      <input type="text" [(ngModel)]="editingDonor.phone" name="phone" required />
+      <div class="modal-dropdown">
+
+      <label>Blood Type:</label>
+      <select [(ngModel)]="editingDonor.bloodType" name="bloodType" required>
+        <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+      </select>
+      </div>
+      <div class="modal-dropdown">
+
+      <label>Gender:</label>
+      <select [(ngModel)]="editingDonor.gender" name="gender" required>
+        <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+      </select>
+      </div>
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+<!-- Add Donation Modal -->
+<div class="modal" *ngIf="showAddDonationModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeAddDonationModal()">&times;</span>
+    <h2>Add Donation</h2>
+    <form (ngSubmit)="addDonation()">
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" [(ngModel)]="donation.quantity" name="quantity" min="1" required />
+
+      <label for="donationDate">Donation Date:</label>
+      <input type="datetime-local" id="donationDate" [(ngModel)]="donation.donationDate" name="donationDate" required />
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+<!-- Donations Modal -->
+<div class="modal" *ngIf="showViewDonationsModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeViewDonationsModal()">&times;</span>
+    <h2>Donations for {{ currentDonor?.name }}</h2>
+
+    <table class="donor-table">
+      <thead>
+      <tr>
+        <th>Donation ID</th>
+        <th>Quantity</th>
+        <th>Date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let donation of currentDonor.donations">
+        <td>{{ donation.id }}</td>
+        <td>{{ donation.quantity }}</td>
+        <td>{{ donation.donationDate | date: 'medium' }}</td>
+      </tr>
+      <tr *ngIf="!currentDonor.donations.length">
+        <td colspan="3">No donations found for this donor.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

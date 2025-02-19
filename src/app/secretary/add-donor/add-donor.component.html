@@ -1,0 +1,22 @@
+<div class="add-donor-container">
+  <h2>Add New Donor</h2>
+  <form (ngSubmit)="addDonor()">
+    <label for="name">Name:</label>
+    <input id="name" type="text" [(ngModel)]="donor.name" name="name" required />
+
+    <label for="phone">Phone:</label>
+    <input id="phone" type="text" [(ngModel)]="donor.phone" name="phone" required />
+
+    <label for="bloodType">Blood Type:</label>
+    <select id="bloodType" [(ngModel)]="donor.bloodType" name="bloodType" required>
+      <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+    </select>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" [(ngModel)]="donor.gender" name="gender" required>
+      <option *ngFor="let gender of genders" [value]="gender">{{ gender }}</option>
+    </select>
+
+    <button type="submit">Add Donor</button>
+  </form>
+</div>

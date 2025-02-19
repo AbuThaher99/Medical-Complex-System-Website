@@ -7,14 +7,27 @@
 
     <!-- Multi-select dropdown with search -->
     <div class="dropdown" #dropdown>
-      <input type="text" placeholder="Search patients..." (input)="onSearchPatients($event)" (focus)="loadPatientsForFilter()" (blur)="hidePatientDropdown($event)" />
-      <div class="dropdown-content" *ngIf="showPatientFilterDropdown">
+      <input type="text"
+             placeholder="Search patients..."
+             (input)="onSearchPatients($event)"
+             (focus)="loadPatientsForFilter()"
+             (blur)="hidePatientDropdown($event)" />
+
+      <div class="dropdown-content"
+           *ngIf="showPatientFilterDropdown"
+           (scroll)="onPatientDropdownScroll($event)">
+
         <label *ngFor="let patient of filteredPatients">
-          <input type="checkbox" [checked]="selectedPatientIds.includes(patient.id)" (change)="onPatientSelectionChange(patient.id, $event.target.checked)" />
+          <input type="checkbox"
+                 [checked]="selectedPatientIds.includes(patient.id)"
+                 (change)="onPatientSelectionChange(patient.id, $event.target.checked)" />
           {{ patient.displayText }}
         </label>
+
+        <div *ngIf="loadingMorePatients" class="loading-spinner">Loading...</div>
       </div>
     </div>
+
 
   </div>
 
@@ -42,6 +55,8 @@
       <td class="action-buttons">
         <button class="edit-btn" (click)="openEditModal(treatment)">Edit</button>
         <button class="delete-btn" (click)="deleteTreatment(treatment.id)">Delete</button>
+        <button class="add-medicine-btn" (click)="openAddMedicineModal(treatment)">Add Medicine</button>
+
       </td>
     </tr>
     </tbody>
@@ -97,3 +112,24 @@
   </div>
 </div>
 
+<div *ngIf="showAddMedicineModal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeAddMedicineModal()">&times;</span>
+    <h2>Add Medicine</h2>
+    <form (ngSubmit)="saveMedicine()">
+      <div class="modal-dropdown">
+        <label>Medicine:</label>
+        <select [(ngModel)]="selectedMedicineId" name="medicine" required (scroll)="onScroll($event)">
+          <option *ngFor="let medicine of medicines" [value]="medicine.medicine.id">
+            {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
+          </option>
+        </select>
+      </div>
+
+      <label>Quantity:</label>
+      <input type="number" [(ngModel)]="medicineQuantity" name="quantity" required min="1" />
+
+      <button type="submit">Add Medicine</button>
+    </form>
+  </div>
+</div>

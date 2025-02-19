@@ -13,13 +13,15 @@
       <input
         type="text"
         placeholder="Search doctors..."
-        (input)="filterDoctors($event)"
-        (click)="toggleDropdown()"
+        [(ngModel)]="doctorSearchQuery"
+        (input)="filterDoctors()"
+        (focus)="openDropdown()"
+        (blur)="closeDropdown()"
         class="dropdown-search"
       />
 
       <!-- Dropdown List -->
-      <div *ngIf="dropdownOpen" class="dropdown-content">
+      <div *ngIf="dropdownOpen" class="dropdown-content" (scroll)="onDropdownScroll($event)">
         <label *ngFor="let doctor of filteredDoctors">
           <input
             type="checkbox"
@@ -27,13 +29,10 @@
             [checked]="selectedDoctorIds.includes(doctor.id)"
             (change)="onDoctorCheckboxChange($event, doctor.id)"
           />
-          {{ doctor.id }} - {{ doctor.user.firstName }} {{ doctor.user.lastName }} - {{ doctor.user.email }}
+          {{ doctor.id }} - {{ doctor.user.firstName }} {{ doctor.user.lastName }} - {{ doctor.user.email }} - {{ doctor.specialization }}
         </label>
       </div>
     </div>
-
-
-
 
 
     <!-- Patients Table -->

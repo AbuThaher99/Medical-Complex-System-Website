@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DoctorService } from '../../services/doctor.service';
 import { PatientService } from '../../services/patient.service';
+import { WarehouseService } from '../../services/warehouse.service';
+
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import {PatientMedicineService} from "../../services/patient-medicine.service";
 
 @Component({
   selector: 'app-treatments',
@@ -15,8 +18,8 @@ export class TreatmentsComponent implements OnInit {
   filteredPatients: any[] = [];
   selectedPatientIds: number[] = [];
   doctors: any[] = [];
-  dropdown: any;
-  searchTerm = '';
+  medicines: any[] = [];
+
   page = 1;
   size = 10;
   totalTreatments = 0;
@@ -27,14 +30,26 @@ export class TreatmentsComponent implements OnInit {
   loadingDoctors = false;
   showPatientFilterDropdown = false;
   showPatientEditDropdown = false;
+  showAddMedicineModal: boolean = false;
+  selectedTreatmentId: number | null = null;
+  selectedMedicineId: number | null = null;
+  medicineQuantity: number = 1;
 
+  currentPatientPage = 1; // Track the page number
+  patientPageSize = 10;   // Number of patients per request
+  totalPatients = 0;      // Total number of patients in DB
+  loadingMorePatients = false; // Loading indicator
 
+  dropdown: any;
+  searchTerm = '';
   private searchSubject = new Subject<string>();
 
-  constructor(private doctorService: DoctorService, private patientService: PatientService) {}
+  constructor(private doctorService: DoctorService, private patientService: PatientService,private warehouseService: WarehouseService
+  ,private patientMedicineService: PatientMedicineService) {}
 
   ngOnInit(): void {
     this.fetchTreatments();
+    this.loadMedicines();
 
     // Debounce search input for treatments
     this.searchSubject.pipe(
@@ -49,7 +64,11 @@ export class TreatmentsComponent implements OnInit {
       this.totalTreatments = response.totalElements;
     });
   }
-
+  loadMedicines() {
+    this.warehouseService.getAllWarehouseStores(1, 100).subscribe((data: any) => {
+      this.medicines = data.content;
+    });
+  }
   fetchTreatments(): void {
     this.doctorService.getTreatments(this.page, this.size, this.selectedPatientIds, this.searchTerm).subscribe({
       next: (response) => {
@@ -65,24 +84,43 @@ export class TreatmentsComponent implements OnInit {
 
   loadPatientsForFilter(): void {
     if (this.patients.length === 0) {
-      this.loadingPatients = true;
-      this.patientService.getPatients(1, 10).subscribe({
-        next: (response) => {
-          this.patients = response.content.map((patient: any) => ({
-            id: patient.id,
-            displayText: `${patient.id} - ${patient.user.firstName} ${patient.user.lastName} - ${patient.user.email}`
-          }));
-          this.filteredPatients = [...this.patients];
-          this.showPatientFilterDropdown = true;
-          this.loadingPatients = false;
-        },
-        error: (error) => {
-          console.error('Failed to load patients:', error);
-          this.loadingPatients = false;
-        }
-      });
-    } else {
-      this.showPatientFilterDropdown = true;
+      this.currentPatientPage = 1;  // Reset page
+      this.fetchPatients();
+    }
+    this.showPatientFilterDropdown = true;
+  }
+
+  fetchPatients(): void {
+    if (this.loadingPatients || (this.totalPatients && this.patients.length >= this.totalPatients)) return;
+
+    this.loadingPatients = true;
+
+    this.patientService.getPatients(this.currentPatientPage, this.patientPageSize).subscribe({
+      next: (response) => {
+        const newPatients = response.content.map((patient: any) => ({
+          id: patient.id,
+          displayText: `${patient.id} - ${patient.user.firstName} ${patient.user.lastName} - ${patient.user.email}`
+        }));
+
+        this.patients = [...this.patients, ...newPatients];
+        this.filteredPatients = [...this.patients];
+        this.totalPatients = response.totalElements;
+        this.currentPatientPage++;
+        this.loadingPatients = false;
+      },
+      error: (error) => {
+        console.error('Failed to load patients:', error);
+        this.loadingPatients = false;
+      }
+    });
+  }
+
+  onPatientDropdownScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+
+    // Check if the user has scrolled to the bottom of the dropdown
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+      this.fetchPatients();
     }
   }
 
@@ -233,7 +271,33 @@ export class TreatmentsComponent implements OnInit {
     });
   }
 
+  openAddMedicineModal(treatment: any) {
+    this.selectedTreatmentId = treatment.id;
+    this.showAddMedicineModal = true;
+  }
 
+  closeAddMedicineModal() {
+    this.showAddMedicineModal = false;
+    this.selectedTreatmentId = null;
+    this.selectedMedicineId = null;
+    this.medicineQuantity = 1;
+  }
+  saveMedicine() {
+    if (!this.selectedTreatmentId || !this.selectedMedicineId || this.medicineQuantity <= 0) {
+      alert('Please select a medicine and enter a valid quantity.');
+      return;
+    }
 
+    this.patientMedicineService.addMedicineToTreatment(this.selectedTreatmentId, this.selectedMedicineId, this.medicineQuantity)
+      .subscribe(
+        () => {
+          alert('Medicine added successfully!');
+          this.closeAddMedicineModal();
+        },
+        error => {
+          alert('Failed to add medicine: ' + error.message);
+        }
+      );
+  }
   protected readonly Math = Math;
 }

@@ -1,35 +1,36 @@
 /* General Container */
-.treatments-container {
-  max-width: 900px;
+.donor-container {
+  max-width: 1000px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #fff;
+  background: linear-gradient(to bottom, #ffffff, #f9f9f9);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Title */
-.treatments-container h2 {
-  font-size: 24px;
+.donor-container h2 {
+  font-size: 26px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 /* Filters Section */
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
+  gap: 15px;
+  justify-content: space-between;
+  margin-bottom: 25px;
 }
+
 
 .filters input,
 .filters select {
-  padding: 10px;
+  flex: 1;
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
@@ -47,8 +48,8 @@
   min-width: 220px;
 }
 
-/* Treatments Table */
-.treatments-table {
+/* donor Table */
+.donor-table {
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
@@ -57,25 +58,25 @@
   overflow: hidden;
 }
 
-.treatments-table th,
-.treatments-table td {
+.donor-table th,
+.donor-table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
   font-size: 14px;
 }
 
-.treatments-table th {
+.donor-table th {
   background-color: #007bff;
   color: white;
   font-weight: bold;
 }
 
-.treatments-table tr:nth-child(even) {
+.donor-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.treatments-table tr:hover {
+.donor-table tr:hover {
   background-color: #f1f1f1;
   transition: background-color 0.3s ease;
 }
@@ -163,6 +164,29 @@
   background-color: #004494; /* Even darker blue */
   transform: scale(1);
 }
+
+.view-donations-btn {
+  background-color: #ffc107; /* Yellow */
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.view-donations-btn:hover {
+  background-color: #e0a800;
+  transform: scale(1.05);
+}
+
+.view-donations-btn:active {
+  background-color: #c69500;
+  transform: scale(1);
+}
+
 /* Pagination Section */
 .pagination {
   margin-top: 20px;
@@ -290,7 +314,7 @@
     width: 80%;
   }
 
-  .treatments-container {
+  .donor-container {
     max-width: 90%;
   }
 
@@ -305,7 +329,7 @@
     width: 90%;
   }
 
-  .treatments-container {
+  .donor-container {
     max-width: 95%;
     padding: 15px;
   }

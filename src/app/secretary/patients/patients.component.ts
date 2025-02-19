@@ -20,9 +20,14 @@ export class PatientsComponent implements OnInit {
   private searchSubject = new Subject<string>();
   dropdownOpen = false;
   selectedDoctorIds: number[] = [];
+  doctorSearchQuery: string = '';
+
   showPatientModal = false;
   selectedPatient: any = null;
-
+  doctorsPage: number = 1;
+  doctorsSize: number = 10;
+  totalDoctorsPages: number = 1;
+  loadingDoctors: boolean = false;
   constructor(
     private patientService: PatientService,
     private doctorService: DoctorService
@@ -98,40 +103,65 @@ export class PatientsComponent implements OnInit {
 
   onDoctorCheckboxChange(event: any, doctorId: number): void {
     if (event.target.checked) {
-      // Add doctorId to the selected list
-      this.selectedDoctorIds.push(doctorId);
+      if (!this.selectedDoctorIds.includes(doctorId)) {
+        this.selectedDoctorIds.push(doctorId);
+      }
     } else {
-      // Remove doctorId from the selected list
-      this.selectedDoctorIds = this.selectedDoctorIds.filter((id) => id !== doctorId);
+      this.selectedDoctorIds = this.selectedDoctorIds.filter(id => id !== doctorId);
     }
     this.fetchPatients();
   }
-
 
   toggleDropdown(): void {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
   loadDoctors(): void {
-    this.doctorService.getDoctors(1, 100).subscribe({
+    if (this.loadingDoctors || this.doctorsPage > this.totalDoctorsPages) return;
+
+    this.loadingDoctors = true;
+
+    this.doctorService.getDoctors(this.doctorsPage, this.doctorsSize).subscribe({
       next: (response) => {
-        this.doctors = response.content;
-        this.filteredDoctors = [...this.doctors]; // Initialize filteredDoctors
+        this.doctors = [...this.doctors, ...response.content]; // Append new doctors
+        this.filteredDoctors = [...this.doctors]; // Initialize filtered list
+        this.totalDoctorsPages = response.totalPages;
+        this.doctorsPage++; // Prepare for next page load
+        this.loadingDoctors = false;
       },
       error: (error) => {
         console.error('Error fetching doctors:', error);
+        this.loadingDoctors = false;
       },
     });
   }
-  filterDoctors(event: any): void {
-    const query = event.target.value.toLowerCase();
-    this.filteredDoctors = this.doctors.filter(
-      (doctor) =>
-        doctor.user.firstName.toLowerCase().includes(query) ||
-        doctor.user.lastName.toLowerCase().includes(query) ||
-        doctor.user.email.toLowerCase().includes(query)
-    );
+  filterDoctors(): void {
+    const query = this.doctorSearchQuery.toLowerCase().trim();
+
+    this.filteredDoctors = this.doctors.filter((doctor) => {
+      const fullName = `${doctor.user.firstName} ${doctor.user.lastName}`.toLowerCase();
+      return fullName.includes(query) || doctor.user.email.toLowerCase().includes(query) || doctor.specialization.toLowerCase().includes(query);
+    });
   }
 
+
+  openDropdown(): void {
+    this.dropdownOpen = true;
+  }
+
+  // Close Dropdown (Delays to allow selection)
+  closeDropdown(): void {
+    setTimeout(() => {
+      this.dropdownOpen = false;
+    }, 200);
+  }
+
+  // Lazy Load More Doctors on Scroll
+  onDropdownScroll(event: any): void {
+    const element = event.target;
+    if (element.scrollHeight - element.scrollTop <= element.clientHeight + 10) {
+      this.loadDoctors();
+    }
+  }
   protected readonly Math = Math;
 }

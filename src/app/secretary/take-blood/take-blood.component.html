@@ -1,0 +1,31 @@
+<div class="take-blood-container">
+  <h2>Take Blood from Patient</h2>
+
+  <!-- Patient Selection -->
+  <div class="take-blood-dropdown">
+    <input
+      type="text"
+      placeholder="Search Patients..."
+      [(ngModel)]="patientSearchQuery"
+      (input)="filterPatients()"
+      (focus)="showPatientDropdown = true"
+      (blur)="hideDropdown()"
+    />
+    <div class="take-blood-dropdown-content" *ngIf="showPatientDropdown">
+      <label *ngFor="let patient of filteredPatients" (click)="selectPatient(patient.id)">
+        {{ patient.id }} - {{ patient.user.firstName }} {{ patient.user.lastName }} - {{ patient.user.email }}
+      </label>
+    </div>
+  </div>
+
+  <!-- Selected Patient -->
+  <div *ngIf="selectedPatientId" class="take-blood-selected-patient">
+    Selected Patient: <strong>{{ selectedPatientId }}</strong>
+  </div>
+
+  <!-- Blood Quantity -->
+  <input type="number" class="take-blood-input" placeholder="Enter Quantity" [(ngModel)]="quantity" min="1" />
+
+  <!-- Take Blood Button -->
+  <button class="take-blood-btn" (click)="takeBlood()">Take Blood</button>
+</div>

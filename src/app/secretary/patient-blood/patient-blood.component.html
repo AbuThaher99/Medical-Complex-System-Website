@@ -1,0 +1,75 @@
+<div class="patient-blood-container">
+  <h2>Manage Patient Blood</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search Patients..."
+      [(ngModel)]="searchQuery"
+      (input)="onSearchChange()"
+    />
+    <select [(ngModel)]="bloodType" (change)="onSearchChange()">
+      <option value="">All Blood Types</option>
+      <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+    </select>
+
+    <div class="dropdown">
+      <input
+        type="text"
+        placeholder="Search Patients..."
+        [(ngModel)]="patientSearchQuery"
+        (input)="filterPatients()"
+        (focus)="showPatientDropdown = true"
+        (blur)="hideDropdown()"
+      />
+      <div #dropdownList class="dropdown-content" *ngIf="showPatientDropdown" (scroll)="onDropdownScroll($event)">
+        <label *ngFor="let patient of filteredPatients">
+          <input
+            type="checkbox"
+            [checked]="selectedPatientIds.includes(patient.id)"
+            (change)="togglePatientSelection(patient.id, $event)"
+          />
+          {{ patient.id }} - {{ patient.user.firstName }} {{ patient.user.lastName }}
+        </label>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- Patient Blood Table -->
+  <table class="patient-blood-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Patient Name</th>
+      <th>Age</th>
+      <th>Blood Type</th>
+      <th>Phone</th>
+      <th>Quantity</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let record of patientBloodRecords">
+      <td>{{ record.id }}</td>
+      <td>{{ record.patient.user.firstName }} {{ record.patient.user.lastName }}</td>
+      <td>{{ record.patient.age }}</td>
+      <td>{{ record.patient.bloodType }}</td>
+      <td>{{ record.patient.user.phone }}</td>
+      <td>{{ record.quantity }}</td>
+      <td class="action-buttons">
+        <button class="delete-btn" (click)="deletePatientBlood(record.id)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination-section">
+    <button (click)="page = page - 1; loadPatientBlood()" [disabled]="page === 1">Previous</button>
+    <span>Page {{ page }} of {{ totalPages }}</span>
+    <button (click)="page = page + 1; loadPatientBlood()" [disabled]="page === totalPages">Next</button>
+  </div>
+</div>

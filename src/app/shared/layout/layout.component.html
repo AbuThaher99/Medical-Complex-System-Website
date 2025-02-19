@@ -89,11 +89,12 @@
             <i class="fas fa-notes-medical"></i> Add Treatment
           </a>
         </li>
-        <li *ngIf="role === 'DOCTOR' || role === 'ADMIN'">
+        <li *ngIf="role === 'DOCTOR' || role === 'ADMIN' || role === 'SECRETARY'">
           <a routerLink="/doctor/treatments">
             <i class="fas fa-medkit"></i> Get All Treatments
           </a>
         </li>
+
 
         <li *ngIf="role === 'PATIENT'">
           <a routerLink="/patient">
@@ -106,7 +107,52 @@
             <i class="fas fa-user-injured"></i> Get All Patients
           </a>
         </li>
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/patient-medicines">
+            <i class="fas fa-pills"></i> Get All Patient Medicines
+          </a>
+        </li>
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/add-donor">
+            <i class="fas fa-hand-holding-medical"></i> Add Donor
+          </a>
+        </li>
 
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/donors">
+            <i class="fas fa-users"></i> Get All Donors
+          </a>
+        </li>
+
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/deleted-donor">
+            <i class="fas fa-trash-restore"></i> Deleted Donors
+          </a>
+        </li>
+
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/donations">
+            <i class="fas fa-donate"></i> Get All Donations
+          </a>
+        </li>
+
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/take-blood">
+            <i class="fas fa-tint"></i> Give Blood
+          </a>
+        </li>
+
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/patient-blood">
+            <i class="fas fa-vial"></i> Get All Patient Blood
+          </a>
+        </li>
+
+        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'">
+          <a routerLink="/secretary/deleted-patient-blood">
+            <i class="fas fa-trash"></i> Deleted Patient Blood
+          </a>
+        </li>
         <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'" class="has-submenu">
           <a (click)="toggleWarehouseSubNav()">
             <i class="fas fa-warehouse"></i> Warehouse Menu

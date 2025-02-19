@@ -53,6 +53,8 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+    localStorage.setItem('role', this.user.role);
+    localStorage.setItem('id', this.user.id);
   }
 
   onFileSelected(event: any): void {

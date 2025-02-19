@@ -31,6 +31,14 @@ import { DeletedWarehouseComponent } from './warehouse/deleted-warehouse/deleted
 import { AddTreatmentComponent } from './doctor/add-treatment/add-treatment.component';
 import { TreatmentsComponent } from './doctor/treatments/treatments.component';
 import { PatientsComponent } from './secretary/patients/patients.component';
+import { PatientMedicinesComponent } from './secretary/patient-medicines/patient-medicines.component';
+import { AddDonorComponent } from './secretary/add-donor/add-donor.component';
+import { DonorsComponent } from './secretary/donors/donors.component';
+import { DeletedDonorComponent } from './secretary/deleted-donor/deleted-donor.component';
+import { DonationsComponent } from './secretary/donations/donations.component';
+import { TakeBloodComponent } from './secretary/take-blood/take-blood.component';
+import { PatientBloodComponent } from './secretary/patient-blood/patient-blood.component';
+import { DeletedPatientBloodComponent } from './secretary/deleted-patient-blood/deleted-patient-blood.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +69,14 @@ import { PatientsComponent } from './secretary/patients/patients.component';
     AddTreatmentComponent,
     TreatmentsComponent,
     PatientsComponent,
+    PatientMedicinesComponent,
+    AddDonorComponent,
+    DonorsComponent,
+    DeletedDonorComponent,
+    DonationsComponent,
+    TakeBloodComponent,
+    PatientBloodComponent,
+    DeletedPatientBloodComponent,
   ],
     imports: [
         BrowserModule,

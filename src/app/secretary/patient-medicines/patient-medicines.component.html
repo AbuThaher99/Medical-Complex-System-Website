@@ -1,0 +1,141 @@
+<div class="patientMedicine-container">
+  <h2>Manage Patient Medicines</h2>
+
+  <div class="filters">
+    <input type="text" placeholder="Search..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+
+    <!-- Patients Filter (Lazy Loading) -->
+    <div class="dropdown">
+      <input type="text" placeholder="Search Patients..."
+             [(ngModel)]="patientSearchQuery"
+             (focus)="showPatientDropdown = true"
+             (input)="filterPatients()"
+             (blur)="hideDropdown($event, 'patient', 'filter')" />
+      <div #patientDropdown class="dropdown-content" *ngIf="showPatientDropdown" (scroll)="onDropdownScroll($event, 'patient')">
+        <label *ngFor="let patient of filteredPatients">
+          <input type="checkbox" [checked]="selectedPatientIds.includes(patient.id)"
+                 (change)="toggleSelection(selectedPatientIds, patient.id, $event)" />
+          {{ patient.id }} - {{ patient.user.firstName }} {{ patient.user.lastName }} - {{ patient.user.email }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Treatments Filter (Lazy Loading) -->
+    <div class="dropdown">
+      <input type="text" placeholder="Search Treatments..."
+             [(ngModel)]="treatmentSearchQuery"
+             (focus)="showTreatmentDropdownFilter = true"
+             (input)="filterTreatments()"
+             (blur)="hideDropdown($event, 'treatment', 'filter')" />
+      <div #treatmentDropdown class="dropdown-content" *ngIf="showTreatmentDropdownFilter" (scroll)="onDropdownScroll($event, 'treatment')">
+        <label *ngFor="let treatment of filteredTreatments">
+          <input type="checkbox" [checked]="selectedTreatmentIds.includes(treatment.id)"
+                 (change)="toggleSelection(selectedTreatmentIds, treatment.id, $event)" />
+          {{ treatment.id }} - ${{ treatment.price }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Medicines Filter (Lazy Loading) -->
+    <div class="dropdown">
+      <input type="text" placeholder="Search Medicines..."
+             [(ngModel)]="medicineSearchQuery"
+             (focus)="showMedicineDropdownFilter = true"
+             (input)="filterMedicines()"
+             (blur)="hideDropdown($event, 'medicine', 'filter')" />
+      <div #medicineDropdown class="dropdown-content" *ngIf="showMedicineDropdownFilter" (scroll)="onDropdownScroll($event, 'medicine')">
+        <label *ngFor="let medicine of filteredMedicines">
+          <input type="checkbox" [checked]="selectedMedicineIds.includes(medicine.medicine.id)"
+                 (change)="toggleSelection(selectedMedicineIds, medicine.medicine.id, $event)" />
+          {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Patient Medicines Table -->
+  <table class="patientMedicine-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Patient</th>
+      <th>Treatment</th>
+      <th>Medicine</th>
+      <th>Quantity</th>
+      <th>Total Price</th> <!-- New column -->
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let record of patientMedicines">
+      <td>{{ record.id }}</td>
+      <td>{{ record.treatment.patient.user.firstName }} {{ record.treatment.patient.user.lastName }}</td>
+      <td>{{ record.treatment.id }} - ${{ record.treatment.price }}</td>
+      <td>{{ record.medicine.id }} - {{ record.medicine.name }} - ${{ record.medicine.buyPrice }}</td>
+      <td>{{ record.quantity }}</td>
+      <td>{{ calculateTotalPrice(record) | currency:'USD' }}</td>
+      <td class="action-buttons">
+        <button class="edit-btn" (click)="openEditModal(record)">Edit</button>
+        <button class="delete-btn" (click)="deletePatientMedicine(record.id)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button (click)="onPageChange(page - 1)" [disabled]="page === 1">Previous</button>
+    <span>Page {{ page }} of {{ totalPages }}</span>
+    <button (click)="onPageChange(page + 1)" [disabled]="page === totalPages">Next</button>
+  </div>
+</div>
+<!-- Edit Patient Medicine Modal -->
+<div class="modal" *ngIf="showEditModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Edit Patient Medicine</h2>
+    <form (ngSubmit)="updatePatientMedicine()">
+
+      <!-- Lazy Load Treatments -->
+      <div class="modal-dropdown">
+        <label for="treatment">Treatment:</label>
+        <input type="text" id="treatment-search"
+               placeholder="Search Treatments..."
+               [value]="selectedTreatmentName"
+               (focus)="showTreatmentDropdownModal = true"
+               (blur)="hideDropdown($event, 'treatment', 'modal')" />
+        <div #treatmentDropdown class="dropdown-list" *ngIf="showTreatmentDropdownModal" (scroll)="onDropdownScroll($event, 'treatment')">
+          <label *ngFor="let treatment of treatments" (click)="selectTreatment(treatment)">
+            {{ treatment.id }} - ${{ treatment.price }}
+          </label>
+        </div>
+      </div>
+
+
+      <!-- Lazy Load Medicines -->
+      <div class="modal-dropdown">
+        <label for="medicine">Medicine:</label>
+        <input type="text" id="medicine-search"
+               placeholder="Search Medicines..."
+               [value]="selectedMedicineName"
+               (focus)="showMedicineDropdownModal = true"
+               (blur)="hideDropdown($event, 'medicine', 'modal')" />
+        <div #medicineDropdown class="dropdown-list" *ngIf="showMedicineDropdownModal" (scroll)="onDropdownScroll($event, 'medicine')">
+          <label *ngFor="let medicine of medicines" (click)="selectMedicine(medicine)">
+            {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
+          </label>
+        </div>
+      </div>
+
+
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" [(ngModel)]="editingRecord.quantity" name="quantity" min="1" required />
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+

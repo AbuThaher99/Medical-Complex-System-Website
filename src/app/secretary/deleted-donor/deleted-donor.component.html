@@ -1,0 +1,84 @@
+<div class="deleted-donor-container">
+  <h2>Manage Deleted Donors</h2>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search Deleted Donors..."
+      [(ngModel)]="searchQuery"
+      (input)="onSearchChange()"
+    />
+    <select [(ngModel)]="bloodType" (change)="onSearchChange()">
+      <option value="">All Blood Types</option>
+      <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+    </select>
+    <select [(ngModel)]="gender" (change)="onSearchChange()">
+      <option value="">All Genders</option>
+      <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+    </select>
+
+    <!-- Donors Dropdown -->
+    <div class="dropdown">
+      <input
+        type="text"
+        placeholder="Search Donors..."
+        [(ngModel)]="donorSearchQuery"
+        (input)="filterDonors()"
+        (focus)="showDonorDropdown = true"
+        (blur)="showDonorDropdown = false"
+      />
+      <div class="dropdown-content" *ngIf="showDonorDropdown" (scroll)="onDropdownScroll($event)">
+        <label *ngFor="let donor of filteredDonors">
+          <input
+            type="checkbox"
+            [checked]="selectedDonorIds.includes(donor.id)"
+            (change)="toggleDonorSelection(donor.id, $event)"
+          />
+          {{ donor.id }} - {{ donor.name }}
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Deleted Donors Table -->
+  <table class="deleted-donor-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Blood Type</th>
+      <th>Gender</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let donor of deletedDonors">
+      <td>{{ donor.id }}</td>
+      <td>{{ donor.name }}</td>
+      <td>{{ donor.phone }}</td>
+      <td>{{ donor.bloodType }}</td>
+      <td>{{ donor.gender }}</td>
+      <td class="action-buttons">
+        <button class="restore-btn" (click)="restoreDonor(donor.id)">Restore Donor</button>
+      </td>
+    </tr>
+    <tr *ngIf="deletedDonors.length === 0">
+      <td colspan="6" class="no-data">No deleted donors found.</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination-section">
+    <button (click)="page = page - 1; loadDeletedDonors()" [disabled]="page === 1">
+      Previous
+    </button>
+    <span>Page {{ page }} of {{ totalPages }}</span>
+    <button (click)="page = page + 1; loadDeletedDonors()" [disabled]="page === totalPages">
+      Next
+    </button>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+/* Take Blood Container */
+.take-blood-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+/* Title */
+.take-blood-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Dropdown */
+.take-blood-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.take-blood-dropdown input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.take-blood-dropdown input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Dropdown Content */
+.take-blood-dropdown-content {
+  position: absolute;
+  background: white;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  margin-top: 5px;
+}
+
+.take-blood-dropdown-content label {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.take-blood-dropdown-content label:hover {
+  background: #f1f1f1;
+}
+
+/* Selected Patient */
+.take-blood-selected-patient {
+  margin: 15px 0;
+  font-size: 16px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Blood Quantity Input */
+.take-blood-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.take-blood-input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Take Blood Button */
+.take-blood-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.2s ease;
+}
+
+.take-blood-btn:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.take-blood-btn:active {
+  background-color: #b21f2d;
+  transform: scale(1);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .take-blood-container {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .take-blood-input {
+    font-size: 14px;
+  }
+}

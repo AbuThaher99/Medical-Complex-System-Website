@@ -86,6 +86,8 @@ export class LayoutComponent implements OnInit {
     } else {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      localStorage.removeItem('role');
+      localStorage.removeItem('id');
       this.router.navigate(['/login']);
     }
   }

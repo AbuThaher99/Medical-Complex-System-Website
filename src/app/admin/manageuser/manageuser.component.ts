@@ -11,7 +11,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class ManageuserComponent implements OnInit {
   users: any[] = [];
   page = 1;
-  size = 6;
+  size = 10;
   search = '';
   role = '';
   totalUsers = 0;
