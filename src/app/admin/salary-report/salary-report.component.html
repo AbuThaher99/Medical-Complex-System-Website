@@ -1,0 +1,29 @@
+<div class="salary-report-container">
+  <h2>Salary Payments Report</h2>
+
+  <button (click)="generateSalaryReport()" [disabled]="isLoading">
+    {{ isLoading ? 'Generating Report...' : 'Generate Salary Report' }}
+  </button>
+
+  <!-- Report Viewer Section -->
+  <div *ngIf="downloadUrl" class="report-section">
+    <p>Report generated successfully!</p>
+
+    <!-- Inline PDF Viewer -->
+    <iframe
+      *ngIf="downloadUrl"
+      [src]="downloadUrl | safeUrl"
+      width="100%"
+      height="600px"
+      frameborder="0"
+    ></iframe>
+
+    <!-- Download Report Button -->
+    <button (click)="downloadReport()">Download Report</button>
+  </div>
+
+  <!-- Error Handling -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

@@ -34,6 +34,17 @@ import {DonationsComponent} from "./secretary/donations/donations.component";
 import {TakeBloodComponent} from "./secretary/take-blood/take-blood.component";
 import {PatientBloodComponent} from "./secretary/patient-blood/patient-blood.component";
 import {DeletedPatientBloodComponent} from "./secretary/deleted-patient-blood/deleted-patient-blood.component";
+import {
+  PatientTreatmentExcelComponent
+} from "./secretary/storage/patient-treatment-excel/patient-treatment-excel.component";
+import {PatientExcelComponent} from "./secretary/storage/patient-excel/patient-excel.component";
+import {MedicineExcelComponent} from "./secretary/storage/medicine-excel/medicine-excel.component";
+import {CheckInOutComponent} from "./secretary/check-in-out/check-in-out.component";
+import {MyTreatmentsComponent} from "./patient/my-treatments/my-treatments.component";
+import {FeedbackComponent} from "./doctor/feedback/feedback.component";
+import {TreatmentProfitComponent} from "./admin/treatment-profit/treatment-profit.component";
+import {SalaryReportComponent} from "./admin/salary-report/salary-report.component";
+import {SignupPatientComponent} from "./signup-patient/signup-patient.component";
 
 const routes: Routes = [
   {
@@ -72,12 +83,20 @@ const routes: Routes = [
       {path: 'secretary/take-blood', component: TakeBloodComponent },
       {path: 'secretary/patient-blood', component: PatientBloodComponent },
       {path: 'secretary/deleted-patient-blood', component: DeletedPatientBloodComponent },
+      { path: 'secretary/storage/patient-treatment-excel', component: PatientTreatmentExcelComponent },
+      { path: 'secretary/storage/patient-excel', component: PatientExcelComponent },
+      { path: 'secretary/storage/medicine-excel', component: MedicineExcelComponent },
+      {path :'secretary/check-in-out', component: CheckInOutComponent},
+      {path: 'patient/my-treatments', component: MyTreatmentsComponent},
+      { path: 'doctor/feedback', component: FeedbackComponent },
+      {path: 'admin/treatment-profit', component: TreatmentProfitComponent},
+      {path: 'admin/salary-report' , component: SalaryReportComponent},
+
     ],
   },
-
   { path: 'login', component: LoginComponent },
-
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'signup', component: SignupPatientComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   { path: '**', redirectTo: '/dashboard' },
 ];

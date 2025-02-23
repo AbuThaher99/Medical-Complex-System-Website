@@ -18,15 +18,78 @@ export class LayoutComponent implements OnInit {
   isDropdownOpen: boolean = false;
   adminSubNavOpen: boolean = false;
   warehouseSubNavOpen: boolean = false;
+  secretarySubNavOpen = false;
+
+  showNotifications = false;
+  notifications: any[] = [];
+  unreadNotificationsCount = 0;
+
   constructor(private http: HttpClient, private router: Router,private configService: ConfigService) {}
 
   ngOnInit(): void {
     this.fetchUserDetails(); // Fetch user details when the component initializes
+    if (this.user?.role === 'PATIENT') {
+      this.fetchNotifications();
+    }
+  }
+
+
+  fetchNotifications(): void {
+    const accessToken = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${accessToken}`,
+      accept: '*/*',
+    });
+
+    // console.log('Fetching notifications for user ID:', this.user.patient.id); // Debug log
+
+    this.http
+      .get(`${this.configService.apiUrl}patients/treatment/patientNotifications`, { headers })
+      .subscribe((response: any) => {
+        console.log("Notifications response:", response); // Debug log
+
+        this.notifications = response;
+        this.unreadNotificationsCount = this.notifications.filter((n) => !n.read).length;
+      }, (error) => {
+        console.error('Failed to fetch notifications:', error); // Debug error
+      });
+  }
+
+  toggleNotifications(): void {
+    this.showNotifications = !this.showNotifications;
+  }
+
+  onNotificationClick(): void {
+    this.toggleNotifications();
+  }
+
+
+  markAsRead(notificationId: number): void {
+    const accessToken = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${accessToken}`,
+      accept: '*/*',
+    });
+
+    this.http
+      .post(`${this.configService.apiUrl}patients/treatment/read/${notificationId}`, {}, { headers })
+      .subscribe(() => {
+        // Mark notification as read locally
+        const notification = this.notifications.find((n) => n.id === notificationId);
+        if (notification) {
+          notification.read = true;
+        }
+
+        // Update unread notifications count
+        this.unreadNotificationsCount = this.notifications.filter((n) => !n.read).length;
+      });
   }
   toggleAdminSubNav(): void {
     this.adminSubNavOpen = !this.adminSubNavOpen;
   }
-
+  toggleSecretarySubNav() {
+    this.secretarySubNavOpen = !this.secretarySubNavOpen;
+  }
   toggleWarehouseSubNav(): void {
     this.warehouseSubNavOpen = !this.warehouseSubNavOpen;
   }
@@ -48,6 +111,11 @@ export class LayoutComponent implements OnInit {
       next: (response: any) => {
         this.user = response; // Assign user data
         this.role = response.role; // Assign role
+
+        // ✅ Call fetchNotifications() after fetching user details
+        if (this.user?.role === 'PATIENT') {
+          this.fetchNotifications();
+        }
       },
       error: (error) => {
         console.error('Failed to fetch user details:', error);
@@ -55,6 +123,7 @@ export class LayoutComponent implements OnInit {
       }
     });
   }
+
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;

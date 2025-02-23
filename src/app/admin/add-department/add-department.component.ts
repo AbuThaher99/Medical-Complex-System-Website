@@ -10,12 +10,35 @@ import { ConfigService } from '../../services/config.service';
 })
 export class AddDepartmentComponent implements OnInit {
   addDepartmentForm: FormGroup;
+
+  // Head & Secretary Data
   heads: any[] = [];
   secretaries: any[] = [];
+
+  // Pagination Variables
+  headPage = 1;
+  headSize = 5;
+  totalHeads = 0;
+  headSearchTerm = '';
+  filteredHeads: any[] = [];
+
+  secretaryPage = 1;
+  secretarySize = 5;
+  totalSecretaries = 0;
+  secretarySearchTerm = '';
+  filteredSecretaries: any[] = [];
+
+  // Loading States
   isLoadingHeads = false;
   isLoadingSecretaries = false;
+
+  // Dropdown Info
   selectedHeadInfo: string = '';
   selectedSecretaryInfo: string = '';
+  showHeadDropdown = false;
+  showSecretaryDropdown = false;
+
+
 
   private readonly apiUrl = `${this.configService.apiUrl}admin`;
   private readonly token = localStorage.getItem('access_token');
@@ -37,16 +60,52 @@ export class AddDepartmentComponent implements OnInit {
     this.fetchSecretaries();
   }
 
-  fetchHeads(): void {
+  // Toggle Dropdown Visibility
+  toggleHeadDropdown(): void {
+    this.showHeadDropdown = !this.showHeadDropdown;
+  }
+
+  toggleSecretaryDropdown(): void {
+    this.showSecretaryDropdown = !this.showSecretaryDropdown;
+  }
+
+  hideDropdown(type: 'head' | 'secretary'): void {
+    setTimeout(() => {
+      if (type === 'head') {
+        this.showHeadDropdown = false;
+      } else if (type === 'secretary') {
+        this.showSecretaryDropdown = false;
+      }
+    }, 200);
+  }
+
+  // Lazy Loading: Fetch Heads
+  fetchHeads(reset: boolean = false): void {
+    if (this.isLoadingHeads || (this.totalHeads && this.heads.length >= this.totalHeads && !reset)) return;
+
+    if (reset) {
+      this.headPage = 1;
+      this.heads = [];
+      this.filteredHeads = [];
+      this.totalHeads = 0;
+    }
+
     this.isLoadingHeads = true;
     this.http
-      .get(`${this.apiUrl}/user/doctors?page=1&size=10`, { headers: this.headers })
+      .get(`${this.apiUrl}/user/doctors?page=${this.headPage}&size=${this.headSize}&search=${this.headSearchTerm}`, {
+        headers: this.headers,
+      })
       .subscribe(
         (response: any) => {
-          this.heads = response.content.map((head: any) => ({
+          const newHeads = response.content.map((head: any) => ({
             id: head.id,
             displayText: `${head.firstName} ${head.lastName} - ID: ${head.id} - Email: ${head.email}`,
           }));
+
+          this.heads = [...this.heads, ...newHeads];
+          this.filteredHeads = this.heads;
+          this.totalHeads = response.totalElements;
+          this.headPage++;
           this.isLoadingHeads = false;
         },
         (error) => {
@@ -56,16 +115,60 @@ export class AddDepartmentComponent implements OnInit {
       );
   }
 
-  fetchSecretaries(): void {
+
+
+  // Lazy Load Heads on Scroll
+  onHeadScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+      this.fetchHeads();
+    }
+  }
+
+  // Filter Heads
+  filterHeads(searchTerm: string): void {
+    this.headSearchTerm = searchTerm;
+    if (searchTerm) {
+      this.filteredHeads = this.heads.filter(head =>
+        head.displayText.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } else {
+      this.filteredHeads = this.heads;
+    }
+  }
+  selectHead(head: any): void {
+    this.addDepartmentForm.patchValue({ headId: head.id });
+    this.selectedHeadInfo = head.displayText;
+    this.showHeadDropdown = false;
+  }
+
+  // Lazy Loading: Fetch Secretaries
+  fetchSecretaries(reset: boolean = false): void {
+    if (this.isLoadingSecretaries || (this.totalSecretaries && this.secretaries.length >= this.totalSecretaries && !reset)) return;
+
+    if (reset) {
+      this.secretaryPage = 1;
+      this.secretaries = [];
+      this.filteredSecretaries = [];
+      this.totalSecretaries = 0;
+    }
+
     this.isLoadingSecretaries = true;
     this.http
-      .get(`${this.apiUrl}/user/secretaries?page=1&size=10`, { headers: this.headers })
+      .get(`${this.apiUrl}/user/secretaries?page=${this.secretaryPage}&size=${this.secretarySize}&search=${this.secretarySearchTerm}`, {
+        headers: this.headers,
+      })
       .subscribe(
         (response: any) => {
-          this.secretaries = response.content.map((secretary: any) => ({
+          const newSecretaries = response.content.map((secretary: any) => ({
             id: secretary.id,
             displayText: `${secretary.firstName} ${secretary.lastName} - ID: ${secretary.id} - Email: ${secretary.email}`,
           }));
+
+          this.secretaries = [...this.secretaries, ...newSecretaries];
+          this.filteredSecretaries = this.secretaries;
+          this.totalSecretaries = response.totalElements;
+          this.secretaryPage++;
           this.isLoadingSecretaries = false;
         },
         (error) => {
@@ -76,24 +179,33 @@ export class AddDepartmentComponent implements OnInit {
   }
 
 
-  displaySelectedHeadInfo(headId: string): void {
-    const selectedHead = this.heads.find((head) => head.id === +headId);
-    if (selectedHead) {
-      this.selectedHeadInfo = selectedHead.displayText;
-    } else {
-      this.selectedHeadInfo = '';
+
+  // Lazy Load Secretaries on Scroll
+  onSecretaryScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+      this.fetchSecretaries();
     }
   }
 
-  displaySelectedSecretaryInfo(secretaryId: string): void {
-    const selectedSecretary = this.secretaries.find((secretary) => secretary.id === +secretaryId);
-    if (selectedSecretary) {
-      this.selectedSecretaryInfo = selectedSecretary.displayText;
+  // Filter Secretaries
+  filterSecretaries(searchTerm: string): void {
+    this.secretarySearchTerm = searchTerm;
+    if (searchTerm) {
+      this.filteredSecretaries = this.secretaries.filter(secretary =>
+        secretary.displayText.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     } else {
-      this.selectedSecretaryInfo = '';
+      this.filteredSecretaries = this.secretaries;
     }
   }
+  selectSecretary(secretary: any): void {
+    this.addDepartmentForm.patchValue({ secretaryId: secretary.id });
+    this.selectedSecretaryInfo = secretary.displayText;
+    this.showSecretaryDropdown = false;
+  }
 
+  // Submit Form
   onSubmit(): void {
     if (this.addDepartmentForm.valid) {
       const departmentData = {
@@ -112,6 +224,10 @@ export class AddDepartmentComponent implements OnInit {
             this.addDepartmentForm.reset();
             this.selectedHeadInfo = '';
             this.selectedSecretaryInfo = '';
+            this.heads = [];
+            this.secretaries = [];
+            this.headPage = 1;
+            this.secretaryPage = 1;
             this.fetchHeads();
             this.fetchSecretaries();
           },

@@ -162,3 +162,25 @@ input:focus {
     transform: translateX(0);
   }
 }
+.forgot-password-link p {
+  color: #0052cc;
+  cursor: pointer;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.forgot-password-link p:hover {
+  text-decoration: underline;
+}
+
+.success-message {
+  color: #28a745;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 1rem;
+  text-align: center;
+}

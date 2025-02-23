@@ -1,0 +1,24 @@
+<div class="profit-container">
+  <h2>Treatment Profits Report</h2>
+
+  <!-- Generate Report Button -->
+  <button (click)="generateTreatmentProfitReport()" [disabled]="isLoading">
+    {{ isLoading ? 'Generating Report...' : 'Generate Report' }}
+  </button>
+
+  <!-- PDF Preview Section -->
+  <div *ngIf="downloadUrl" class="pdf-preview-section">
+    <p>Report generated successfully!</p>
+
+    <!-- Inline PDF Viewer -->
+    <iframe [src]="downloadUrl | safeUrl" frameborder="0"></iframe>
+
+    <!-- Download Report Button -->
+    <button (click)="downloadReport()">Download Report</button>
+  </div>
+
+  <!-- Error Message Section -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

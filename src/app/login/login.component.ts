@@ -12,7 +12,9 @@ export class LoginComponent implements OnInit {
   credentials = { email: '', password: '' }; // Updated to match API
   errorMessage: string = '';
   isLoading: boolean = false; // Add loading state
-
+  isSendingCode = false;
+  verificationMessage = '';
+  verificationErrorMessage = '';
   constructor(private http: HttpClient, private router: Router ,private configService: ConfigService) {}
 
   ngOnInit() {
@@ -93,6 +95,42 @@ export class LoginComponent implements OnInit {
         }
       });
   }
+  sendVerificationCode(): void {
+    if (!this.credentials.email) {
+      this.verificationErrorMessage = 'Please enter your email first.';
+      return;
+    }
+
+    this.isSendingCode = true;
+    this.verificationErrorMessage = '';
+    this.verificationMessage = '';
+
+    const headers = new HttpHeaders({
+      accept: '*/*',
+    });
+
+    const apiUrl = `${this.configService.apiUrl}auth/send-verification-code?email=${encodeURIComponent(
+      this.credentials.email
+    )}`;
+
+    this.http.post(apiUrl, '', { headers, responseType: 'text' }).subscribe({
+      next: (response: string) => {
+        if (response.includes('Verification code sent to email')) {
+          this.verificationMessage = 'Verification code has been sent to your email!';
+        } else {
+          this.verificationMessage = 'Received unexpected response: ' + response;
+        }
+        this.isSendingCode = false;
+      },
+      error: (error) => {
+        console.error('Error sending verification code:', error);
+        this.verificationErrorMessage =
+          'Failed to send the verification code. Please try again.';
+        this.isSendingCode = false;
+      },
+    });
+  }
+
 
   // Helper function to check if the token is expired
   private isTokenExpired(token: string): boolean {

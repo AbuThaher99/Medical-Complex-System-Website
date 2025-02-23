@@ -65,35 +65,42 @@
             required
           />
         </div>
-        <div>
-          <label for="headId">Head:</label>
-          <select
-            id="headId"
-            [(ngModel)]="selectedDepartment.headId.id"
-            name="headId"
-            (change)="displaySelectedHeadInfo(selectedDepartment.headId.id)"
-            required
-          >
-            <option *ngFor="let head of heads" [value]="head.id" [selected]="head.id === selectedDepartment.headId.id">
+        <div class="modal-dropdown">
+          <label for="head">Head:</label>
+          <input
+            type="text"
+            id="head-search"
+            placeholder="Search Heads..."
+            [value]="selectedHeadInfo || headSearchTerm"
+            (click)="toggleHeadDropdown()"
+            (input)="filterHeads($event.target.value)"
+            (blur)="hideDropdown($event, 'head')"
+          />
+          <div class="dropdown-list" *ngIf="showHeadDropdown" (scroll)="onHeadScroll($event)">
+            <label *ngFor="let head of filteredHeads" (click)="selectHead(head)">
               {{ head.displayText }}
-            </option>
-          </select>
-          <p *ngIf="selectedHeadInfo">{{ selectedHeadInfo }}</p>
+            </label>
+            <label *ngIf="isLoadingHeads" class="loading-option">Loading more heads...</label>
+          </div>
         </div>
-        <div>
-          <label for="secretaryId">Secretary:</label>
-          <select
-            id="secretaryId"
-            [(ngModel)]="selectedDepartment.secretaryId.id"
-            name="secretaryId"
-            (change)="displaySelectedSecretaryInfo(selectedDepartment.secretaryId.id)"
-            required
-          >
-            <option *ngFor="let secretary of secretaries" [value]="secretary.id" [selected]="secretary.id === selectedDepartment.secretaryId.id">
+
+        <div class="modal-dropdown">
+          <label for="secretary">Secretary:</label>
+          <input
+            type="text"
+            id="secretary-search"
+            placeholder="Search Secretaries..."
+            [value]="selectedSecretaryInfo || secretarySearchTerm"
+            (click)="toggleSecretaryDropdown()"
+            (input)="filterSecretaries($event.target.value)"
+            (blur)="hideDropdown($event, 'secretary')"
+          />
+          <div class="dropdown-list" *ngIf="showSecretaryDropdown" (scroll)="onSecretaryScroll($event)">
+            <label *ngFor="let secretary of filteredSecretaries" (click)="selectSecretary(secretary)">
               {{ secretary.displayText }}
-            </option>
-          </select>
-          <p *ngIf="selectedSecretaryInfo">{{ selectedSecretaryInfo }}</p>
+            </label>
+            <label *ngIf="isLoadingSecretaries" class="loading-option">Loading more secretaries...</label>
+          </div>
         </div>
         <button type="submit">Save</button>
       </form>

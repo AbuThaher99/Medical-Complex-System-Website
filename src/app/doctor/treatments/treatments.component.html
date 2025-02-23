@@ -9,9 +9,11 @@
     <div class="dropdown" #dropdown>
       <input type="text"
              placeholder="Search patients..."
-             (input)="onSearchPatients($event)"
+             [(ngModel)]="patientSearchQuery"
+             (input)="filterPatients()"
              (focus)="loadPatientsForFilter()"
-             (blur)="hidePatientDropdown($event)" />
+             (click)="showPatientFilterDropdown = true"
+             (blur)="hideDropdown($event, 'patient', 'filter')" />
 
       <div class="dropdown-content"
            *ngIf="showPatientFilterDropdown"
@@ -20,13 +22,14 @@
         <label *ngFor="let patient of filteredPatients">
           <input type="checkbox"
                  [checked]="selectedPatientIds.includes(patient.id)"
-                 (change)="onPatientSelectionChange(patient.id, $event.target.checked)" />
+                 (change)="toggleSelection(selectedPatientIds, patient.id, $event)" />
           {{ patient.displayText }}
         </label>
 
         <div *ngIf="loadingMorePatients" class="loading-spinner">Loading...</div>
       </div>
     </div>
+
 
 
   </div>
@@ -71,7 +74,7 @@
 </div>
 
 <!-- Edit Treatment Modal -->
-<div *ngIf="showEditModal" class="modal">
+<div class="modal" *ngIf="showEditModal">
   <div class="modal-content">
     <span class="close" (click)="closeEditModal()">&times;</span>
     <h2>Edit Treatment</h2>
@@ -80,22 +83,39 @@
       <label>Date:</label>
       <input type="date" [(ngModel)]="editingTreatment.treatmentDate" name="treatmentDate" required />
 
+      <!-- Lazy Load Doctors -->
       <div class="modal-dropdown">
         <label for="doctor">Doctor:</label>
-        <select id="doctor" [(ngModel)]="editingTreatment.doctor.id" name="doctor">
-          <option *ngFor="let doctor of doctors" [value]="doctor.id">
-            {{ doctor.displayText }}
-          </option>
-        </select>
+        <input type="text" id="doctor-search"
+               placeholder="Search Doctors..."
+               [value]="editingTreatment.doctor.displayText"
+               (click)="showDoctorDropdownModal = true"
+               (blur)="hideDropdown($event, 'doctor', 'modal')"
+                (input)="onDoctorSearch($event)"
+        />
+        <div #doctorDropdown class="dropdown-list" *ngIf="showDoctorDropdownModal" (scroll)="onDoctorDropdownScroll($event)">
+          <label *ngFor="let doctor of filteredDoctors" (click)="selectDoctor(doctor)">
+            {{ doctor.id }} - {{ doctor.displayText }}
+          </label>
+
+        </div>
       </div>
 
+      <!-- Lazy Load Patients -->
       <div class="modal-dropdown">
         <label for="patient">Patient:</label>
-        <select id="patient" [(ngModel)]="editingTreatment.patient.id" name="patient">
-          <option *ngFor="let patient of patients" [value]="patient.id">
-            {{ patient.displayText }}
-          </option>
-        </select>
+        <input type="text" id="patient-search"
+               placeholder="Search Patients..."
+               [value]="editingTreatment.patient.displayText"
+               (click)="showPatientDropdownModal = true"
+               (blur)="hideDropdown($event, 'patient', 'modal')"
+                (input)="onPatientEditSearch($event)"
+        />
+        <div #patientDropdown class="dropdown-list" *ngIf="showPatientDropdownModal" (scroll)="onPatientEditDropdownScroll($event)">
+          <label *ngFor="let patient of filteredEditPatients" (click)="selectPatient(patient, 'modal')">
+            {{ patient.id }} - {{ patient.displayText }}
+          </label>
+        </div>
       </div>
 
       <label>Description:</label>
@@ -112,24 +132,41 @@
   </div>
 </div>
 
+
+
 <div *ngIf="showAddMedicineModal" class="modal">
   <div class="modal-content">
     <span class="close" (click)="closeAddMedicineModal()">&times;</span>
     <h2>Add Medicine</h2>
     <form (ngSubmit)="saveMedicine()">
       <div class="modal-dropdown">
-        <label>Medicine:</label>
-        <select [(ngModel)]="selectedMedicineId" name="medicine" required (scroll)="onScroll($event)">
-          <option *ngFor="let medicine of medicines" [value]="medicine.medicine.id">
-            {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
-          </option>
-        </select>
+        <label for="medicine">Medicine:</label>
+        <input
+          type="text"
+          id="medicine-search"
+          placeholder="Search Medicines..."
+          [value]="selectedMedicineDisplayText"
+          (click)="showMedicineDropdownModal = true"
+          (blur)="hideDropdown($event, 'medicine', 'modal')"
+          (input)="onMedicineSearch($event)"
+        />
+
+        <div #medicineDropdown class="dropdown-list" *ngIf="showMedicineDropdownModal" (scroll)="onMedicineScroll($event)">
+          <label *ngFor="let med of filteredMedicines" (click)="selectMedicine(med)">
+            {{ med.medicine.id }} - {{ med.medicine.name }} - ${{ med.medicine.buyPrice }}
+          </label>
+          <div *ngIf="loadingMoreMedicines" class="loading-spinner">
+            Loading more medicines...
+          </div>
+        </div>
+
       </div>
 
       <label>Quantity:</label>
-      <input type="number" [(ngModel)]="medicineQuantity" name="quantity" required min="1" />
-
+      <input type="number" [(ngModel)]="medicineQuantity" name="quantity" required min="1"/>
       <button type="submit">Add Medicine</button>
     </form>
   </div>
 </div>
+
+

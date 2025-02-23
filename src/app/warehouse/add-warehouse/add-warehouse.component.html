@@ -2,20 +2,35 @@
   <h2>Add Medicine to Warehouse</h2>
 
   <form (ngSubmit)="onSubmit()">
-    <div class="form-group">
+    <div class="form-group modal-dropdown">
       <label for="medicine">Select Medicine:</label>
-      <select
-        id="medicine"
-        [(ngModel)]="selectedMedicineId"
-        name="medicine"
+      <input
+        type="text"
+        id="medicine-search"
+        placeholder="Search Medicines..."
+        [value]="medicineSearchTerm"
+        (click)="toggleMedicineDropdown()"
+        (input)="filterMedicines($event.target.value)"
+        (blur)="hideMedicineDropdown()"
         required
+      />
+      <div
+        class="dropdown-list"
+        *ngIf="showMedicineDropdown"
+        (scroll)="onMedicineScroll($event)"
       >
-        <option [value]="null" disabled>Select a medicine</option>
-        <option *ngFor="let medicine of medicines" [value]="medicine.id">
+        <label
+          *ngFor="let medicine of filteredMedicines"
+          (click)="selectMedicine(medicine)"
+        >
           {{ medicine.name }} - {{ medicine.expirationDate | date: 'shortDate' }} - Supplier ID: {{ medicine.supplier?.id }}
-        </option>
-      </select>
+        </label>
+        <label *ngIf="isLoadingMedicines" class="loading-option">
+          Loading more medicines...
+        </label>
+      </div>
     </div>
+
 
     <div class="form-group">
       <label for="quantity">Enter Quantity:</label>

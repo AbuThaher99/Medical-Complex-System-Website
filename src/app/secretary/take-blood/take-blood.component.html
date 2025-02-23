@@ -11,10 +11,19 @@
       (focus)="showPatientDropdown = true"
       (blur)="hideDropdown()"
     />
-    <div class="take-blood-dropdown-content" *ngIf="showPatientDropdown">
+    <div
+      class="take-blood-dropdown-content"
+      *ngIf="showPatientDropdown"
+      (scroll)="onDropdownScroll($event)"
+    >
       <label *ngFor="let patient of filteredPatients" (click)="selectPatient(patient.id)">
         {{ patient.id }} - {{ patient.user.firstName }} {{ patient.user.lastName }} - {{ patient.user.email }}
       </label>
+
+      <!-- Loading Indicator -->
+      <div *ngIf="isLoading" class="loading-spinner">
+        Loading more patients...
+      </div>
     </div>
   </div>
 

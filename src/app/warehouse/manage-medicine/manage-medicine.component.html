@@ -57,7 +57,6 @@
 </div>
 
 <!-- Edit Medicine Modal -->
-<!-- Edit Medicine Modal -->
 <div *ngIf="showEditModal" class="modal">
   <div class="modal-content">
     <span class="close" (click)="closeEditModal()">&times;</span>
@@ -102,19 +101,35 @@
           required
         />
       </div>
-      <div>
-        <label for="supplier">Supplier:</label>
-        <select
-          id="supplier"
-          [(ngModel)]="editingMedicine.supplier.id"
-          name="supplier"
-          required
+      <!-- Supplier Dropdown with Lazy Loading and Search -->
+      <div class="form-group modal-dropdown">
+        <label for="supplier">Supplier</label>
+        <input
+          type="text"
+          id="supplier-search"
+          placeholder="Search Suppliers..."
+          [value]="editingMedicine.supplier?.displayText || supplierSearchTerm"
+          (click)="toggleSupplierDropdown()"
+          (input)="filterSuppliers($event.target.value)"
+          (blur)="hideSupplierDropdown()"
+        />
+        <div
+          class="dropdown-list"
+          *ngIf="showSupplierDropdown"
+          (scroll)="onSupplierScroll($event)"
         >
-          <option *ngFor="let supplier of suppliers" [value]="supplier.id">
-            {{ supplier.name }} - {{ supplier.companyName }}
-          </option>
-        </select>
+          <label
+            *ngFor="let supplier of filteredSuppliers"
+            (click)="selectSupplier(supplier)"
+          >
+            {{ supplier.displayText }}
+          </label>
+          <label *ngIf="isLoadingSuppliers" class="loading-option">
+            Loading more suppliers...
+          </label>
+        </div>
       </div>
+
       <button type="submit">Save</button>
     </form>
   </div>

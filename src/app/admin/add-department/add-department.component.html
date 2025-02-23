@@ -1,6 +1,7 @@
 <div class="add-department">
   <h2>Add Department</h2>
   <form [formGroup]="addDepartmentForm" (ngSubmit)="onSubmit()">
+    <!-- Department Name -->
     <div class="form-group">
       <label for="name">Department Name</label>
       <input
@@ -12,42 +13,71 @@
       />
     </div>
 
-    <div class="form-group">
+    <!-- Head Dropdown with Lazy Loading and Search -->
+    <div class="form-group modal-dropdown">
       <label for="head">Head (Doctor)</label>
-      <select
-        id="head"
-        formControlName="headId"
-        (change)="displaySelectedHeadInfo($event.target.value)"
-        required
+      <input
+        type="text"
+        id="head-search"
+        placeholder="Search Heads..."
+        [value]="headSearchTerm"
+        (click)="toggleHeadDropdown()"
+        (input)="filterHeads($event.target.value)"
+        (blur)="hideDropdown('head')"
+      />
+      <div
+        class="dropdown-list"
+        *ngIf="showHeadDropdown"
+        (scroll)="onHeadScroll($event)"
       >
-        <option value="" disabled>{{ isLoadingHeads ? 'Loading...' : 'Select a Head' }}</option>
-        <option *ngFor="let head of heads" [value]="head.id">
+        <label *ngFor="let head of filteredHeads" (click)="selectHead(head)">
           {{ head.displayText }}
-        </option>
-      </select>
+        </label>
+        <label *ngIf="isLoadingHeads" class="loading-option">
+          Loading more heads...
+        </label>
+      </div>
       <div *ngIf="selectedHeadInfo" class="user-info">
         {{ selectedHeadInfo }}
       </div>
     </div>
 
-    <div class="form-group">
+    <!-- Secretary Dropdown with Lazy Loading and Search -->
+    <div class="form-group modal-dropdown">
       <label for="secretary">Secretary</label>
-      <select
-        id="secretary"
-        formControlName="secretaryId"
-        (change)="displaySelectedSecretaryInfo($event.target.value)"
-        required
+      <input
+        type="text"
+        id="secretary-search"
+        placeholder="Search Secretaries..."
+        [value]="secretarySearchTerm"
+        (click)="toggleSecretaryDropdown()"
+        (input)="filterSecretaries($event.target.value)"
+        (blur)="hideDropdown('secretary')"
+      />
+      <div
+        class="dropdown-list"
+        *ngIf="showSecretaryDropdown"
+        (scroll)="onSecretaryScroll($event)"
       >
-        <option value="" disabled>{{ isLoadingSecretaries ? 'Loading...' : 'Select a Secretary' }}</option>
-        <option *ngFor="let secretary of secretaries" [value]="secretary.id">
+        <label
+          *ngFor="let secretary of filteredSecretaries"
+          (click)="selectSecretary(secretary)"
+        >
           {{ secretary.displayText }}
-        </option>
-      </select>
+        </label>
+        <label *ngIf="isLoadingSecretaries" class="loading-option">
+          Loading more secretaries...
+        </label>
+      </div>
       <div *ngIf="selectedSecretaryInfo" class="user-info">
         {{ selectedSecretaryInfo }}
       </div>
     </div>
 
-    <button type="submit" [disabled]="addDepartmentForm.invalid">Add Department</button>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="addDepartmentForm.invalid">
+      Add Department
+    </button>
   </form>
 </div>

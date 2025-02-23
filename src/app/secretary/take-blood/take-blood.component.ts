@@ -27,14 +27,15 @@ export class TakeBloodComponent implements OnInit {
 
   // Fetch patients with lazy loading
   loadPatients(): void {
-    if (this.isLoading) return;
+    if (this.isLoading || this.page > this.totalPages) return; // Prevent duplicate requests
     this.isLoading = true;
 
     this.patientService.getPatients(this.page, this.size).subscribe(
       (data) => {
-        this.patients = [...this.patients, ...data.content]; // Append new patients to the list
+        this.patients = [...this.patients, ...data.content]; // Append new patients
         this.filteredPatients = [...this.patients]; // Update filtered patients
         this.totalPages = data.totalPages;
+        this.page++; // Move to the next page
         this.isLoading = false;
       },
       (error) => {
@@ -88,9 +89,18 @@ export class TakeBloodComponent implements OnInit {
     );
   }
 
+  // Hide the dropdown with delay to allow click selection
   hideDropdown(): void {
     setTimeout(() => {
       this.showPatientDropdown = false;
     }, 200);
+  }
+
+  // Lazy load more patients when scrolled to the bottom
+  onDropdownScroll(event: any): void {
+    const element = event.target;
+    if (element.scrollHeight - element.scrollTop <= element.clientHeight + 10) {
+      this.loadPatients(); // Load more patients if needed
+    }
   }
 }

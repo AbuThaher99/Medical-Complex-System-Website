@@ -14,6 +14,16 @@ export class ManageMedicineComponent implements OnInit {
   search = '';
   totalMedicines = 0;
 
+  // Supplier Variables for Lazy Loading
+  supplierPage = 1;
+  supplierSize = 10;
+  totalSuppliers = 0;
+  supplierSearchTerm = '';
+  filteredSuppliers: any[] = [];
+  isLoadingSuppliers = false;
+  showSupplierDropdown = false;
+
+
   editingMedicine: any = null; // For editing a medicine
   showEditModal = false; // Controls the visibility of the edit modal
 
@@ -43,16 +53,68 @@ export class ManageMedicineComponent implements OnInit {
     }
   }
 
-  fetchSuppliers(): void {
-    this.medicineService.getAllSuppliers(1, 10).subscribe({
-      next: (response) => {
-        console.log('Fetched suppliers:', response);
-        this.suppliers = response.content;
-      },
-      error: (error) => {
-        console.error('Failed to fetch suppliers:', error);
-      },
-    });
+  fetchSuppliers(reset: boolean = false): void {
+    if (this.isLoadingSuppliers || (this.totalSuppliers && this.suppliers.length >= this.totalSuppliers && !reset)) return;
+
+    if (reset) {
+      this.supplierPage = 1;
+      this.suppliers = [];
+      this.filteredSuppliers = [];
+      this.totalSuppliers = 0;
+    }
+
+    this.isLoadingSuppliers = true;
+    this.medicineService
+      .getAllSuppliers(this.supplierPage, this.supplierSize)
+      .subscribe({
+        next: (response) => {
+          const newSuppliers = response.content.map((supplier: any) => ({
+            id: supplier.id,
+            displayText: `${supplier.name} - ${supplier.companyName}`,
+          }));
+
+          this.suppliers = [...this.suppliers, ...newSuppliers];
+          this.filteredSuppliers = this.suppliers; // Update filteredSuppliers with the new data
+          this.totalSuppliers = response.totalElements;
+          this.supplierPage++;
+          this.isLoadingSuppliers = false;
+        },
+        error: (error) => {
+          console.error('Failed to fetch suppliers:', error);
+          this.isLoadingSuppliers = false;
+        },
+      });
+  }
+
+  onSupplierScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+      this.fetchSuppliers();
+    }
+  }
+  filterSuppliers(searchTerm: string): void {
+    this.supplierSearchTerm = searchTerm;
+    if (searchTerm) {
+      this.filteredSuppliers = this.suppliers.filter(supplier =>
+        supplier.displayText.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } else {
+      this.filteredSuppliers = this.suppliers;
+    }
+  }
+  toggleSupplierDropdown(): void {
+    this.showSupplierDropdown = !this.showSupplierDropdown;
+  }
+
+  hideSupplierDropdown(): void {
+    setTimeout(() => {
+      this.showSupplierDropdown = false;
+    }, 200); // Delay to allow selection before closing
+  }
+  selectSupplier(supplier: any): void {
+    this.editingMedicine.supplier = { id: supplier.id };
+    this.editingMedicine.supplier.displayText = supplier.displayText;
+    this.showSupplierDropdown = false;
   }
 
   onSearch(): void {
@@ -72,6 +134,14 @@ export class ManageMedicineComponent implements OnInit {
     if (this.editingMedicine.expirationDate) {
       const expirationDate = new Date(this.editingMedicine.expirationDate);
       this.editingMedicine.expirationDate = expirationDate.toISOString().split('T')[0];
+    }
+
+    // Set the supplier's displayText if it exists
+    if (this.editingMedicine.supplier) {
+      const supplier = this.suppliers.find(s => s.id === this.editingMedicine.supplier.id);
+      if (supplier) {
+        this.editingMedicine.supplier.displayText = supplier.displayText;
+      }
     }
 
     this.showEditModal = true; // Show the modal

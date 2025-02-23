@@ -3,6 +3,8 @@ import { PatientMedicineService } from '../../services/patient-medicine.service'
 import { PatientService } from '../../services/patient.service';
 import { DoctorService } from '../../services/doctor.service';
 import { WarehouseService } from '../../services/warehouse.service';
+import {Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
   selector: 'app-patient-medicines',
@@ -57,6 +59,14 @@ export class PatientMedicinesComponent implements OnInit {
   loadingTreatments: boolean = false;
   loadingMedicines: boolean = false;
 
+  filteredMedicinesEdit: any[] = [];
+  private medicineSearchEditSubject = new Subject<string>();
+  medicineSearchEditQuery: string = '';
+
+  filteredTreatmentsEdit: any[] = [];
+  private treatmentSearchEditSubject = new Subject<string>();
+  treatmentSearchEditQuery: string = '';
+
   constructor(
     private patientMedicineService: PatientMedicineService,
     private patientService: PatientService,
@@ -69,6 +79,22 @@ export class PatientMedicinesComponent implements OnInit {
     this.loadPatients();
     this.loadTreatments();
     this.loadMedicines();
+
+    this.medicineSearchEditSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((term) => {
+      this.medicineSearchEditQuery = term;
+      this.filterMedicinesEdit();
+    });
+
+    this.treatmentSearchEditSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((term) => {
+      this.treatmentSearchEditQuery = term;
+      this.filterTreatmentsEdit();
+    });
   }
 
   loadPatientMedicines(): void {
@@ -132,7 +158,7 @@ export class PatientMedicinesComponent implements OnInit {
         this.totalTreatmentsPages = data.totalPages;
         this.treatmentsPage++;
         this.loadingTreatments = false;
-
+        this.filterTreatmentsEdit();
         if (callback) callback(); // Execute callback after loading
       },
       (error) => {
@@ -154,7 +180,7 @@ export class PatientMedicinesComponent implements OnInit {
         this.totalMedicinesPages = data.totalPages;
         this.medicinesPage++;
         this.loadingMedicines = false;
-
+        this.filterMedicinesEdit();
         if (callback) callback(); // Execute callback after loading
       },
       (error) => {
@@ -302,4 +328,41 @@ export class PatientMedicinesComponent implements OnInit {
     );
   }
 
+
+  filterMedicinesEdit(): void {
+    const searchTerm = this.medicineSearchEditQuery.toLowerCase().trim();
+
+    this.filteredMedicinesEdit = this.medicines.filter((med) => {
+      const medName = med.medicine.name.toLowerCase();
+      const medId = String(med.medicine.id).toLowerCase();
+      const medPrice = String(med.medicine.buyPrice).toLowerCase();
+
+      return (
+        medName.includes(searchTerm) ||
+        medId.includes(searchTerm) ||
+        medPrice.includes(searchTerm)
+      );
+    });
+  }
+
+  onMedicineSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.medicineSearchEditSubject.next(target.value);
+  }
+
+  private filterTreatmentsEdit() {
+    const searchTerm = this.treatmentSearchEditQuery.toLowerCase().trim();
+
+    this.filteredTreatmentsEdit = this.treatments.filter((treat) => {
+      const treatId = String(treat.id).toLowerCase();
+      const treatPrice = String(treat.price).toLowerCase();
+
+      return treatId.includes(searchTerm) || treatPrice.includes(searchTerm);
+    });
+  }
+
+  onTreatmentSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.treatmentSearchEditSubject.next(target.value);
+  }
 }

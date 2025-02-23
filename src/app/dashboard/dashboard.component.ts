@@ -63,9 +63,12 @@ export class DashboardComponent implements OnInit {
       this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.user.image = e.target.result;
+        this.user.image = e.target.result; // Preview the image
       };
       reader.readAsDataURL(file);
+
+      // Automatically upload the image and update user profile
+      this.uploadProfileImage();
     }
   }
 
@@ -87,7 +90,9 @@ export class DashboardComponent implements OnInit {
       lastName: this.user.lastName,
       address: this.user.address,
       phone: this.user.phone,
-      dateOfBirth: new Date(this.user.dateOfBirth).toISOString() // Convert to ISO format
+      dateOfBirth: new Date(this.user.dateOfBirth).toISOString(),// Convert to ISO format
+      image: this.user.image, // Include the uploaded image URL
+
     };
 
     // Log the request body for debugging
@@ -145,4 +150,43 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  uploadProfileImage(): void {
+    if (!this.selectedFile) {
+      alert('Please select an image to upload.');
+      return;
+    }
+
+    const url = `${this.configService.apiUrl}storage/fileSystem`;
+    const accessToken = localStorage.getItem('access_token');
+
+    // Prepare FormData to send the file as multipart/form-data
+    const formData = new FormData();
+    formData.append('image', this.selectedFile);
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${accessToken}`,
+    });
+
+    // Upload the image
+    this.http.post(url, formData, { headers, responseType: 'text' }).subscribe({
+      next: (response: any) => {
+        console.log('Image uploaded successfully:', response);
+
+        // The backend directly returns the URL as a plain string
+        if (response && response.startsWith('https://')) {
+          this.user.image = response.trim(); // Directly use the response as image URL
+          this.updateUserInfo(); // Automatically save the new image URL
+        } else {
+          console.error('Unexpected response format:', response);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to upload profile image:', error);
+        alert('Failed to upload profile image. Please try again.');
+      },
+    });
+  }
+
+
 }
