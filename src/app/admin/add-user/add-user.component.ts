@@ -21,7 +21,7 @@ export class AddUserComponent implements OnInit {
     role: 'ADMIN',
     salary: {
       salaryType: 'MONTHLY',
-      salaryAmount: 0,
+      fixedSalary: 0,
       hourRate: 0,
       hourWork: 0
     }
@@ -99,14 +99,20 @@ export class AddUserComponent implements OnInit {
       if (this.user.salary.salaryType === 'MONTHLY') {
         requestBody.salary = {
           salaryType: 'MONTHLY',
-          salaryAmount: this.user.salary.salaryAmount
+          fixedSalary: this.user.salary.fixedSalary || 0, // Use fixedSalary only
+          salaryAmount:  0.0,
         };
+
+        delete this.user.salary.hourRate;
+        delete this.user.salary.hourWork;
+
       } else if (this.user.salary.salaryType === 'HOURLY') {
         requestBody.salary = {
           salaryType: 'HOURLY',
-          hourRate: this.user.salary.hourRate,
-          hourWork: this.user.salary.hourWork
+          hourRate: this.user.salary.hourRate || 0,
+          hourWork: this.user.salary.hourWork || 0,
         };
+        delete this.user.salary.fixedSalary;
       }
     }
 

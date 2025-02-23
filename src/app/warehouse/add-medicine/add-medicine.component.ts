@@ -8,6 +8,14 @@ import { MedicineService } from '../../services/medicine.service';
 })
 export class AddMedicineComponent implements OnInit {
   suppliers: any[] = [];
+  filteredSuppliers: any[] = [];
+  supplierPage = 1;
+  supplierSize = 10;
+  totalSuppliers = 0;
+  supplierSearchTerm = '';
+  isLoadingSuppliers = false;
+  showSupplierDropdown = false;
+
   medicine = {
     name: '',
     buyPrice: 0,
@@ -15,8 +23,10 @@ export class AddMedicineComponent implements OnInit {
     expirationDate: '',
     supplier: {
       id: null,
+      displayText: ''
     },
   };
+
 
   constructor(private medicineService: MedicineService) {}
 
@@ -24,16 +34,65 @@ export class AddMedicineComponent implements OnInit {
     this.fetchSuppliers();
   }
 
-  fetchSuppliers(): void {
-    this.medicineService.getAllSuppliers(1, 10).subscribe({
+  fetchSuppliers(reset: boolean = false): void {
+    if (this.isLoadingSuppliers || (this.totalSuppliers && this.suppliers.length >= this.totalSuppliers && !reset)) return;
+
+    if (reset) {
+      this.supplierPage = 1;
+      this.suppliers = [];
+      this.filteredSuppliers = [];
+      this.totalSuppliers = 0;
+    }
+
+    this.isLoadingSuppliers = true;
+    this.medicineService.getAllSuppliers(this.supplierPage, this.supplierSize).subscribe({
       next: (response) => {
-        console.log('Suppliers fetched:', response.content);
-        this.suppliers = response.content;
+        const newSuppliers = response.content.map((supplier: any) => ({
+          id: supplier.id,
+          displayText: `${supplier.name} - ${supplier.companyName}`,
+        }));
+
+        this.suppliers = [...this.suppliers, ...newSuppliers];
+        this.filteredSuppliers = this.suppliers;
+        this.totalSuppliers = response.totalElements;
+        this.supplierPage++;
+        this.isLoadingSuppliers = false;
       },
       error: (error) => {
         console.error('Failed to fetch suppliers:', error);
+        this.isLoadingSuppliers = false;
       },
     });
+  }
+
+  onSupplierScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+      this.fetchSuppliers();
+    }
+  }
+  filterSuppliers(searchTerm: string): void {
+    this.supplierSearchTerm = searchTerm;
+    this.filteredSuppliers = this.suppliers.filter((supplier) =>
+      supplier.displayText.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+  toggleSupplierDropdown(): void {
+    this.showSupplierDropdown = !this.showSupplierDropdown;
+  }
+
+  hideSupplierDropdown(): void {
+    setTimeout(() => {
+      this.showSupplierDropdown = false;
+    }, 200); // Delay to allow selection
+  }
+
+  selectSupplier(supplier: any): void {
+    this.medicine.supplier = {
+      id: supplier.id,
+      displayText: supplier.displayText,
+    };
+    this.showSupplierDropdown = false;
   }
 
   onSubmit(): void {
@@ -74,6 +133,7 @@ export class AddMedicineComponent implements OnInit {
       expirationDate: '',
       supplier: {
         id: null,
+        displayText: ''
       },
     };
   }

@@ -38,76 +38,87 @@ body {
 
 /* User Profile and Dropdown */
 .header-right {
-  position: relative;
+  position: relative;  /* Set this to scope absolute positioning */
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .user-profile {
+  position: relative;  /* Parent for positioning dropdown */
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 30px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   transition: background-color 0.3s ease;
 }
 
 .user-profile:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .user-image {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  margin-right: 0.75rem;
+  margin-right: 0.5rem;
+  object-fit: cover;
   border: 2px solid white;
 }
 
 .user-name {
-  font-size: 1rem;
-  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  color: #fff;
+  margin-right: 0.4rem;
 }
 
 .fa-caret-down {
-  font-size: 1rem;
+  font-size: 0.8rem;
+  color: #fff;
 }
+
 
 /* Dropdown Menu */
 .dropdown-menu {
   position: absolute;
-  top: 110%;
+  top: calc(100% + 10px);  /* Right below the profile icon */
   right: 0;
   background-color: white;
-  border: 1px solid #ddd;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  width: 160px;
+  padding: 0.5rem 0;
   z-index: 1000;
-  width: 220px;
-  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .dropdown-menu ul {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
-
 .dropdown-menu li {
-  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .dropdown-menu li:last-child {
   border-bottom: none;
 }
-
+.dropdown-menu li:hover {
+  background-color: #f1f5ff;
+}
 .dropdown-menu a {
-  color: #333;
   text-decoration: none;
+  color: #333;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.25rem;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
 }
 
 .dropdown-menu a:hover {
@@ -116,7 +127,9 @@ body {
 }
 
 .dropdown-menu i {
-  margin-right: 0.75rem;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: #007bff;
 }
 
 /* Main Content */
@@ -285,3 +298,158 @@ button:hover {
     padding: 1rem;
   }
 }
+/* Notifications Icon */
+.notifications {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifications i {
+  font-size: 22px;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.notifications:hover i {
+  transform: scale(1.2);
+}
+
+/* Red Notification Count Badge */
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff3b3b;
+  color: white;
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s infinite;
+}
+
+/* Pulse animation for notification badge */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Dropdown for Notifications */
+.notifications-dropdown {
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background-color: #fff;
+  width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  z-index: 100;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Smooth dropdown animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notifications-dropdown h4 {
+  margin: 0;
+  padding: 15px;
+  background-color: #007bff;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 10px 10px 0 0;
+}
+
+/* Notification list styles */
+.notifications-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notifications-dropdown li {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: background 0.3s ease;
+  background-color: #f9f9f9;  /* Light background for better readability */
+  border-radius: 8px;
+  margin: 5px;
+  color: #333;  /* Darker text for better contrast */
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.notifications-dropdown li:hover {
+  background-color: #e6f0ff;  /* Light blue hover effect */
+}
+.notifications-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.notifications-dropdown li span.read {
+  font-weight: normal;
+  color: #555;  /* Darker gray for better readability */
+}
+/* Notification Text */
+.notifications-dropdown li span {
+  flex: 1;
+  color: #222;  /* Darker color for main text */
+}
+.notifications-dropdown li span.unread {
+  font-weight: bold;
+  color: #000;  /* Black for unread notifications */
+}
+
+
+.notifications-dropdown li small {
+  font-size: 12px;
+  color: #555;  /* Dark gray for date */
+  padding-left: 10px;
+}
+/* Scrollbar customization */
+.notifications-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.notifications-dropdown::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 10px;
+}
+
+.notifications-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
+}
+

@@ -11,13 +11,24 @@ export class WarehouseService {
 
   constructor(private http: HttpClient, private configService: ConfigService) {}
 
-  getAllMedicines(): Observable<any> {
+  getAllMedicines(page: number, size: number): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     });
 
-    return this.http.get(`${this.apiUrl}medicines-not-in-warehouse`, { headers });
+    // Add pagination and search parameters to the API request
+    const params = {
+      page: page.toString(),
+      size: size.toString(),
+
+    };
+
+    return this.http.get(`${this.apiUrl}medicines-not-in-warehouse`, {
+      headers,
+      params
+    });
   }
+
 
   addToWarehouse(payload: any): Observable<any> {
     const headers = new HttpHeaders({

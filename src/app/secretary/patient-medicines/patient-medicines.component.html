@@ -106,9 +106,11 @@
                placeholder="Search Treatments..."
                [value]="selectedTreatmentName"
                (focus)="showTreatmentDropdownModal = true"
-               (blur)="hideDropdown($event, 'treatment', 'modal')" />
+               (blur)="hideDropdown($event, 'treatment', 'modal')"
+                (input)="onTreatmentSearch($event)"
+        />
         <div #treatmentDropdown class="dropdown-list" *ngIf="showTreatmentDropdownModal" (scroll)="onDropdownScroll($event, 'treatment')">
-          <label *ngFor="let treatment of treatments" (click)="selectTreatment(treatment)">
+          <label *ngFor="let treatment of filteredTreatmentsEdit" (click)="selectTreatment(treatment)">
             {{ treatment.id }} - ${{ treatment.price }}
           </label>
         </div>
@@ -122,9 +124,11 @@
                placeholder="Search Medicines..."
                [value]="selectedMedicineName"
                (focus)="showMedicineDropdownModal = true"
-               (blur)="hideDropdown($event, 'medicine', 'modal')" />
+               (blur)="hideDropdown($event, 'medicine', 'modal')"
+                (input)="onMedicineSearch($event)"
+        />
         <div #medicineDropdown class="dropdown-list" *ngIf="showMedicineDropdownModal" (scroll)="onDropdownScroll($event, 'medicine')">
-          <label *ngFor="let medicine of medicines" (click)="selectMedicine(medicine)">
+          <label *ngFor="let medicine of filteredMedicinesEdit" (click)="selectMedicine(medicine)">
             {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
           </label>
         </div>

@@ -1,0 +1,101 @@
+/* Main container styling */
+.excel-container {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+  background-color: #f7f9fc;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Heading styles */
+.excel-container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #2d3436;
+}
+
+/* Buttons styling */
+button {
+  padding: 12px 24px;
+  margin: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* Excel data table container */
+.excel-table-container {
+  margin-top: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td, th {
+  padding: 10px 12px;
+  border: 1px solid #dcdde1;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Alternating row colors */
+tr:nth-child(even) {
+  background-color: #f1f2f6;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Table header style */
+th {
+  background-color: #0984e3;
+  color: white;
+  font-weight: bold;
+}
+
+/* Loading message */
+p {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #636e72;
+}
+
+/* Scrollbar for the table */
+.excel-table-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.excel-table-container::-webkit-scrollbar-thumb {
+  background-color: #0984e3;
+  border-radius: 5px;
+}
+
+.excel-table-container::-webkit-scrollbar-track {
+  background-color: #dcdde1;
+}

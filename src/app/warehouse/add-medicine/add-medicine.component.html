@@ -53,19 +53,36 @@
     </div>
 
     <!-- Supplier Dropdown -->
-    <div class="form-group">
+    <!-- Supplier Dropdown with Lazy Loading and Search -->
+    <div class="form-group modal-dropdown">
       <label for="supplier">Supplier</label>
-      <select
-        id="supplier"
-        [(ngModel)]="medicine.supplier.id"
-        name="supplier"
+      <input
+        type="text"
+        id="supplier-search"
+        placeholder="Search Suppliers..."
+        [value]="medicine.supplier.displayText || supplierSearchTerm"
+        (click)="toggleSupplierDropdown()"
+        (input)="filterSuppliers($event.target.value)"
+        (blur)="hideSupplierDropdown()"
         required
+      />
+      <div
+        class="dropdown-list"
+        *ngIf="showSupplierDropdown"
+        (scroll)="onSupplierScroll($event)"
       >
-        <option *ngFor="let supplier of suppliers" [value]="supplier.id">
-          {{ supplier.name }} - {{ supplier.companyName }}
-        </option>
-      </select>
+        <label
+          *ngFor="let supplier of filteredSuppliers"
+          (click)="selectSupplier(supplier)"
+        >
+          {{ supplier.displayText }}
+        </label>
+        <label *ngIf="isLoadingSuppliers" class="loading-option">
+          Loading more suppliers...
+        </label>
+      </div>
     </div>
+
 
     <!-- Submit Button -->
     <button type="submit" [disabled]="!medicineForm.valid">Add Medicine</button>

@@ -40,9 +40,23 @@
     <!-- Error Message -->
     <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
+    <!-- Forgot Password Link -->
+    <div class="forgot-password-link">
+      <p (click)="sendVerificationCode()">Forgot Password?</p>
+    </div>
+
     <!-- Sign Up Link -->
     <div class="signup-link">
-      Don't have an account? <a href="#">Sign up</a>
+      <p>Don't have an account?</p>
+      <a routerLink="/signup">Sign Up</a>
+    </div>
+
+    <!-- Verification Code Message -->
+    <div *ngIf="verificationMessage" class="success-message">
+      {{ verificationMessage }}
+    </div>
+    <div *ngIf="verificationErrorMessage" class="error-message">
+      {{ verificationErrorMessage }}
     </div>
   </div>
 </div>

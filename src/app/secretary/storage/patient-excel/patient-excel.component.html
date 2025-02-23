@@ -1,0 +1,24 @@
+<div class="excel-container">
+  <h2>Patient Excel Data</h2>
+
+  <button (click)="loadPatientExcel()" [disabled]="isLoading">
+    {{ isLoading ? 'Loading...' : 'Load Patient Excel Data' }}
+  </button>
+
+  <button
+    (click)="downloadExcelFile()"
+    [disabled]="isDownloading || !downloadedFileUrl"
+  >
+    {{ isDownloading ? 'Downloading...' : 'Download Excel' }}
+  </button>
+
+  <div *ngIf="excelData.length > 0" class="excel-table-container">
+    <table>
+      <tr *ngFor="let row of excelData; let i = index">
+        <td *ngFor="let cell of row">{{ cell }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <p *ngIf="!isLoading && excelData.length === 0">No data loaded yet.</p>
+</div>

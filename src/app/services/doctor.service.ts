@@ -53,4 +53,12 @@ export class DoctorService {
       })
     });
   }
+
+  getFeedbacks(page: number, size: number): Observable<any> {
+    const url = `${this.configService.apiUrl}doctor/feedback?page=${page}&size=${size}`;
+    return this.http.get(url, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
 }

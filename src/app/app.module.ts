@@ -39,6 +39,16 @@ import { DonationsComponent } from './secretary/donations/donations.component';
 import { TakeBloodComponent } from './secretary/take-blood/take-blood.component';
 import { PatientBloodComponent } from './secretary/patient-blood/patient-blood.component';
 import { DeletedPatientBloodComponent } from './secretary/deleted-patient-blood/deleted-patient-blood.component';
+import { PatientTreatmentExcelComponent } from './secretary/storage/patient-treatment-excel/patient-treatment-excel.component';
+import { PatientExcelComponent } from './secretary/storage/patient-excel/patient-excel.component';
+import { MedicineExcelComponent } from './secretary/storage/medicine-excel/medicine-excel.component';
+import { CheckInOutComponent } from './secretary/check-in-out/check-in-out.component';
+import { MyTreatmentsComponent } from './patient/my-treatments/my-treatments.component';
+import { FeedbackComponent } from './doctor/feedback/feedback.component';
+import { TreatmentProfitComponent } from './admin/treatment-profit/treatment-profit.component';
+import { SafeUrlPipe } from './safe-url.pipe';
+import { SalaryReportComponent } from './admin/salary-report/salary-report.component';
+import { SignupPatientComponent } from './signup-patient/signup-patient.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +87,16 @@ import { DeletedPatientBloodComponent } from './secretary/deleted-patient-blood/
     TakeBloodComponent,
     PatientBloodComponent,
     DeletedPatientBloodComponent,
+    PatientTreatmentExcelComponent,
+    PatientExcelComponent,
+    MedicineExcelComponent,
+    CheckInOutComponent,
+    MyTreatmentsComponent,
+    FeedbackComponent,
+    TreatmentProfitComponent,
+    SafeUrlPipe,
+    SalaryReportComponent,
+    SignupPatientComponent,
   ],
     imports: [
         BrowserModule,

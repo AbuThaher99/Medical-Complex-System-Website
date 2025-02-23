@@ -2,26 +2,47 @@
   <h2>Add Treatment</h2>
   <form [formGroup]="treatmentForm" (ngSubmit)="onSubmit()">
     <!-- Select Doctor -->
-    <div class="form-group">
-      <label for="doctor">Select Doctor:</label>
-      <select id="doctor" formControlName="doctorId" (click)="loadDoctors($event)" required>
-        <option value="" disabled selected>-- Select a Doctor --</option>
-        <option *ngFor="let doctor of doctors" [value]="doctor.id">
-          {{ doctor.displayText }}
-        </option>
-      </select>
+    <!-- Doctor Dropdown Modal -->
+    <div class="modal-dropdown">
+      <label for="doctor">Doctor:</label>
+      <input
+        type="text"
+        id="doctor-search"
+        placeholder="Search Doctors..."
+        [value]="doctorSearchTerm"
+        (click)="toggleDoctorDropdown()"
+        (input)="filterDoctors($event.target.value)"
+        (blur)="hideDropdown($event, 'doctor')"
+      />
+      <div class="dropdown-list" *ngIf="showDoctorDropdown" (scroll)="onDoctorScroll($event)">
+        <label *ngFor="let doctor of filteredDoctors" (click)="selectDoctor(doctor)">
+         {{ doctor.displayText }}
+        </label>
+        <label *ngIf="loadingDoctors" class="loading-option">Loading more doctors...</label>
+      </div>
     </div>
 
-    <!-- Select Patient -->
-    <div class="form-group">
-      <label for="patient">Select Patient:</label>
-      <select id="patient" formControlName="patientId" (click)="loadPatients($event)" required>
-        <option value="" disabled selected>-- Select a Patient --</option>
-        <option *ngFor="let patient of patients" [value]="patient.id">
-          {{ patient.displayText }}
-        </option>
-      </select>
+    <!-- Patient Dropdown Modal -->
+    <div class="modal-dropdown">
+      <label for="patient">Patient:</label>
+      <input
+        type="text"
+        id="patient-search"
+        placeholder="Search Patients..."
+        [value]="patientSearchTerm"
+        (click)="togglePatientDropdown()"
+        (input)="filterPatients($event.target.value)"
+        (blur)="hideDropdown($event, 'patient')"
+      />
+      <div class="dropdown-list" *ngIf="showPatientDropdown" (scroll)="onPatientScroll($event)">
+        <label *ngFor="let patient of filteredPatients" (click)="selectPatient(patient)">
+        {{ patient.displayText }}
+        </label>
+        <label *ngIf="loadingPatients" class="loading-option">Loading more patients...</label>
+      </div>
     </div>
+
+
 
     <!-- Treatment Date -->
     <div class="form-group">

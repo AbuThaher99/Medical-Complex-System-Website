@@ -1,0 +1,25 @@
+<div class="check-in-out-container">
+  <h2>Employee Check-In / Check-Out</h2>
+
+  <div class="form-group">
+    <label for="email">Employee Email</label>
+    <input
+      type="email"
+      id="email"
+      [(ngModel)]="email"
+      placeholder="Enter employee email"
+      required
+    />
+  </div>
+
+  <div class="button-group">
+    <button (click)="checkIn()" [disabled]="isProcessing">
+      {{ isProcessing ? 'Processing...' : 'Check In' }}
+    </button>
+    <button (click)="checkOut()" [disabled]="isProcessing">
+      {{ isProcessing ? 'Processing...' : 'Check Out' }}
+    </button>
+  </div>
+
+  <p *ngIf="message" class="status-message">{{ message }}</p>
+</div>

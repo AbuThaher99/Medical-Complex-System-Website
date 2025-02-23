@@ -22,7 +22,7 @@ body {
 /* Dynamic Content */
 .dashboard-content {
   flex: 1;
-  padding: 3rem;
+  padding: 2rem;
   background-color: #ffffff;
   border-radius: 16px 0 0 0;
   overflow-y: auto;
@@ -120,7 +120,19 @@ body {
 .upload-button:hover {
   background-color: #003a99;
 }
+.upload-image-button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
 
+.upload-image-button:hover {
+  background-color: #218838;
+}
 .upload-button i {
   margin-right: 0.5rem;
 }

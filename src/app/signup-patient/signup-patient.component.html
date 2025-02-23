@@ -1,0 +1,111 @@
+<div class="signup-patient-container">
+  <h2>Patient Signup</h2>
+  <form (ngSubmit)="onSubmit()">
+    <!-- Common Fields -->
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input
+        type="text"
+        id="firstName"
+        [(ngModel)]="user.firstName"
+        name="firstName"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input
+        type="text"
+        id="lastName"
+        [(ngModel)]="user.lastName"
+        name="lastName"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="user.email"
+        name="email"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input
+        type="text"
+        id="address"
+        [(ngModel)]="user.address"
+        name="address"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input
+        type="text"
+        id="phone"
+        [(ngModel)]="user.phone"
+        name="phone"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="dateOfBirth">Date of Birth</label>
+      <input
+        type="date"
+        id="dateOfBirth"
+        [(ngModel)]="user.dateOfBirth"
+        name="dateOfBirth"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        [(ngModel)]="user.password"
+        name="password"
+        required
+      />
+    </div>
+
+    <!-- Patient Specific Fields -->
+    <div class="patient-fields">
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input
+          type="number"
+          id="age"
+          [(ngModel)]="patient.age"
+          name="age"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="bloodType">Blood Type</label>
+        <select
+          id="bloodType"
+          [(ngModel)]="patient.bloodType.id"
+          name="bloodType"
+          required
+        >
+          <option value="1">A_POSITIVE</option>
+          <option value="2">A_NEGATIVE</option>
+          <option value="3">B_POSITIVE</option>
+          <option value="4">B_NEGATIVE</option>
+          <option value="5">O_POSITIVE</option>
+          <option value="6">O_NEGATIVE</option>
+          <option value="7">AB_POSITIVE</option>
+          <option value="8">AB_NEGATIVE</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Signup Button -->
+    <button type="submit" class="submit-button">Sign Up</button>
+  </form>
+</div>
