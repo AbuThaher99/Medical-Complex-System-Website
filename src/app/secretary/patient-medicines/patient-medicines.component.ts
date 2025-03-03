@@ -5,6 +5,7 @@ import { DoctorService } from '../../services/doctor.service';
 import { WarehouseService } from '../../services/warehouse.service';
 import {Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-patient-medicines',
@@ -71,7 +72,9 @@ export class PatientMedicinesComponent implements OnInit {
     private patientMedicineService: PatientMedicineService,
     private patientService: PatientService,
     private doctorService: DoctorService,
-    private warehouseService: WarehouseService
+    private warehouseService: WarehouseService,
+    private customAlertService: CustomAlertService
+
   ) {}
 
   ngOnInit(): void {
@@ -263,27 +266,33 @@ export class PatientMedicinesComponent implements OnInit {
 
     this.patientMedicineService.updatePatientMedicine(this.editingRecord.id, body).subscribe(
       () => {
-        alert('Patient Medicine updated successfully!');
+        this.customAlertService.show('Success', 'Patient Medicine updated successfully!');
+
         this.loadPatientMedicines(); // Reload the table
         this.closeEditModal();
       },
       (error) => {
-        alert('Failed to update Patient Medicine: ' + error.message);
+        this.customAlertService.show('Error', 'Failed to update Patient Medicine: ' + error.message);
+
       }
     );
   }
   deletePatientMedicine(id: number): void {
-    if (confirm('Are you sure you want to delete this Patient Medicine?')) {
-      this.patientMedicineService.deletePatientMedicine(id).subscribe(
-        () => {
-          alert('Patient Medicine deleted successfully!');
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this Patient Medicine?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.patientMedicineService.deletePatientMedicine(id).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'Patient Medicine deleted successfully!');
           this.loadPatientMedicines(); // Reload the table
         },
-        (error) => {
-          alert('Failed to delete Patient Medicine: ' + error.message);
-        }
-      );
-    }
+        error: (error) => {
+          console.error('Failed to delete Patient Medicine:', error.message);
+          this.customAlertService.show('Error', 'Failed to delete Patient Medicine: ' + error.message);
+        },
+      });
+    });
   }
   calculateTotalPrice(record: any): number {
     const treatmentPrice = record.treatment.price;

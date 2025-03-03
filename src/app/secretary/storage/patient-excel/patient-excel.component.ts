@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { StorageService } from '../../../services/storage.service';
 import * as XLSX from 'xlsx';
+import {CustomAlertService} from "../../../services/custom-alert.service";
 
 @Component({
   selector: 'app-patient-excel',
@@ -13,9 +14,8 @@ export class PatientExcelComponent {
   excelData: any[] = [];
   downloadedFileUrl: string = '';
 
-  constructor(private storageService: StorageService) {}
+  constructor(private storageService: StorageService,private customAlertService: CustomAlertService) {}
 
-  // Fetch and display the Patient Excel file
   loadPatientExcel(): void {
     this.isLoading = true;
 
@@ -26,13 +26,12 @@ export class PatientExcelComponent {
       },
       (error) => {
         console.error('Error fetching file URL:', error);
-        alert('Failed to fetch the Patient Excel file URL.');
+        this.customAlertService.show('Error', 'Failed to fetch the Patient Excel file URL.');
         this.isLoading = false;
       }
     );
   }
 
-  // Download and display the Excel content
   private downloadAndDisplayExcel(fileUrl: string): void {
     this.storageService.downloadExcelFile(fileUrl).subscribe(
       (response) => {
@@ -64,7 +63,8 @@ export class PatientExcelComponent {
       },
       (error) => {
         console.error('Failed to download Excel:', error);
-        alert('Error downloading the Patient Excel file.');
+        this.customAlertService.show('Error', 'Error downloading the Patient Excel file.');
+
         this.isLoading = false;
       }
     );
@@ -73,7 +73,8 @@ export class PatientExcelComponent {
   // Download the Excel file directly
   downloadExcelFile(): void {
     if (!this.downloadedFileUrl) {
-      alert('No file available to download.');
+      this.customAlertService.show('Error', 'No file available to download.');
+
       return;
     }
 
@@ -96,7 +97,7 @@ export class PatientExcelComponent {
       },
       (error) => {
         console.error('Failed to download the Patient Excel:', error);
-        alert('Failed to download the Patient Excel file.');
+        this.customAlertService.show('Error', 'Failed to download the Patient Excel file.');
         this.isDownloading = false;
       }
     );

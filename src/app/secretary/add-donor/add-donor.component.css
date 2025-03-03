@@ -1,58 +1,94 @@
 .add-donor-container {
   max-width: 400px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 25px;
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', sans-serif;
 }
 
 .add-donor-container h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 26px;
+  margin-bottom: 25px;
   text-align: center;
   color: #333;
+  font-weight: 600;
 }
 
 .add-donor-container label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 8px;
+  font-weight: 500;
   color: #555;
+  font-size: 14px;
 }
 
 .add-donor-container input,
 .add-donor-container select {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 12px;
+  margin-bottom: 20px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f9f9f9;
 }
 
 .add-donor-container input:focus,
 .add-donor-container select:focus {
   border-color: #007bff;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+  background-color: #fff;
+}
+
+.add-donor-container select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
 }
 
 .add-donor-container button {
   width: 100%;
-  padding: 10px 15px;
+  padding: 12px 15px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .add-donor-container button:hover {
   background-color: #0056b3;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.add-donor-container button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Optional: Add a subtle animation for form inputs */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.add-donor-container input,
+.add-donor-container select,
+.add-donor-container button {
+  animation: fadeIn 0.5s ease-out;
 }

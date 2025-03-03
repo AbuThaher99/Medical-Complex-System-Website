@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DepartmentService } from '../../services/department.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-department',
@@ -15,7 +16,8 @@ export class DeletedDepartmentComponent implements OnInit {
   searchQuery: string = ''; // Holds the search query
   searchSubject: Subject<string> = new Subject<string>(); // Subject for search input changes
 
-  constructor(private departmentService: DepartmentService) {}
+  constructor(private departmentService: DepartmentService,private customAlertService: CustomAlertService
+  ) {}
 
   ngOnInit(): void {
     this.fetchDeletedDepartments();
@@ -38,9 +40,11 @@ export class DeletedDepartmentComponent implements OnInit {
       error: (error) => {
         console.error('Failed to fetch deleted departments:', error);
         if (error.status === 403) {
-          alert('You do not have permission to access this resource.');
+          this.customAlertService.show('Error', 'You do not have permission to access this resource.');
+
         } else {
-          alert('Failed to fetch deleted departments. Please try again.');
+          this.customAlertService.show('Error', 'Failed to fetch deleted departments. Please try again.');
+
         }
       },
     });
@@ -56,21 +60,22 @@ export class DeletedDepartmentComponent implements OnInit {
   }
 
   restoreDepartment(id: number): void {
-    const confirmRestore = confirm('Are you sure you want to restore this department?');
-    if (!confirmRestore) {
-      return;
-    }
+    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this department?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
 
-    this.departmentService.restoreDepartment(id).subscribe({
-      next: (response) => {
-        console.log('Department restored successfully:', response);
-        alert('Department restored successfully!');
-        this.fetchDeletedDepartments(); // Refresh the list after restoration
-      },
-      error: (error) => {
-        console.error('Failed to restore department:', error);
-        alert('Failed to restore department. Please try again.');
-      },
+      this.departmentService.restoreDepartment(id).subscribe({
+        next: (response) => {
+          console.log('Department restored successfully:', response);
+          this.customAlertService.show('Success', 'Department restored successfully!');
+          this.fetchDeletedDepartments(); // Refresh the list after restoration
+        },
+        error: (error) => {
+          console.error('Failed to restore department:', error);
+          this.customAlertService.show('Error', 'Failed to restore department. Please try again.');
+        },
+      });
     });
   }
 

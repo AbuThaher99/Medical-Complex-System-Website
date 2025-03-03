@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConfigService } from '../../services/config.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-check-in-out',
@@ -12,12 +13,13 @@ export class CheckInOutComponent {
   isProcessing: boolean = false;
   message: string = '';
 
-  constructor(private http: HttpClient, private configService: ConfigService) {}
+  constructor(private http: HttpClient, private configService: ConfigService,private customAlertService: CustomAlertService) {}
 
   // Perform Check-In
   checkIn(): void {
     if (!this.email) {
-      alert('Please enter an email address.');
+      this.customAlertService.show('Error', 'Please enter an email address.');
+
       return;
     }
 
@@ -46,7 +48,7 @@ export class CheckInOutComponent {
   // Perform Check-Out
   checkOut(): void {
     if (!this.email) {
-      alert('Please enter an email address.');
+      this.customAlertService.show('Error', 'Please enter an email address.');
       return;
     }
 

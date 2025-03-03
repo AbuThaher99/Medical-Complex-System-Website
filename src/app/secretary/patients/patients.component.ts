@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { PatientService } from '../../services/patient.service';
 import { DoctorService } from '../../services/doctor.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-patients',
@@ -30,7 +31,9 @@ export class PatientsComponent implements OnInit {
   loadingDoctors: boolean = false;
   constructor(
     private patientService: PatientService,
-    private doctorService: DoctorService
+    private doctorService: DoctorService,
+    private customAlertService: CustomAlertService
+
   ) {}
 
   ngOnInit(): void {
@@ -70,20 +73,22 @@ export class PatientsComponent implements OnInit {
   }
 
   deletePatient(email: string): void {
-    if (confirm('Are you sure you want to delete this patient?')) {
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this patient?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
       this.patientService.deletePatient(email).subscribe({
         next: () => {
-          alert('Patient deleted successfully!');
+          this.customAlertService.show('Success', 'Patient deleted successfully!');
           this.fetchPatients();
         },
         error: (error) => {
           console.error('Error deleting patient:', error);
-          alert('Failed to delete patient.');
+          this.customAlertService.show('Error', 'Failed to delete patient.');
         },
       });
-    }
+    });
   }
-
   getPatientById(id: number): void {
     this.patientService.getPatientById(id).subscribe({
       next: (response) => {

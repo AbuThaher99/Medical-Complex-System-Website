@@ -1,30 +1,63 @@
-/* Container for the form */
+/* Modern Add User Form Styles */
 .add-user-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
+  max-width: 900px;
+  margin: 2.5rem auto;
+  padding: 2.5rem;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
 }
 
-/* Form title */
+/* Form title with accent line */
 .add-user-container h2 {
-  color: #0052cc;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  color: #3182ce;
+  margin-bottom: 2rem;
+  font-size: 1.9rem;
   text-align: center;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.add-user-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background-color: #3182ce;
+  border-radius: 4px;
+}
+
+/* Two column layout for desktop */
+form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+/* Full width items */
+.form-group.full-width,
+.doctor-fields,
+.patient-fields,
+.salary-fields,
+button[type="submit"] {
+  grid-column: span 2;
 }
 
 /* Form group styling */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 1rem;
-  color: #333;
+  font-size: 0.95rem;
+  color: #4a5568;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
@@ -32,77 +65,223 @@
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.85rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  background-color: #f9fafc;
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #0052cc;
-  box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+  background-color: white;
 }
 
-/* Doctor-specific fields */
+/* Improved dropdown styling */
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+/* Better styling for specialized role sections */
 .doctor-fields,
-.patient-fields {
-  margin-top: 1.5rem;
-  padding: 1.5rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+.patient-fields,
+.salary-fields {
+  margin: 1rem 0 1.5rem;
+  padding: 1.75rem;
+  background-color: #f7fafc;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e0;
+  position: relative;
 }
 
-/* Salary fields */
-.salary-fields {
-  margin-top: 1.5rem;
-  padding: 1.5rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+/* Section labels */
+.doctor-fields::before,
+.patient-fields::before,
+.salary-fields::before {
+  content: attr(data-section);
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background-color: #3182ce;
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.doctor-fields::before { content: "Doctor Information"; }
+.patient-fields::before { content: "Patient Information"; }
+.salary-fields::before { content: "Salary Information"; }
 
 /* Submit button */
 .submit-button {
-  background-color: #0052cc;
+  background-color: #3182ce;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(49, 130, 206, 0.3);
+  display: block;
   width: 100%;
-  transition: background-color 0.3s ease;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .submit-button:hover {
-  background-color: #003a99;
+  background-color: #2b6cb0;
+  box-shadow: 0 6px 14px rgba(49, 130, 206, 0.35);
+  transform: translateY(-2px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(49, 130, 206, 0.3);
+}
+
+/* Time input styling */
+input[type="time"],
+input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Number input styling */
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Required field indicator */
+.form-group label::after {
+  content: ' *';
+  color: #e53e3e;
+}
+
+/* Animation effects */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.doctor-fields,
+.patient-fields,
+.salary-fields {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Password field icon */
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 2.5rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #4a5568;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group,
+  .doctor-fields,
+  .patient-fields,
+  .salary-fields,
+  button[type="submit"] {
+    grid-column: span 1;
+  }
+
   .add-user-container {
-    padding: 1.5rem;
+    padding: 1.75rem;
+    margin: 1.5rem;
+    width: auto;
   }
 
   .add-user-container h2 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 }
 
 @media (max-width: 480px) {
   .add-user-container {
-    padding: 1rem;
+    padding: 1.25rem;
+    margin: 1rem;
+  }
+
+  .doctor-fields,
+  .patient-fields,
+  .salary-fields {
+    padding: 1.25rem;
   }
 
   .form-group input,
   .form-group select {
-    padding: 0.5rem;
+    padding: 0.75rem;
   }
 
   .submit-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.85rem 1.25rem;
+    font-size: 1rem;
   }
+}
+
+/* Feedback for form validation */
+.form-group input:invalid:not(:placeholder-shown),
+.form-group select:invalid:not(:placeholder-shown) {
+  border-color: #fc8181;
+}
+
+.form-group input:valid:not(:placeholder-shown),
+.form-group select:valid:not(:placeholder-shown) {
+  border-color: #68d391;
+}
+
+/* Helper text styles */
+.helper-text {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-top: 0.5rem;
+}
+
+.helper-text.error {
+  color: #e53e3e;
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MedicineService } from '../../services/medicine.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-medicine',
@@ -28,7 +29,7 @@ export class AddMedicineComponent implements OnInit {
   };
 
 
-  constructor(private medicineService: MedicineService) {}
+  constructor(private medicineService: MedicineService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchSuppliers();
@@ -99,27 +100,25 @@ export class AddMedicineComponent implements OnInit {
     console.log('Submitting medicine:', this.medicine);
 
     if (!this.medicine.supplier.id) {
-      alert('Please select a supplier.');
+      this.customAlertService.show('Error', 'Please select a supplier.');
       return;
     }
 
     this.medicineService.addMedicine(this.medicine).subscribe({
       next: (response) => {
         console.log('Medicine added successfully:', response);
-        alert('Medicine added successfully!');
-        // navigate to the warehouse page
-
+        this.customAlertService.show('Success', 'Medicine added successfully!');
         this.resetForm();
       },
       error: (error) => {
         console.error('Failed to add medicine:', error);
 
         if (error.status === 401) {
-          alert('Unauthorized! Please log in again.');
+          this.customAlertService.show('Error', 'Unauthorized! Please log in again.');
         } else if (error.status === 400) {
-          alert('Bad request! Check the submitted data.');
+          this.customAlertService.show('Error', 'Bad request! Check the submitted data.');
         } else {
-          alert('Failed to add medicine. Please try again.');
+          this.customAlertService.show('Error', 'Failed to add medicine. Please try again.');
         }
       },
     });

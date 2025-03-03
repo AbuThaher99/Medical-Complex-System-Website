@@ -1,40 +1,64 @@
 <div class="dashboard-container">
   <header class="dashboard-header">
     <div class="header-left">
-      <!-- <h1>Welcome to Your Dashboard, {{ user?.firstName }}!</h1> -->
+      <div class="logo-container">
+        <img src="assets/img.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/40x40?text=HC'">
+        <span class="brand-name">HealthCare Dashboard</span>
+      </div>
     </div>
 
     <!-- User Profile and Notifications -->
     <div class="header-right">
+      <!-- Mobile menu toggle -->
+      <div class="mobile-menu-toggle d-md-none" (click)="toggleMobileNav()">
+        <i class="fas fa-bars"></i>
+      </div>
+
       <!-- Notifications (Only for Patient Role) -->
       <div *ngIf="user?.role === 'PATIENT'" class="notifications">
         <i class="fas fa-bell" (click)="onNotificationClick()"></i>
         <span class="notification-count" *ngIf="unreadNotificationsCount > 0">
-    {{ unreadNotificationsCount }}
-  </span>
+          {{ unreadNotificationsCount }}
+        </span>
 
         <!-- Notifications Dropdown -->
         <div class="notifications-dropdown" *ngIf="showNotifications">
           <h4>Notifications</h4>
-          <ul>
+          <ul *ngIf="notifications.length > 0; else emptyNotifications">
             <li *ngFor="let notification of notifications" (click)="markAsRead(notification.id)">
-              <span [class.read]="notification.read">{{ notification.message }}</span>
+              <span [class.read]="notification.read" [class.unread]="!notification.read">{{ notification.message }}</span>
               <small>{{ notification.createdDate | date: 'short' }}</small>
             </li>
           </ul>
+          <ng-template #emptyNotifications>
+            <div class="empty-notifications">
+              <i class="fas fa-inbox"></i>
+              <p>No notifications yet</p>
+            </div>
+          </ng-template>
         </div>
       </div>
 
       <!-- User Profile and Logout -->
       <div class="user-profile" (click)="toggleDropdown()">
         <img [src]="user?.image || './assets/profile.png'" alt="User Image" class="user-image" />
-        <span class="user-name">{{ user?.firstName }} {{ user?.lastName }}</span>
+        <span class="user-name">{{ user?.firstName || 'User' }} {{ user?.lastName || '' }}</span>
         <i class="fas fa-caret-down"></i>
       </div>
 
       <!-- Dropdown Menu -->
       <div class="dropdown-menu" *ngIf="isDropdownOpen">
         <ul>
+          <li>
+            <a routerLink="/profile">
+              <i class="fas fa-user-circle"></i> My Profile
+            </a>
+          </li>
+          <li>
+            <a routerLink="/settings">
+              <i class="fas fa-cog"></i> Settings
+            </a>
+          </li>
           <li>
             <a (click)="logout()">
               <i class="fas fa-sign-out-alt"></i> Logout
@@ -45,229 +69,285 @@
     </div>
   </header>
 
+  <!-- Mobile navigation overlay -->
+  <div class="mobile-nav-overlay" [class.active]="mobileNavOpen" (click)="closeMobileNav()"></div>
 
   <!-- Main Content -->
   <div class="dashboard-main">
     <!-- Navigation Sidebar -->
-    <nav class="dashboard-nav">
+    <nav class="dashboard-nav" [class.mobile-open]="mobileNavOpen" [class.sidebar-collapsed]="sidebarCollapsed">
+      <div class="nav-header">
+        <div class="nav-title">MAIN NAVIGATION</div>
+      </div>
+
       <ul>
         <li>
-          <a routerLink="/dashboard">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
+          <a routerLink="/dashboard" routerLinkActive="active">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
           </a>
         </li>
-        <!-- Sub-Nav for Admin -->
-        <li *ngIf="role === 'ADMIN'" class="has-submenu">
-          <a (click)="toggleAdminSubNav()">
-            <i class="fas fa-user-cog"></i> Admin Menu
-            <i class="fas" [ngClass]="{'fa-chevron-down': !adminSubNavOpen, 'fa-chevron-up': adminSubNavOpen}"></i>
-          </a>
-          <ul *ngIf="adminSubNavOpen" class="submenu">
-            <li>
-              <a routerLink="/admin/add-user">
-                <i class="fas fa-user-plus"></i> Add Users
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/delete-user">
-                <i class="fas fa-user-minus"></i> Deleted Users
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/manageuser">
-                <i class="fas fa-users"></i> Get All Users
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/departments">
-                <i class="fas fa-building"></i> Get All Departments
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/add-department">
-                <i class="fas fa-plus-circle"></i> Add Department
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/deleted-department">
-                <i class="fas fa-trash-restore"></i> Deleted Department
-              </a>
-            </li>
 
-            <li>
-              <a routerLink="/admin/treatment-profit">
-                <i class="fas fa-money-bill-wave"></i> Treatment Profits
+        <!-- Admin Section -->
+        <div *ngIf="role === 'ADMIN'" class="nav-section">
+          <div class="nav-section-title">ADMINISTRATION</div>
+          <ul>
+            <li class="has-submenu">
+              <a (click)="toggleAdminSubNav()" [attr.aria-expanded]="adminSubNavOpen">
+                <i class="fas fa-user-cog"></i>
+                <span>Admin Menu</span>
+                <i class="fas fa-chevron-down submenu-icon"></i>
+              </a>
+              <ul class="submenu" [class.expanded]="adminSubNavOpen">
+                <li>
+                  <a routerLink="/admin/add-user" routerLinkActive="active">
+                    <i class="fas fa-user-plus"></i> Add Users
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/delete-user" routerLinkActive="active">
+                    <i class="fas fa-user-minus"></i> Deleted Users
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/manageuser" routerLinkActive="active">
+                    <i class="fas fa-users"></i> All Users
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/departments" routerLinkActive="active">
+                    <i class="fas fa-building"></i> Departments
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/add-department" routerLinkActive="active">
+                    <i class="fas fa-plus-circle"></i> Add Department
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/deleted-department" routerLinkActive="active">
+                    <i class="fas fa-trash-restore"></i> Deleted Departments
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/treatment-profit" routerLinkActive="active">
+                    <i class="fas fa-money-bill-wave"></i> Treatment Profits
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/admin/salary-report" routerLinkActive="active">
+                    <i class="fas fa-file-invoice-dollar"></i> Salary Report
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Doctor Section -->
+        <div *ngIf="role === 'DOCTOR' || role === 'ADMIN'" class="nav-section">
+          <div class="nav-section-title">MEDICAL</div>
+          <ul>
+            <li *ngIf="role === 'DOCTOR'">
+              <a routerLink="/doctor/feedback" routerLinkActive="active">
+                <i class="fas fa-comments"></i>
+                <span>Patient Feedback</span>
               </a>
             </li>
-
-            <li>
-              <a routerLink="/admin/salary-report">
-                <i class="fas fa-file-invoice-dollar"></i> Salary Report
+            <li *ngIf="role === 'DOCTOR' || role === 'ADMIN'">
+              <a routerLink="/doctor/add-treatment" routerLinkActive="active">
+                <i class="fas fa-notes-medical"></i>
+                <span>Add Treatment</span>
+              </a>
+            </li>
+            <li *ngIf="role === 'DOCTOR' || role === 'ADMIN' || role === 'SECRETARY'">
+              <a routerLink="/doctor/treatments" routerLinkActive="active">
+                <i class="fas fa-medkit"></i>
+                <span>All Treatments</span>
               </a>
             </li>
           </ul>
-        </li>
+        </div>
 
-        <li *ngIf="role === 'DOCTOR'">
-          <a routerLink="/doctor/feedback">
-            <i class="fas fa-comments"></i> Patient Feedback
-          </a>
-        </li>
-        <li *ngIf="role === 'DOCTOR' || role === 'ADMIN'">
-          <a routerLink="/doctor/add-treatment">
-            <i class="fas fa-notes-medical"></i> Add Treatment
-          </a>
-        </li>
-        <li *ngIf="role === 'DOCTOR' || role === 'ADMIN' || role === 'SECRETARY'">
-          <a routerLink="/doctor/treatments">
-            <i class="fas fa-medkit"></i> Get All Treatments
-          </a>
-        </li>
-
-
-        <li *ngIf="role === 'PATIENT'">
-          <a routerLink="/patient/my-treatments">
-            <i class="fas fa-stethoscope"></i> My Treatments
-          </a>
-        </li>
-
-        <li *ngIf="role === 'SECRETARY'">
-          <a routerLink="signup">
-            <i class="fas fa-user-plus"></i> Add Patient
-          </a>
-        </li>
-
-        <li *ngIf="role === 'SECRETARY' || role === 'ADMIN'" class="has-submenu">
-          <a (click)="toggleSecretarySubNav()">
-            <i class="fas fa-user-secret"></i> Secretary Menu
-            <i class="fas" [ngClass]="{'fa-chevron-down': !secretarySubNavOpen, 'fa-chevron-up': secretarySubNavOpen}"></i>
-          </a>
-          <ul *ngIf="secretarySubNavOpen" class="submenu">
+        <!-- Patient Section -->
+        <div *ngIf="role === 'PATIENT'" class="nav-section">
+          <div class="nav-section-title">PATIENT</div>
+          <ul>
             <li>
-              <a routerLink="/secretary/patients">
-                <i class="fas fa-user-injured"></i> Get All Patients
+              <a routerLink="/patient/my-treatments" routerLinkActive="active">
+                <i class="fas fa-stethoscope"></i>
+                <span>My Treatments</span>
               </a>
             </li>
             <li>
-              <a routerLink="/secretary/patient-medicines">
-                <i class="fas fa-pills"></i> Get All Patient Medicines
+              <a routerLink="/patient/appointments" routerLinkActive="active">
+                <i class="fas fa-calendar-check"></i>
+                <span>My Appointments</span>
               </a>
             </li>
             <li>
-              <a routerLink="/secretary/add-donor">
-                <i class="fas fa-hand-holding-medical"></i> Add Donor
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/donors">
-                <i class="fas fa-users"></i> Get All Donors
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/deleted-donor">
-                <i class="fas fa-trash-restore"></i> Deleted Donors
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/donations">
-                <i class="fas fa-donate"></i> Get All Donations
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/take-blood">
-                <i class="fas fa-tint"></i> Give Blood
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/patient-blood">
-                <i class="fas fa-vial"></i> Get All Patient Blood
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/deleted-patient-blood">
-                <i class="fas fa-trash"></i> Deleted Patient Blood
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/storage/patient-treatment-excel">
-                <i class="fas fa-file-excel"></i> Download Patient Treatment Excel
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/storage/patient-excel">
-                <i class="fas fa-download"></i> Download Patient Excel
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/storage/medicine-excel">
-                <i class="fas fa-pills"></i> Download Medicine Excel
-              </a>
-            </li>
-            <li>
-              <a routerLink="/secretary/check-in-out">
-                <i class="fas fa-user-clock"></i> Employee Check-In / Check-Out
-              </a>
-            </li>
-
-          </ul>
-        </li>
-
-        <li *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'" class="has-submenu">
-          <a (click)="toggleWarehouseSubNav()">
-            <i class="fas fa-warehouse"></i> Warehouse Menu
-            <i class="fas" [ngClass]="{'fa-chevron-down': !warehouseSubNavOpen, 'fa-chevron-up': warehouseSubNavOpen}"></i>
-          </a>
-          <ul *ngIf="warehouseSubNavOpen" class="submenu">
-            <li>
-              <a routerLink="/warehouse/add-supplier">
-                <i class="fas fa-truck"></i> Add Suppliers
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/suppliers">
-                <i class="fas fa-boxes"></i> Manage Suppliers
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/deleted-suppliers">
-                <i class="fas fa-trash-alt"></i> Deleted Suppliers
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/add-medicine">
-                <i class="fas fa-pills"></i> Add Medicine
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/manage-medicine">
-                <i class="fas fa-capsules"></i> Manage Medicine
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/deleted-medicine">
-                <i class="fas fa-trash-restore"></i> Deleted Medicine
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/add-warehouse">
-                <i class="fas fa-warehouse"></i> Add to Warehouse
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/manage-warehouse">
-                <i class="fas fa-cogs"></i> Manage Warehouse
-              </a>
-            </li>
-            <li>
-              <a routerLink="/warehouse/deleted-warehouse">
-                <i class="fas fa-trash-alt"></i> Deleted Warehouse
+              <a routerLink="/patient/medical-records" routerLinkActive="active">
+                <i class="fas fa-file-medical"></i>
+                <span>Medical Records</span>
               </a>
             </li>
           </ul>
-        </li>
+        </div>
+
+        <!-- Secretary Section -->
+        <div *ngIf="role === 'SECRETARY' || role === 'ADMIN'" class="nav-section">
+          <div class="nav-section-title">SECRETARY</div>
+          <ul>
+            <li *ngIf="role === 'SECRETARY'">
+              <a routerLink="signup" routerLinkActive="active">
+                <i class="fas fa-user-plus"></i>
+                <span>Add Patient</span>
+              </a>
+            </li>
+            <li class="has-submenu">
+              <a (click)="toggleSecretarySubNav()" [attr.aria-expanded]="secretarySubNavOpen">
+                <i class="fas fa-user-secret"></i>
+                <span>Secretary Menu</span>
+                <i class="fas fa-chevron-down submenu-icon"></i>
+              </a>
+              <ul class="submenu" [class.expanded]="secretarySubNavOpen">
+                <li>
+                  <a routerLink="/secretary/patients" routerLinkActive="active">
+                    <i class="fas fa-user-injured"></i> All Patients
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/patient-medicines" routerLinkActive="active">
+                    <i class="fas fa-pills"></i> Patient Medicines
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/add-donor" routerLinkActive="active">
+                    <i class="fas fa-hand-holding-medical"></i> Add Donor
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/donors" routerLinkActive="active">
+                    <i class="fas fa-users"></i> All Donors
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/deleted-donor" routerLinkActive="active">
+                    <i class="fas fa-trash-restore"></i> Deleted Donors
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/donations" routerLinkActive="active">
+                    <i class="fas fa-donate"></i> All Donations
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/take-blood" routerLinkActive="active">
+                    <i class="fas fa-tint"></i> Give Blood
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/patient-blood" routerLinkActive="active">
+                    <i class="fas fa-vial"></i> Patient Blood
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/deleted-patient-blood" routerLinkActive="active">
+                    <i class="fas fa-trash"></i> Deleted Patient Blood
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/storage/patient-treatment-excel" routerLinkActive="active">
+                    <i class="fas fa-file-excel"></i> Patient Treatment Excel
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/storage/patient-excel" routerLinkActive="active">
+                    <i class="fas fa-download"></i> Patient Excel
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/storage/medicine-excel" routerLinkActive="active">
+                    <i class="fas fa-pills"></i> Medicine Excel
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/secretary/check-in-out" routerLinkActive="active">
+                    <i class="fas fa-user-clock"></i> Employee Check-In/Out
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Warehouse Section -->
+        <div *ngIf="role === 'WAREHOUSE_EMPLOYEE' || role === 'ADMIN'" class="nav-section">
+          <div class="nav-section-title">WAREHOUSE</div>
+          <ul>
+            <li class="has-submenu">
+              <a (click)="toggleWarehouseSubNav()" [attr.aria-expanded]="warehouseSubNavOpen">
+                <i class="fas fa-warehouse"></i>
+                <span>Warehouse Menu</span>
+                <i class="fas fa-chevron-down submenu-icon"></i>
+              </a>
+              <ul class="submenu" [class.expanded]="warehouseSubNavOpen">
+                <li>
+                  <a routerLink="/warehouse/add-supplier" routerLinkActive="active">
+                    <i class="fas fa-truck"></i> Add Suppliers
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/suppliers" routerLinkActive="active">
+                    <i class="fas fa-boxes"></i> Manage Suppliers
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/deleted-suppliers" routerLinkActive="active">
+                    <i class="fas fa-trash-alt"></i> Deleted Suppliers
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/add-medicine" routerLinkActive="active">
+                    <i class="fas fa-pills"></i> Add Medicine
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/manage-medicine" routerLinkActive="active">
+                    <i class="fas fa-capsules"></i> Manage Medicine
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/deleted-medicine" routerLinkActive="active">
+                    <i class="fas fa-trash-restore"></i> Deleted Medicine
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/add-warehouse" routerLinkActive="active">
+                    <i class="fas fa-warehouse"></i> Add to Warehouse
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/manage-warehouse" routerLinkActive="active">
+                    <i class="fas fa-cogs"></i> Manage Warehouse
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/warehouse/deleted-warehouse" routerLinkActive="active">
+                    <i class="fas fa-trash-alt"></i> Deleted Warehouse
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </ul>
-    </nav>
 
+      <!-- Toggle sidebar button -->
+      <div class="toggle-sidebar" (click)="toggleSidebar()">
+        <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+      </div>
+    </nav>
 
     <!-- Dynamic Content -->
     <div class="dashboard-content">
@@ -275,8 +355,5 @@
     </div>
   </div>
 
-  <!-- Footer -->
-<!--  <footer class="dashboard-footer">-->
-<!--    <p>&copy; 2025 Your Company. All rights reserved.</p>-->
-<!--  </footer>-->
+
 </div>

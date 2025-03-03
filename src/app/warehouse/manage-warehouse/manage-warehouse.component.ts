@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { WarehouseService } from '../../services/warehouse.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-manage-warehouse',
@@ -17,7 +18,7 @@ export class ManageWarehouseComponent {
   DecreaseStore: any = null; // For editing a warehouse store item
   showDecreaseModal = false;
 
-  constructor(private warehouseService: WarehouseService) {}
+  constructor(private warehouseService: WarehouseService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchWarehouseStores();
@@ -42,19 +43,22 @@ export class ManageWarehouseComponent {
   }
 
   deleteWarehouseStore(storeId: number): void {
-    if (confirm('Are you sure you want to delete this warehouse store?')) {
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this warehouse store?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
       this.warehouseService.deleteWarehouseStore(storeId).subscribe({
         next: () => {
           console.log('Warehouse store deleted successfully.');
-          alert('Warehouse store deleted successfully!');
-          this.fetchWarehouseStores(); // Refresh the list
+          this.customAlertService.show('Success', 'Warehouse store deleted successfully!');
+          this.fetchWarehouseStores();
         },
         error: (error) => {
           console.error('Failed to delete warehouse store:', error);
-          alert('Failed to delete warehouse store. Please try again.');
+          this.customAlertService.show('Error', 'Failed to delete warehouse store. Please try again.');
         },
       });
-    }
+    });
   }
 
   openEditModal(store: any): void {
@@ -82,7 +86,7 @@ export class ManageWarehouseComponent {
       const incrementValue = Number((document.getElementById('increaseQuantity') as HTMLInputElement).value); // Get the user input
 
       if (incrementValue <= 0) {
-        alert("Quantity to add must be greater than zero.");
+        this.customAlertService.show('Error', 'Quantity to add must be greater than zero.');
         return;
       }
 
@@ -93,13 +97,13 @@ export class ManageWarehouseComponent {
       this.warehouseService.updateWarehouseStore(this.editingStore.id, payload).subscribe({
         next: (response) => {
           console.log('Quantity increased successfully:', response);
-          alert('Quantity increased successfully!');
+          this.customAlertService.show('Success', 'Quantity increased successfully!');
           this.closeEditModal();
           this.fetchWarehouseStores(); // Refresh the list
         },
         error: (error) => {
           console.error('Failed to increase quantity:', error);
-          alert('Failed to increase quantity. Please try again.');
+          this.customAlertService.show('Error', 'Failed to increase quantity. Please try again.');
         },
       });
     }
@@ -110,7 +114,7 @@ export class ManageWarehouseComponent {
       const decrementValue = Number((document.getElementById('decreaseQuantity') as HTMLInputElement).value); // Get the user input
 
       if (decrementValue <= 0) {
-        alert("Quantity to decrease must be greater than zero.");
+        this.customAlertService.show('Error', 'Quantity to decrease must be greater than zero.');
         return;
       }
 
@@ -121,13 +125,13 @@ export class ManageWarehouseComponent {
       this.warehouseService.decreaseWarehouseStore(this.DecreaseStore.id, payload).subscribe({
         next: (response) => {
           console.log('Quantity decreased successfully:', response);
-          alert('Quantity decreased successfully!');
+          this.customAlertService.show('Success', 'Quantity decreased successfully!');
           this.closeDecreaseModal();
           this.fetchWarehouseStores(); // Refresh the list
         },
         error: (error) => {
           console.error('Failed to decrease quantity:', error);
-          alert('Failed to decrease quantity. Please try again.');
+          this.customAlertService.show('Error', 'Failed to decrease quantity. Please try again.');
         },
       });
     }

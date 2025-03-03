@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PatientService } from '../../services/patient.service';
 import { DonorService } from '../../services/donor.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-patient-blood',
@@ -28,7 +29,7 @@ export class PatientBloodComponent implements OnInit {
 
   bloodTypes = ['A_POSITIVE', 'A_NEGATIVE', 'B_POSITIVE', 'B_NEGATIVE', 'O_POSITIVE', 'O_NEGATIVE', 'AB_POSITIVE', 'AB_NEGATIVE'];
 
-  constructor(private patientService: PatientService,private donorService: DonorService) {}
+  constructor(private patientService: PatientService,private donorService: DonorService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadPatientBlood();
@@ -106,18 +107,21 @@ export class PatientBloodComponent implements OnInit {
   }
 
   deletePatientBlood(recordId: number): void {
-    if (confirm('Are you sure you want to delete this blood record?')) {
-      this.donorService.deletePatientBlood(recordId).subscribe(
-        () => {
-          alert('Blood record deleted successfully!');
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this blood record?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.donorService.deletePatientBlood(recordId).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'Blood record deleted successfully!');
           this.loadPatientBlood(); // Reload records
         },
-        (error) => {
+        error: (error) => {
           console.error('Failed to delete blood record:', error.message);
-          alert('Failed to delete blood record: ' + error.message);
-        }
-      );
-    }
+          this.customAlertService.show('Error', 'Failed to delete blood record: ' + error.message);
+        },
+      });
+    });
   }
 
   onDropdownScroll(event: any): void {

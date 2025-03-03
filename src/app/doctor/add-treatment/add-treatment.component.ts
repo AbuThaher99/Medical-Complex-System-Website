@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DoctorService } from '../../services/doctor.service';
 import { PatientService } from '../../services/patient.service';
 import { TreatmentService } from '../../services/treatment.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-treatment',
@@ -38,7 +39,9 @@ export class AddTreatmentComponent implements OnInit {
     private fb: FormBuilder,
     private doctorService: DoctorService,
     private patientService: PatientService,
-    private treatmentService: TreatmentService
+    private treatmentService: TreatmentService,
+    private customAlertService: CustomAlertService
+
   ) {
     this.treatmentForm = this.fb.group({
       doctorId: ['', Validators.required],
@@ -138,7 +141,8 @@ export class AddTreatmentComponent implements OnInit {
 
   onSubmit(): void {
     if (this.treatmentForm.invalid) {
-      alert('Please fill all required fields.');
+      this.customAlertService.show('Error', 'Please fill all required fields.');
+
       return;
     }
 
@@ -153,12 +157,14 @@ export class AddTreatmentComponent implements OnInit {
 
     this.treatmentService.addTreatment(treatmentData).subscribe({
       next: () => {
-        alert('Treatment added successfully!');
+        this.customAlertService.show('Success', 'Treatment added successfully!');
+
         this.treatmentForm.reset();
       },
       error: (error) => {
         console.error('Failed to add treatment:', error);
-        alert('Failed to add treatment. Please try again.');
+        this.customAlertService.show('Error', 'Failed to add treatment. Please try again.');
+
       }
     });
   }

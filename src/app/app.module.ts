@@ -49,6 +49,7 @@ import { TreatmentProfitComponent } from './admin/treatment-profit/treatment-pro
 import { SafeUrlPipe } from './safe-url.pipe';
 import { SalaryReportComponent } from './admin/salary-report/salary-report.component';
 import { SignupPatientComponent } from './signup-patient/signup-patient.component';
+import { CustomAlertComponent } from './custom-alert/custom-alert.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +98,7 @@ import { SignupPatientComponent } from './signup-patient/signup-patient.componen
     SafeUrlPipe,
     SalaryReportComponent,
     SignupPatientComponent,
+    CustomAlertComponent,
   ],
     imports: [
         BrowserModule,

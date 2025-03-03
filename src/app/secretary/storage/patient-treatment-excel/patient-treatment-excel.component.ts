@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { StorageService } from '../../../services/storage.service';
 import * as XLSX from 'xlsx';
+import {CustomAlertService} from "../../../services/custom-alert.service";
 
 @Component({
   selector: 'app-patient-treatment-excel',
@@ -14,7 +15,7 @@ export class PatientTreatmentExcelComponent {
   downloadedFileName: string = ''; // Store file name for download button
   downloadUrl: string = ''; // Firebase download URL
 
-  constructor(private storageService: StorageService) {}
+  constructor(private storageService: StorageService,private customAlertService: CustomAlertService) {}
 
   // Fetch and display Excel file
   loadExcelFile(): void {
@@ -29,7 +30,8 @@ export class PatientTreatmentExcelComponent {
       },
       (error) => {
         console.error('Error fetching file path:', error);
-        alert('Failed to fetch the Excel file path.');
+        this.customAlertService.show('Error', 'Failed to fetch the Excel file path.');
+
         this.isLoading = false;
       }
     );
@@ -69,7 +71,8 @@ export class PatientTreatmentExcelComponent {
       },
       (error) => {
         console.error('Failed to download the Excel:', error);
-        alert('Error downloading the Excel file.');
+        this.customAlertService.show('Error', 'Error downloading the Excel file.');
+
         this.isLoading = false;
       }
     );
@@ -78,7 +81,8 @@ export class PatientTreatmentExcelComponent {
   // Step 3: Download the file directly
   downloadExcelFile(): void {
     if (!this.downloadUrl) {
-      alert('No file available to download.');
+      this.customAlertService.show('Error', 'No file available to download.');
+
       return;
     }
 
@@ -102,7 +106,8 @@ export class PatientTreatmentExcelComponent {
       },
       (error) => {
         console.error('Error downloading the Excel:', error);
-        alert('Failed to download the Excel file.');
+        this.customAlertService.show('Error', 'Failed to download the Excel file.');
+
         this.isDownloading = false;
       }
     );

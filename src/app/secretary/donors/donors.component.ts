@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DonorService } from '../../services/donor.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-donors',
@@ -35,7 +36,7 @@ export class DonorsComponent implements OnInit {
   loadingDonors = false; // To prevent multiple simultaneous API calls
   donorPage = 1; // Current page number for the dropdown
   donorTotalPages = 1; // Total number of pages for the dropdown
-  constructor(private donorService: DonorService) {}
+  constructor(private donorService: DonorService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadDonors(); // Load donors for the table
@@ -110,31 +111,35 @@ export class DonorsComponent implements OnInit {
 
     this.donorService.updateDonor(this.editingDonor.id, this.editingDonor).subscribe(
       () => {
-        alert('Donor updated successfully!');
+        this.customAlertService.show('Success', 'Donor updated successfully!');
+
         this.closeEditModal();
         this.loadDonors();
       },
       (error) => {
         console.error('Failed to update donor:', error.message);
-        alert('Failed to update donor: ' + error.message);
+        this.customAlertService.show('Error', 'Failed to update donor: ' + error.message);
+
       }
     );
   }
 
-  // Delete a donor
   deleteDonor(id: number): void {
-    if (confirm('Are you sure you want to delete this donor?')) {
-      this.donorService.deleteDonor(id).subscribe(
-        () => {
-          alert('Donor deleted successfully!');
-          this.loadDonors();
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this donor?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.donorService.deleteDonor(id).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'Donor deleted successfully!');
+          this.loadDonors()
         },
-        (error) => {
+        error: (error) => {
           console.error('Failed to delete donor:', error.message);
-          alert('Failed to delete donor: ' + error.message);
-        }
-      );
-    }
+          this.customAlertService.show('Error', 'Failed to delete donor: ' + error.message);
+        },
+      });
+    });
   }
 
   // Open the add donation modal
@@ -153,19 +158,22 @@ export class DonorsComponent implements OnInit {
   // Add a new donation
   addDonation(): void {
     if (!this.currentDonorId) {
-      alert('No donor selected!');
+      this.customAlertService.show('Error', 'No donor selected!');
+
       return;
     }
 
     this.donorService.addDonation(this.currentDonorId, this.donation).subscribe(
       () => {
-        alert('Donation added successfully!');
+        this.customAlertService.show('Success', 'Donation added successfully!');
+
         this.closeAddDonationModal();
         this.loadDonors(); // Reload donors to reflect the new donation
       },
       (error) => {
         console.error('Failed to add donation:', error.message);
-        alert('Failed to add donation: ' + error.message);
+        this.customAlertService.show('Error', 'Failed to add donation: ' + error.message);
+
       }
     );
   }

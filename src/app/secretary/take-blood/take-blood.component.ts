@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PatientService } from '../../services/patient.service';
 import { DonorService } from '../../services/donor.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-take-blood',
@@ -19,7 +20,7 @@ export class TakeBloodComponent implements OnInit {
   totalPages = 1;
   isLoading = false;
 
-  constructor(private patientService: PatientService, private donorService: DonorService) {}
+  constructor(private patientService: PatientService, private donorService: DonorService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadPatients();
@@ -67,7 +68,7 @@ export class TakeBloodComponent implements OnInit {
   // Take Blood
   takeBlood(): void {
     if (!this.selectedPatientId || !this.quantity || this.quantity < 1) {
-      alert('Please select a patient and enter a valid quantity.');
+      this.customAlertService.show('Error', 'Please select a patient and enter a valid quantity.');
       return;
     }
 
@@ -78,13 +79,13 @@ export class TakeBloodComponent implements OnInit {
 
     this.donorService.takeBlood(requestBody).subscribe(
       () => {
-        alert('Blood taken successfully!');
+        this.customAlertService.show('Success', 'Blood taken successfully!');
         this.selectedPatientId = null;
         this.quantity = null;
       },
       (error) => {
         console.error('Failed to take blood:', error.message);
-        alert('Failed to take blood: ' + error.message);
+        this.customAlertService.show('Error', 'Failed to take blood: ' + error.message);
       }
     );
   }

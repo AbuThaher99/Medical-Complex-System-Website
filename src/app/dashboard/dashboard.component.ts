@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ConfigService } from '../services/config.service';
+import {CustomAlertService} from "../services/custom-alert.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +25,8 @@ export class DashboardComponent implements OnInit {
   };
   selectedFile: File | null = null;
 
-  constructor(private http: HttpClient, private router: Router,private configService: ConfigService) {}
+  constructor(private http: HttpClient, private router: Router,private configService: ConfigService,private customAlertService: CustomAlertService
+  ) {}
 
   ngOnInit(): void {
     this.fetchUserDetails();
@@ -102,11 +104,11 @@ export class DashboardComponent implements OnInit {
     this.http.put(url, requestBody, { headers }).subscribe({
       next: (response) => {
         console.log('User information updated successfully:', response);
-        alert('User information updated successfully!');
+        this.customAlertService.show('Success', 'User information updated successfully!');
       },
       error: (error) => {
         console.error('Failed to update user information:', error);
-        alert('Failed to update user information. Please try again.');
+        this.customAlertService.show('Error', 'Failed to update user information. Please try again.');
       }
     });
   }
@@ -119,7 +121,7 @@ export class DashboardComponent implements OnInit {
 
     // Check if email, oldPassword, and newPassword are available
     if (!email || !this.password.oldPassword || !this.password.newPassword) {
-      alert('Please fill in all required fields.');
+      this.customAlertService.show('Error', 'Please fill in all required fields.');
       return;
     }
 
@@ -142,18 +144,18 @@ export class DashboardComponent implements OnInit {
         // clear the password fields
         this.password.oldPassword = '';
         this.password.newPassword = '';
-        alert('Password changed successfully!');
+        this.customAlertService.show('Success', 'Password changed successfully!');
       },
       error: (error) => {
         console.error('Failed to change password:', error);
-        alert('Failed to change password. Please try again.');
+        this.customAlertService.show('Error', 'Failed to change password. Please try again.');
       }
     });
   }
 
   uploadProfileImage(): void {
     if (!this.selectedFile) {
-      alert('Please select an image to upload.');
+      this.customAlertService.show('Error', 'Please select an image to upload.');
       return;
     }
 
@@ -183,7 +185,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to upload profile image:', error);
-        alert('Failed to upload profile image. Please try again.');
+        this.customAlertService.show('Error', 'Failed to upload profile image. Please try again.');
       },
     });
   }
