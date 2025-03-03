@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MedicineService } from '../../services/medicine.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-medicine',
@@ -13,7 +14,7 @@ export class DeletedMedicineComponent implements OnInit {
   search = '';
   totalDeletedMedicines = 0;
 
-  constructor(private medicineService: MedicineService) {}
+  constructor(private medicineService: MedicineService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchDeletedMedicines();
@@ -43,19 +44,22 @@ export class DeletedMedicineComponent implements OnInit {
   }
 
   restoreMedicine(medicineId: number): void {
-    if (confirm('Are you sure you want to restore this medicine?')) {
+    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this medicine?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
       this.medicineService.restoreMedicine(medicineId).subscribe({
         next: () => {
           console.log('Medicine restored successfully.');
-          alert('Medicine restored successfully!');
-          this.fetchDeletedMedicines(); // Refresh the list
+          this.customAlertService.show('Success', 'Medicine restored successfully!');
+          this.fetchDeletedMedicines();
         },
         error: (error) => {
           console.error('Failed to restore medicine:', error);
-          alert('Failed to restore medicine. Please try again.');
+          this.customAlertService.show('Error', 'Failed to restore medicine. Please try again.');
         },
       });
-    }
+    });
   }
 
   protected readonly Math = Math;

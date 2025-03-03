@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WarehouseService } from '../../services/warehouse.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-warehouse',
@@ -20,7 +21,7 @@ export class AddWarehouseComponent {
   isLoadingMedicines = false;
   showMedicineDropdown = false;
 
-  constructor(private warehouseService: WarehouseService) {}
+  constructor(private warehouseService: WarehouseService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchMedicines();
@@ -94,7 +95,7 @@ export class AddWarehouseComponent {
 
   onSubmit(): void {
     if (!this.selectedMedicineId || !this.quantity) {
-      alert('Please select a medicine and enter a valid quantity.');
+      this.customAlertService.show('Error', 'Please select a medicine and enter a valid quantity.');
       return;
     }
 
@@ -106,13 +107,14 @@ export class AddWarehouseComponent {
     this.warehouseService.addToWarehouse(payload).subscribe({
       next: (response) => {
         console.log('Medicine added to warehouse successfully:', response);
-        alert('Medicine added to warehouse successfully!');
+        this.customAlertService.show('Success', 'Medicine added to warehouse successfully!');
         this.fetchMedicines();
         this.resetForm();
       },
       error: (error) => {
         console.error('Failed to add medicine to warehouse:', error);
-        alert('Failed to add medicine to warehouse. Please try again.');
+        this.customAlertService.show('Error', 'Failed to add medicine to warehouse. Please try again.');
+
       },
     });
   }

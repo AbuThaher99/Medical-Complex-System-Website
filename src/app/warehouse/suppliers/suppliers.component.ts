@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import {ConfigService} from "../../services/config.service";
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-suppliers',
@@ -19,7 +20,7 @@ export class SuppliersComponent implements OnInit {
   showMedicinesModal: boolean = false;
   selectedSupplier: any = null; // Selected supplier for editing or viewing medicines
   medicines: any[] = []; // Medicines for the selected supplier
-  constructor(private fb: FormBuilder, private http: HttpClient,private configService: ConfigService) {
+  constructor(private fb: FormBuilder, private http: HttpClient,private configService: ConfigService,private customAlertService: CustomAlertService) {
     this.filterForm = this.fb.group({
       search: [''],
       companyName: [''],
@@ -87,11 +88,13 @@ export class SuppliersComponent implements OnInit {
       )
       .subscribe(
         (response) => {
-          alert('Supplier updated successfully!');
-          this.loadSuppliers(); // Refresh the supplier list
+          this.customAlertService.show('Success', 'Supplier updated successfully!');
+
+          this.loadSuppliers();
         },
         (error) => {
-          alert('Error updating supplier: ' + error.message);
+          this.customAlertService.show('Error', 'Error updating supplier: ' + error.message);
+
         }
       );
   }
@@ -102,28 +105,25 @@ export class SuppliersComponent implements OnInit {
       Authorization: `Bearer ${token}`,
     });
 
-    if (confirm(`Are you sure you want to delete ${supplier.name}?`)) {
+    this.customAlertService.confirm('Confirm Delete', `Are you sure you want to delete ${supplier.name}?`).then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
       this.http
         .delete(`${this.configService.apiUrl}admin/supplier/${supplier.id}`, { headers })
         .subscribe(
           (response) => {
-            alert('Supplier deleted successfully!');
+            this.customAlertService.show('Success', 'Supplier deleted successfully!');
             this.loadSuppliers(); // Refresh the supplier list
           },
           (error) => {
-            alert('Error deleting supplier: ' + error.message);
+            this.customAlertService.show('Error', 'Error deleting supplier: ' + error.message);
           }
         );
-    }
+    });
   }
 
-  onShowMedicines(supplier: any) {
-    if (supplier.medicines.length === 0) {
-      alert('No medicines found for this supplier.');
-    } else {
-      alert(`Medicines: ${supplier.medicines.join(', ')}`);
-    }
-  }
+
 
   nextPage() {
     if (this.page < this.totalPages) {

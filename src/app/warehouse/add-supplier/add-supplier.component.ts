@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import {ConfigService} from "../../services/config.service";
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-supplier',
@@ -16,7 +17,7 @@ export class AddSupplierComponent {
     address: '',
   };
 
-  constructor(private http: HttpClient, private router: Router,private configService: ConfigService) {}
+  constructor(private http: HttpClient, private router: Router,private configService: ConfigService,private customAlertService: CustomAlertService) {}
 
   onSubmit(): void {
     const token = localStorage.getItem('access_token'); // Retrieve the token from localStorage
@@ -30,12 +31,14 @@ export class AddSupplierComponent {
       .post(`${this.configService.apiUrl}admin/supplier/`, this.supplier, { headers })
       .subscribe({
         next: (response) => {
-          alert('Supplier added successfully!');
-          this.router.navigate(['/warehouse/suppliers']);
+          this.customAlertService.show('Success', 'Supplier added successfully!');
+          setTimeout(() => {
+            this.router.navigate(['/warehouse/suppliers']);
+          }, 2000);
         },
         error: (error) => {
           console.error('Failed to add supplier:', error);
-          alert('Failed to add supplier. Please try again.');
+          this.customAlertService.show('Error', 'Failed to add supplier. Please try again.');
         },
       });
   }

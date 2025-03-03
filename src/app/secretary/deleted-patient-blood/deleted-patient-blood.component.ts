@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DonorService } from '../../services/donor.service';
 import { PatientService } from '../../services/patient.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-patient-blood',
@@ -30,7 +31,7 @@ export class DeletedPatientBloodComponent implements OnInit {
 
   bloodTypes = ['A_POSITIVE', 'A_NEGATIVE', 'B_POSITIVE', 'B_NEGATIVE', 'O_POSITIVE', 'O_NEGATIVE', 'AB_POSITIVE', 'AB_NEGATIVE'];
 
-  constructor(private donorService: DonorService, private patientService: PatientService) {}
+  constructor(private donorService: DonorService, private patientService: PatientService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadDeletedPatientBlood();
@@ -105,20 +106,22 @@ export class DeletedPatientBloodComponent implements OnInit {
     }, 200);
   }
 
-  // Restore Patient Blood Record
   restorePatientBlood(id: number): void {
-    if (confirm('Are you sure you want to restore this patient blood record?')) {
-      this.donorService.restorePatientBlood(id).subscribe(
-        () => {
-          alert('Patient blood record restored successfully!');
+    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this patient blood record?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.donorService.restorePatientBlood(id).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'Patient blood record restored successfully!');
           this.loadDeletedPatientBlood();
         },
-        (error) => {
+        error: (error) => {
           console.error('Failed to restore:', error.message);
-          alert('Failed to restore: ' + error.message);
-        }
-      );
-    }
+          this.customAlertService.show('Error', 'Failed to restore: ' + error.message);
+        },
+      });
+    });
   }
 
   onDropdownScroll(event: any): void {

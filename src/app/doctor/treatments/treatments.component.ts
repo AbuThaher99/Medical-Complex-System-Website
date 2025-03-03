@@ -6,6 +6,7 @@ import { WarehouseService } from '../../services/warehouse.service';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import {PatientMedicineService} from "../../services/patient-medicine.service";
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-treatments',
@@ -85,7 +86,7 @@ export class TreatmentsComponent implements OnInit {
   private patientEditSearchSubject = new Subject<string>();
 
   constructor(private doctorService: DoctorService, private patientService: PatientService,private warehouseService: WarehouseService
-  ,private patientMedicineService: PatientMedicineService) {}
+  ,private patientMedicineService: PatientMedicineService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchTreatments();
@@ -313,26 +314,34 @@ export class TreatmentsComponent implements OnInit {
     if (this.editingTreatment) {
       this.doctorService.updateTreatment(this.editingTreatment.id, this.editingTreatment)
         .subscribe(() => {
-          alert('Treatment updated successfully!');
+          this.customAlertService.show('Success', 'Treatment updated successfully!');
+
           this.closeEditModal();
           this.fetchTreatments();
         }, error => {
           console.error('Update failed:', error);
-          alert('Failed to update treatment.');
+          this.customAlertService.show('Error', 'Failed to update treatment');
+
         });
     }
   }
 
   deleteTreatment(id: number): void {
-    if (confirm('Are you sure you want to delete this treatment?')) {
-      this.doctorService.deleteTreatment(id).subscribe(() => {
-        alert('Treatment deleted successfully!');
-        this.fetchTreatments();
-      }, error => {
-        console.error('Delete failed:', error);
-        alert('Failed to delete treatment.');
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this treatment?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.doctorService.deleteTreatment(id).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'Treatment deleted successfully!');
+          this.fetchTreatments(); // Refresh the list
+        },
+        error: (error) => {
+          console.error('Delete failed:', error);
+          this.customAlertService.show('Error', 'Failed to delete treatment.');
+        },
       });
-    }
+    });
   }
   loadDoctors(callback?: () => void): void {
     if (this.loadingMoreDoctors || (this.totalDoctors && this.doctors.length >= this.totalDoctors)) return;
@@ -391,18 +400,19 @@ export class TreatmentsComponent implements OnInit {
 
   saveMedicine() {
     if (!this.selectedTreatmentId || !this.selectedMedicineId || this.medicineQuantity <= 0) {
-      alert('Please select a medicine and enter a valid quantity.');
+      this.customAlertService.show('Error', 'Please select a medicine and enter a valid quantity.');
       return;
     }
 
     this.patientMedicineService.addMedicineToTreatment(this.selectedTreatmentId, this.selectedMedicineId, this.medicineQuantity)
       .subscribe(
         () => {
-          alert('Medicine added successfully!');
+          this.customAlertService.show('Success', 'Medicine added successfully!');
           this.closeAddMedicineModal();
         },
         error => {
-          alert('Failed to add medicine: ' + error.message);
+          this.customAlertService.show('Error', 'Failed to add medicine');
+
         }
       );
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from '../../services/config.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-department',
@@ -47,7 +48,8 @@ export class AddDepartmentComponent implements OnInit {
     'Content-Type': 'application/json',
   });
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private configService: ConfigService) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private configService: ConfigService,private customAlertService: CustomAlertService
+  ) {
     this.addDepartmentForm = this.fb.group({
       name: ['', Validators.required],
       headId: ['', Validators.required],
@@ -220,7 +222,7 @@ export class AddDepartmentComponent implements OnInit {
         })
         .subscribe(
           () => {
-            alert('Department added successfully!');
+            this.customAlertService.show('Success', 'Department added successfully!');
             this.addDepartmentForm.reset();
             this.selectedHeadInfo = '';
             this.selectedSecretaryInfo = '';
@@ -233,7 +235,8 @@ export class AddDepartmentComponent implements OnInit {
           },
           (error) => {
             console.error('Error adding department:', error);
-            alert('Failed to add department.');
+            this.customAlertService.show('Error', 'Failed to add department.');
+
           }
         );
     }

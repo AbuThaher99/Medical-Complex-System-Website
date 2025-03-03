@@ -6,6 +6,7 @@ import { ConfigService } from '../../services/config.service';
 
 
 import {Subject} from "rxjs";
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-departments',
@@ -55,7 +56,9 @@ export class DepartmentsComponent implements OnInit {
 
   constructor(
     private departmentService: DepartmentService,
-    private http: HttpClient, private configService: ConfigService
+    private http: HttpClient, private configService: ConfigService,
+    private customAlertService: CustomAlertService
+
   ) {}
 
   ngOnInit(): void {
@@ -90,7 +93,8 @@ export class DepartmentsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Failed to fetch departments:', error);
-          alert('Failed to fetch departments. Please try again.');
+          this.customAlertService.show('Error', 'Failed to fetch departments. Please try again.');
+
         },
       });
   }
@@ -107,21 +111,25 @@ export class DepartmentsComponent implements OnInit {
 
 
   deleteDepartment(id: number): void {
-    const confirmDelete = confirm('Are you sure you want to delete this department?');
-    if (!confirmDelete) {
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this department?').then((confirmed) => {
+      if (!confirmed) {
       return;
     }
 
     this.departmentService.deleteDepartment(id).subscribe({
       next: (response) => {
         console.log('Department deleted successfully:', response);
-        alert('Department deleted successfully!');
+        this.customAlertService.show('Success', 'Department deleted successfully!');
+
         this.fetchDepartments();
       },
       error: (error) => {
         console.error('Failed to delete department:', error);
-        alert('Failed to delete department. Please try again.');
+        this.customAlertService.show('Error', 'Failed to delete department. Please try again.');
+
       },
+
+    });
     });
   }
 
@@ -289,13 +297,15 @@ export class DepartmentsComponent implements OnInit {
     this.departmentService.updateDepartment(id, data).subscribe({
       next: (response) => {
         console.log('Department updated successfully:', response);
-        alert('Department updated successfully!');
+        this.customAlertService.show('Success', 'Department updated successfully!');
+
         this.closeEditModal();
         this.fetchDepartments();
       },
       error: (error) => {
         console.error('Failed to update department:', error);
-        alert('Failed to update department. Please try again.');
+        this.customAlertService.show('Error', 'Failed to update department. Please try again.');
+
       },
     });
   }

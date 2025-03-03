@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-manageuser',
@@ -19,7 +20,8 @@ export class ManageuserComponent implements OnInit {
 
   private searchSubject = new Subject<{ search: string; role: string }>();
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService,private customAlertService: CustomAlertService
+  ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -62,7 +64,7 @@ export class ManageuserComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to fetch user details:', error);
-        alert('Failed to fetch user details. Please try again.');
+        this.customAlertService.show('Error', 'Failed to fetch user details. Please try again.');
       },
     });
   }
@@ -80,21 +82,25 @@ export class ManageuserComponent implements OnInit {
   }
 
   deleteUser(userId: number): void {
-    const confirmDelete = confirm('Are you sure you want to delete this user?');
-    if (!confirmDelete) {
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this user?').then((confirmed) => {
+
+      if (!confirmed) {
       return;
     }
 
     this.userService.deleteUser(userId).subscribe({
       next: (response) => {
         console.log('User deleted successfully:', response);
-        alert('User deleted successfully!');
+        this.customAlertService.show('Success', 'User deleted successfully!');
+
         this.fetchUsers(); // Refresh the user list after deletion
       },
       error: (error) => {
         console.error('Failed to delete user:', error);
-        alert('Failed to delete user. Please try again.');
+        this.customAlertService.show('Error', 'Failed to delete user. Please try again.');
+
       },
+    });
     });
   }
 

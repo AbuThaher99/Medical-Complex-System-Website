@@ -1,10 +1,11 @@
+<app-custom-alert></app-custom-alert>
 <div class="deleted-users-container">
   <h2>Deleted Users</h2>
 
   <!-- Search and Filter Section -->
   <div class="search-filter-section">
-    <input [(ngModel)]="search" placeholder="Search by name or email..." />
-    <select [(ngModel)]="role">
+    <input [(ngModel)]="search" (ngModelChange)="fetchDeletedUsers()" placeholder="Search by name or email..." />
+    <select [(ngModel)]="role" (ngModelChange)="fetchDeletedUsers()">
       <option value="">All Roles</option>
       <option value="ADMIN">Admin</option>
       <option value="DOCTOR">Doctor</option>
@@ -12,7 +13,6 @@
       <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
       <option value="PATIENT">Patient</option>
     </select>
-    <button (click)="onSearch()">Search</button>
   </div>
 
   <!-- User Table -->
@@ -39,11 +39,10 @@
     </tbody>
   </table>
 
+  <!-- Pagination -->
   <div class="pagination-section">
-    <button (click)="onPageChange(page - 1)" [disabled]="page === 1 || totalUsers === 0">Previous
-    </button>
+    <button (click)="onPageChange(page - 1)" [disabled]="page === 1 || totalUsers === 0">Previous</button>
     <span>Page {{ page }} of {{ Math.ceil(totalUsers / size) }}</span>
     <button (click)="onPageChange(page + 1)" [disabled]="page === Math.ceil(totalUsers / size) || totalUsers === 0">Next</button>
   </div>
-
 </div>

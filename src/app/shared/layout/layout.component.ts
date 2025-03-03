@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {ConfigService} from "../../services/config.service";
+import { ConfigService } from "../../services/config.service";
 
 @Component({
   selector: 'app-layout',
@@ -13,26 +13,106 @@ export class LayoutComponent implements OnInit {
     firstName: '',
     lastName: '',
     image: './assets/profile.png'
-  }; // Initialize user data
-  role: string | null = null; // Initialize role
+  };
+  role: string | null = null;
   isDropdownOpen: boolean = false;
   adminSubNavOpen: boolean = false;
   warehouseSubNavOpen: boolean = false;
-  secretarySubNavOpen = false;
+  secretarySubNavOpen: boolean = false;
+  sidebarCollapsed: boolean = false;
+  mobileNavOpen: boolean = false;
 
   showNotifications = false;
   notifications: any[] = [];
   unreadNotificationsCount = 0;
 
-  constructor(private http: HttpClient, private router: Router,private configService: ConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private configService: ConfigService
+  ) {}
 
   ngOnInit(): void {
-    this.fetchUserDetails(); // Fetch user details when the component initializes
-    if (this.user?.role === 'PATIENT') {
-      this.fetchNotifications();
+    this.fetchUserDetails();
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // Close dropdowns when clicking outside
+    const userProfileElement = document.querySelector('.user-profile');
+    const dropdownMenuElement = document.querySelector('.dropdown-menu');
+    const notificationsElement = document.querySelector('.notifications');
+    const notificationsDropdownElement = document.querySelector('.notifications-dropdown');
+
+    if (userProfileElement && dropdownMenuElement) {
+      if (!userProfileElement.contains(event.target as Node) &&
+        !dropdownMenuElement.contains(event.target as Node)) {
+        this.isDropdownOpen = false;
+      }
+    }
+
+    if (notificationsElement && notificationsDropdownElement) {
+      if (!notificationsElement.contains(event.target as Node) &&
+        !notificationsDropdownElement.contains(event.target as Node)) {
+        this.showNotifications = false;
+      }
     }
   }
 
+  checkScreenSize() {
+    // Auto-collapse sidebar on small screens
+    if (window.innerWidth < 768) {
+      this.sidebarCollapsed = true;
+    }
+  }
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  toggleMobileNav() {
+    this.mobileNavOpen = !this.mobileNavOpen;
+  }
+
+  closeMobileNav() {
+    this.mobileNavOpen = false;
+  }
+
+  fetchUserDetails(): void {
+    const url = `${this.configService.apiUrl}auth/getUser`;
+    const accessToken = localStorage.getItem('access_token');
+
+    if (!accessToken) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'accept': '*/*',
+      'Authorization': `Bearer ${accessToken}`
+    });
+
+    this.http.get(url, { headers }).subscribe({
+      next: (response: any) => {
+        this.user = response;
+        this.role = response.role;
+
+        if (this.user?.role === 'PATIENT') {
+          this.fetchNotifications();
+        }
+      },
+      error: (error) => {
+        console.error('Failed to fetch user details:', error);
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
   fetchNotifications(): void {
     const accessToken = localStorage.getItem('access_token');
@@ -41,17 +121,13 @@ export class LayoutComponent implements OnInit {
       accept: '*/*',
     });
 
-    // console.log('Fetching notifications for user ID:', this.user.patient.id); // Debug log
-
     this.http
       .get(`${this.configService.apiUrl}patients/treatment/patientNotifications`, { headers })
       .subscribe((response: any) => {
-        console.log("Notifications response:", response); // Debug log
-
         this.notifications = response;
         this.unreadNotificationsCount = this.notifications.filter((n) => !n.read).length;
       }, (error) => {
-        console.error('Failed to fetch notifications:', error); // Debug error
+        console.error('Failed to fetch notifications:', error);
       });
   }
 
@@ -62,7 +138,6 @@ export class LayoutComponent implements OnInit {
   onNotificationClick(): void {
     this.toggleNotifications();
   }
-
 
   markAsRead(notificationId: number): void {
     const accessToken = localStorage.getItem('access_token');
@@ -84,53 +159,43 @@ export class LayoutComponent implements OnInit {
         this.unreadNotificationsCount = this.notifications.filter((n) => !n.read).length;
       });
   }
+
   toggleAdminSubNav(): void {
     this.adminSubNavOpen = !this.adminSubNavOpen;
+    // Close other submenus when opening this one
+    if (this.adminSubNavOpen) {
+      this.secretarySubNavOpen = false;
+      this.warehouseSubNavOpen = false;
+    }
   }
-  toggleSecretarySubNav() {
+
+  toggleSecretarySubNav(): void {
     this.secretarySubNavOpen = !this.secretarySubNavOpen;
+    // Close other submenus when opening this one
+    if (this.secretarySubNavOpen) {
+      this.adminSubNavOpen = false;
+      this.warehouseSubNavOpen = false;
+    }
   }
+
   toggleWarehouseSubNav(): void {
     this.warehouseSubNavOpen = !this.warehouseSubNavOpen;
-  }
-  fetchUserDetails(): void {
-    const url = `${this.configService.apiUrl}auth/getUser`; // Replace with your API endpoint
-    const accessToken = localStorage.getItem('access_token');
-
-    if (!accessToken) {
-      this.router.navigate(['/login']); // Redirect to login if no token is found
-      return;
+    // Close other submenus when opening this one
+    if (this.warehouseSubNavOpen) {
+      this.adminSubNavOpen = false;
+      this.secretarySubNavOpen = false;
     }
-
-    const headers = new HttpHeaders({
-      'accept': '*/*',
-      'Authorization': `Bearer ${accessToken}`
-    });
-
-    this.http.get(url, { headers }).subscribe({
-      next: (response: any) => {
-        this.user = response; // Assign user data
-        this.role = response.role; // Assign role
-
-        // ✅ Call fetchNotifications() after fetching user details
-        if (this.user?.role === 'PATIENT') {
-          this.fetchNotifications();
-        }
-      },
-      error: (error) => {
-        console.error('Failed to fetch user details:', error);
-        this.router.navigate(['/login']); // Redirect to login on error
-      }
-    });
   }
-
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
+    // Close notifications when opening user dropdown
+    if (this.isDropdownOpen) {
+      this.showNotifications = false;
+    }
   }
 
   logout(): void {
-    console.log('Logging out user'); // Debug log
     const accessToken = localStorage.getItem('access_token');
 
     if (accessToken) {
@@ -140,24 +205,24 @@ export class LayoutComponent implements OnInit {
         })
       }).subscribe({
         next: () => {
-          console.log('Logged out successfully');
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          this.clearLocalStorage();
           this.router.navigate(['/login']);
         },
-        error: (error) => {
-          console.error('Logout failed:', error);
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+        error: () => {
+          this.clearLocalStorage();
           this.router.navigate(['/login']);
         }
       });
     } else {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('role');
-      localStorage.removeItem('id');
+      this.clearLocalStorage();
       this.router.navigate(['/login']);
     }
+  }
+
+  private clearLocalStorage(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('id');
   }
 }

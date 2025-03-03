@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TreatmentPatientService } from '../../services/treatment-patient.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-my-treatments',
@@ -14,7 +15,7 @@ export class MyTreatmentsComponent implements OnInit {
   feedbackModalOpen = false;
   feedback = { comment: '', rating: 0, doctorId: 0, patientId: 0, treatmentId: 0 };
 
-  constructor(private treatmentService: TreatmentPatientService) {}
+  constructor(private treatmentService: TreatmentPatientService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadTreatments();
@@ -29,7 +30,7 @@ export class MyTreatmentsComponent implements OnInit {
 
   openFeedbackModal(doctorId: number, patientId: number, treatmentId: number, isRated: boolean): void {
     if (isRated) {
-      alert('Feedback has already been submitted for this treatment.');
+      this.customAlertService.show('Error', 'Feedback has already been submitted for this treatment.');
       return;
     }
 
@@ -53,11 +54,12 @@ export class MyTreatmentsComponent implements OnInit {
     };
 
     this.treatmentService.submitFeedback(payload).subscribe(() => {
-      alert('Feedback submitted successfully!');
+      this.customAlertService.show('Success', 'Feedback submitted successfully!');
       this.feedbackModalOpen = false;
       this.loadTreatments(); // Refresh treatments to reflect feedback status
     }, () => {
-      alert('Failed to submit feedback.');
+      this.customAlertService.show('Error', 'Failed to submit feedback.');
+
     });
   }
 

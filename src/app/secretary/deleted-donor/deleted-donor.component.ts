@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DonorService } from '../../services/donor.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-donor',
@@ -34,7 +35,7 @@ export class DeletedDonorComponent implements OnInit {
   ];
   genders = ['MALE', 'FEMALE'];
 
-  constructor(private donorService: DonorService) {}
+  constructor(private donorService: DonorService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadDeletedDonors();
@@ -102,17 +103,20 @@ export class DeletedDonorComponent implements OnInit {
   }
 
   restoreDonor(donorId: number): void {
-    if (confirm('Are you sure you want to restore this donor?')) {
-      this.donorService.restoreDonor(donorId).subscribe(
-        () => {
-          alert('Donor restored successfully!');
+    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this donor?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.donorService.restoreDonor(donorId).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'Donor restored successfully!');
           this.loadDeletedDonors();
         },
-        (error) => {
+        error: (error) => {
           console.error('Failed to restore donor:', error.message);
-          alert('Failed to restore donor: ' + error.message);
-        }
-      );
-    }
+          this.customAlertService.show('Error', 'Failed to restore donor: ' + error.message);
+        },
+      });
+    });
   }
 }

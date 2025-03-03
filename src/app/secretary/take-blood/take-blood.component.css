@@ -2,20 +2,21 @@
 .take-blood-container {
   max-width: 600px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 25px;
   background: linear-gradient(to bottom, #ffffff, #f9f9f9);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', sans-serif;
   text-align: center;
 }
 
 /* Title */
 .take-blood-container h2 {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 26px;
+  font-weight: 600;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 /* Dropdown */
@@ -23,21 +24,24 @@
   position: relative;
   display: inline-block;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .take-blood-dropdown input {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  background-color: #f9f9f9;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .take-blood-dropdown input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+  background-color: #fff;
 }
 
 /* Dropdown Content */
@@ -46,7 +50,7 @@
   background: white;
   width: 100%;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;
@@ -55,7 +59,8 @@
 
 .take-blood-dropdown-content label {
   display: block;
-  padding: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
   cursor: pointer;
   transition: background 0.3s ease;
 }
@@ -64,12 +69,24 @@
   background: #f1f1f1;
 }
 
+/* Loading Spinner */
+.loading-spinner {
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+}
+
 /* Selected Patient */
 .take-blood-selected-patient {
-  margin: 15px 0;
+  margin: 20px 0;
   font-size: 16px;
   color: #007bff;
-  font-weight: bold;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
 }
 
 /* Blood Quantity Input */
@@ -77,39 +94,44 @@
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  background-color: #f9f9f9;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .take-blood-input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+  background-color: #fff;
 }
 
 /* Take Blood Button */
 .take-blood-btn {
+  width: 100%;
   background-color: #dc3545;
   color: white;
   padding: 12px 20px;
   border: none;
   border-radius: 8px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease, transform 0.2s ease;
 }
 
 .take-blood-btn:hover {
   background-color: #c82333;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 .take-blood-btn:active {
   background-color: #b21f2d;
-  transform: scale(1);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
 }
 
 /* Responsive Design */
@@ -119,7 +141,14 @@
     padding: 15px;
   }
 
-  .take-blood-input {
+  .take-blood-container h2 {
+    font-size: 22px;
+  }
+
+  .take-blood-dropdown input,
+  .take-blood-input,
+  .take-blood-btn {
     font-size: 14px;
+    padding: 10px;
   }
 }

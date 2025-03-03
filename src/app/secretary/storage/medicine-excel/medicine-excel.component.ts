@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { StorageService } from '../../../services/storage.service';
 import * as XLSX from 'xlsx';
+import {CustomAlertService} from "../../../services/custom-alert.service";
 
 @Component({
   selector: 'app-medicine-excel',
@@ -13,7 +14,7 @@ export class MedicineExcelComponent {
   excelData: any[] = [];
   downloadedFileName: string = '';
 
-  constructor(private storageService: StorageService) {}
+  constructor(private storageService: StorageService,private customAlertService: CustomAlertService) {}
 
   // Fetch and display the Medicine Excel file
   loadMedicineExcel(): void {
@@ -27,7 +28,7 @@ export class MedicineExcelComponent {
       },
       (error) => {
         console.error('Error fetching file path:', error);
-        alert('Failed to fetch the Medicine Excel file path.');
+        this.customAlertService.show('Error', 'Failed to fetch the Medicine Excel file path.');
         this.isLoading = false;
       }
     );
@@ -65,7 +66,7 @@ export class MedicineExcelComponent {
       },
       (error) => {
         console.error('Failed to download Excel:', error);
-        alert('Error downloading the Medicine Excel file.');
+        this.customAlertService.show('Error', 'Error downloading the Medicine Excel file.');
         this.isLoading = false;
       }
     );
@@ -74,7 +75,7 @@ export class MedicineExcelComponent {
   // Download the Excel file directly
   downloadExcelFile(): void {
     if (!this.downloadedFileName) {
-      alert('No file available to download.');
+      this.customAlertService.show('Error', 'No file available to download.');
       return;
     }
 
@@ -97,7 +98,7 @@ export class MedicineExcelComponent {
       },
       (error) => {
         console.error('Failed to download the Medicine Excel:', error);
-        alert('Failed to download the Medicine Excel file.');
+        this.customAlertService.show('Error', 'Failed to download the Medicine Excel file.');
         this.isDownloading = false;
       }
     );

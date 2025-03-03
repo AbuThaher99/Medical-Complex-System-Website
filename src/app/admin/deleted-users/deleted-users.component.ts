@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { ConfigService } from '../../services/config.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-users',
@@ -16,7 +17,8 @@ export class DeletedUsersComponent implements OnInit {
   role = '';
   totalUsers = 0;
 
-  constructor(private userService: UserService, private http: HttpClient,private configService: ConfigService) {}
+  constructor(private userService: UserService, private http: HttpClient, private configService: ConfigService,private customAlertService: CustomAlertService
+  ) {}
 
   ngOnInit(): void {
     this.fetchDeletedUsers();
@@ -27,7 +29,8 @@ export class DeletedUsersComponent implements OnInit {
     const accessToken = localStorage.getItem('access_token');
 
     if (!accessToken) {
-      alert('No access token found. Please log in.');
+      this.customAlertService.show('Error', 'No access token found. Please log in.');
+
       return;
     }
 
@@ -44,12 +47,13 @@ export class DeletedUsersComponent implements OnInit {
 
     this.http.get(url, { headers, params }).subscribe({
       next: (response: any) => {
-        this.users = response.content; // Assuming the response has a 'content' array
-        this.totalUsers = response.totalElements; // Assuming the response has 'totalElements'
+        this.users = response.content;
+        this.totalUsers = response.totalElements;
       },
       error: (error) => {
         console.error('Failed to fetch deleted users:', error);
-        alert('Failed to fetch deleted users. Please try again.');
+        this.customAlertService.show('Error', 'Failed to fetch deleted users. Please try again.');
+
       }
     });
   }
@@ -59,40 +63,39 @@ export class DeletedUsersComponent implements OnInit {
     this.fetchDeletedUsers();
   }
 
-  onSearch(): void {
-    this.page = 1;
-    this.fetchDeletedUsers();
-  }
-
   restoreUser(userId: number): void {
-    const confirmRestore = confirm('Are you sure you want to restore this user?');
-    if (!confirmRestore) {
-      return;
-    }
+    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this user').then((confirmed) => {
 
-    const url = `${this.configService.apiUrl}admin/user/restore/${userId}`;
-    const accessToken = localStorage.getItem('access_token');
-
-    if (!accessToken) {
-      alert('No access token found. Please log in.');
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      'accept': '*/*',
-      'Authorization': `Bearer ${accessToken}`
-    });
-
-    this.http.post(url, null, { headers }).subscribe({
-      next: (response) => {
-        console.log('User restored successfully:', response);
-        alert('User restored successfully!');
-        this.fetchDeletedUsers(); // Refresh the list after restoring
-      },
-      error: (error) => {
-        console.error('Failed to restore user:', error);
-        alert('Failed to restore user. Please try again.');
+      if (!confirmed) {
+        return;
       }
+
+      const url = `${this.configService.apiUrl}admin/user/restore/${userId}`;
+      const accessToken = localStorage.getItem('access_token');
+
+      if (!accessToken) {
+        this.customAlertService.show('Error', 'No access token found. Please log in.');
+
+        return;
+      }
+
+      const headers = new HttpHeaders({
+        'accept': '*/*',
+        'Authorization': `Bearer ${accessToken}`
+      });
+
+      this.http.post(url, null, {headers}).subscribe({
+        next: () => {
+          this.customAlertService.show('Success', 'User restored successfully!');
+
+          this.fetchDeletedUsers();
+        },
+        error: (error) => {
+          console.error('Failed to restore user:', error);
+          this.customAlertService.show('Error', 'Failed to restore user. Please try again.');
+
+        }
+      });
     });
   }
 

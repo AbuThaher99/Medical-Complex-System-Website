@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WarehouseService } from '../../services/warehouse.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-warehouse',
@@ -12,7 +13,7 @@ export class DeletedWarehouseComponent implements OnInit {
   size = 10;
   totalItems = 0;
 
-  constructor(private warehouseService: WarehouseService) {}
+  constructor(private warehouseService: WarehouseService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchDeletedWarehouseStores();
@@ -37,19 +38,22 @@ export class DeletedWarehouseComponent implements OnInit {
   }
 
   restoreWarehouseStore(storeId: number): void {
-    if (confirm('Are you sure you want to restore this warehouse store?')) {
+    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this warehouse store?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
       this.warehouseService.restoreWarehouseStore(storeId).subscribe({
         next: () => {
           console.log('Warehouse store restored successfully.');
-          alert('Warehouse store restored successfully!');
-          this.fetchDeletedWarehouseStores(); // Refresh the list
+          this.customAlertService.show('Success', 'Warehouse store restored successfully!');
+          this.fetchDeletedWarehouseStores();
         },
         error: (error) => {
           console.error('Failed to restore warehouse store:', error);
-          alert('Failed to restore warehouse store. Please try again.');
+          this.customAlertService.show('Error', 'Failed to restore warehouse store. Please try again.');
         },
       });
-    }
+    });
   }
 
   protected readonly Math = Math;

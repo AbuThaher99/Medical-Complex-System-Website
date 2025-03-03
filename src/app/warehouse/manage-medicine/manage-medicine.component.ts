@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MedicineService } from '../../services/medicine.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-manage-medicine',
@@ -27,7 +28,7 @@ export class ManageMedicineComponent implements OnInit {
   editingMedicine: any = null; // For editing a medicine
   showEditModal = false; // Controls the visibility of the edit modal
 
-  constructor(private medicineService: MedicineService) {}
+  constructor(private medicineService: MedicineService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.fetchMedicines();
@@ -162,20 +163,20 @@ export class ManageMedicineComponent implements OnInit {
 
       // Ensure supplier.id is included
       if (!this.editingMedicine.supplier || !this.editingMedicine.supplier.id) {
-        alert('Please select a supplier before saving.');
+        this.customAlertService.show('Success', 'Please select a supplier before saving.');
         return;
       }
 
       this.medicineService.updateMedicine(this.editingMedicine.id, this.editingMedicine).subscribe({
         next: (response) => {
           console.log('Medicine updated successfully:', response);
-          alert('Medicine updated successfully!');
+          this.customAlertService.show('Success', 'Medicine updated successfully!');
           this.closeEditModal(); // Close the modal
           this.fetchMedicines(); // Refresh the list
         },
         error: (error) => {
           console.error('Error updating medicine:', error);
-          alert('Failed to update medicine. Please try again.');
+          this.customAlertService.show('Error', 'Failed to update medicine. Please try again..');
         },
       });
     }
@@ -183,19 +184,22 @@ export class ManageMedicineComponent implements OnInit {
 
 
   deleteMedicine(medicineId: number): void {
-    if (confirm('Are you sure you want to delete this medicine?')) {
+    this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this medicine?').then((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
       this.medicineService.deleteMedicine(medicineId).subscribe({
         next: () => {
           console.log('Medicine deleted successfully.');
-          alert('Medicine deleted successfully!');
-          this.fetchMedicines(); // Refresh the list
+          this.customAlertService.show('Success', 'Medicine deleted successfully!');
+          this.fetchMedicines();
         },
         error: (error) => {
           console.error('Failed to delete medicine:', error);
-          alert('Failed to delete medicine. Please try again.');
+          this.customAlertService.show('Error', 'Failed to delete medicine. Please try again.');
         },
       });
-    }
+    });
   }
 
   protected readonly Math = Math;

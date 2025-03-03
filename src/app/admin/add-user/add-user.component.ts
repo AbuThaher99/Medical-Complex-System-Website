@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ConfigService } from '../../services/config.service';
+import {CustomAlertService} from "../../services/custom-alert.service";
 
 
 @Component({
@@ -37,8 +38,9 @@ export class AddUserComponent implements OnInit {
     age: 0,
     bloodType: { id: 0 }
   };
+  showPassword: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router ,private configService: ConfigService) {}
+  constructor(private http: HttpClient, private router: Router ,private configService: ConfigService,private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {}
 
@@ -59,7 +61,7 @@ export class AddUserComponent implements OnInit {
     const accessToken = localStorage.getItem('access_token');
 
     if (!accessToken) {
-      alert('No access token found. Please log in.');
+      this.customAlertService.show('Error', 'You are not logged in. Please log in first.');
       return;
     }
 
@@ -135,12 +137,14 @@ export class AddUserComponent implements OnInit {
     this.http.post(url, requestBody, { headers }).subscribe({
       next: (response) => {
         console.log('User added successfully:', response);
-        alert('User added successfully!');
-        this.router.navigate(['/admin/manageuser']);
+        this.customAlertService.show('Success', 'User added successfully.');
+        setTimeout(() => {
+          this.router.navigate(['/admin/manageuser']);
+        } , 3000);
       },
       error: (error) => {
         console.error('Failed to add user:', error);
-        alert('Failed to add user. Please try again.');
+        this.customAlertService.show('Error', 'Failed to add user. Please try again.');
       }
     });
   }
