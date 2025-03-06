@@ -1,8 +1,3 @@
-/* Add application styles & imports to this file! */
-/*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');*/
-/*@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');*/
-
-/* General styles */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -16,7 +11,6 @@ body {
   height: 100vh;
 }
 
-/* Header */
 .dashboard-header {
   background: linear-gradient(90deg, #0052cc, #007bff);
   color: #fff;
@@ -63,7 +57,6 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* User Profile and Dropdown */
 .header-right {
   position: relative;
   display: flex;
@@ -116,7 +109,6 @@ body {
   transform: rotate(180deg);
 }
 
-/* Dropdown Menu */
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 10px);
@@ -190,7 +182,6 @@ body {
   text-align: center;
 }
 
-/* Main Content */
 .dashboard-main {
   display: flex;
   flex: 1;
@@ -198,7 +189,6 @@ body {
   position: relative;
 }
 
-/* Navigation Sidebar */
 .dashboard-nav {
   width: 280px;
   background-color: #1f2937;
@@ -214,7 +204,6 @@ body {
   height: 100%;
 }
 
-/* Custom Scrollbar */
 .dashboard-nav::-webkit-scrollbar {
   width: 6px;
 }
@@ -342,8 +331,6 @@ body {
   margin-bottom: 0.5rem;
 }
 
-
-/* Dynamic Content */
 .dashboard-content {
   flex: 1;
   padding: 2rem;
@@ -352,23 +339,6 @@ body {
   overflow-y: auto;
   box-shadow: -2px 0 12px rgba(0, 0, 0, 0.05);
 }
-
-/* Footer */
-.dashboard-footer {
-  background-color: #1f2937;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.dashboard-footer p {
-  margin: 0;
-  opacity: 0.85;
-}
-
-/* Buttons */
 button {
   background: linear-gradient(90deg, #0052cc, #007bff);
   color: white;
@@ -387,8 +357,6 @@ button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
-
-/* Toggle sidebar button */
 .toggle-sidebar {
   position: absolute;
   bottom: 20px;
@@ -420,8 +388,6 @@ button:hover {
 .sidebar-collapsed .toggle-sidebar i {
   transform: rotate(180deg);
 }
-
-/* Collapsed sidebar styles */
 .sidebar-collapsed {
   width: 70px;
 }
@@ -461,8 +427,6 @@ button:hover {
 .sidebar-collapsed .has-submenu:hover .submenu {
   display: block;
 }
-
-/* Mobile menu toggle */
 .mobile-menu-toggle {
   display: none;
   font-size: 1.5rem;
@@ -480,8 +444,6 @@ button:hover {
 .mobile-menu-toggle:hover {
   background-color: rgba(255, 255, 255, 0.25);
 }
-
-/* Mobile navigation overlay */
 .mobile-nav-overlay {
   position: fixed;
   top: 0;
@@ -499,8 +461,6 @@ button:hover {
   display: block;
   opacity: 1;
 }
-
-/* Responsive Design */
 @media (max-width: 992px) {
   .dashboard-nav {
     width: 240px;
@@ -531,9 +491,6 @@ button:hover {
   .dashboard-content {
     padding: 1.5rem;
   }
-
-
-  /* Mobile navigation */
   .mobile-menu-toggle {
     display: flex;
   }
@@ -588,8 +545,6 @@ button:hover {
     width: 180px;
   }
 }
-
-/* Fix for mobile navigation */
 @media (min-width: 769px) {
   .dashboard-nav {
     position: relative;
@@ -600,8 +555,6 @@ button:hover {
   position: relative;
   margin-right: 1.5rem;
 }
-
-/* Notification Button */
 .notification-button {
   position: relative;
   background: rgba(255, 255, 255, 0.15);
@@ -625,8 +578,6 @@ button:hover {
 .notification-button i {
   font-size: 1.2rem;
 }
-
-/* Notification Badge */
 .notification-badge {
   position: absolute;
   top: -5px;
@@ -645,8 +596,6 @@ button:hover {
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
-/* Notifications Panel */
 .notifications-panel {
   position: absolute;
   top: 100%;
@@ -662,8 +611,6 @@ button:hover {
   overflow: hidden;
   margin-top: 1rem;
 }
-
-/* Panel Header */
 .notifications-header {
   display: flex;
   align-items: center;
@@ -701,15 +648,12 @@ button:hover {
   transform: rotate(90deg);
 }
 
-/* Notifications Content */
 .notifications-content {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
   background: #f8f9fa;
 }
-
-/* Pull to Refresh */
 .refresh-indicator {
   display: flex;
   align-items: center;
@@ -732,7 +676,6 @@ button:hover {
   to { transform: rotate(360deg); }
 }
 
-/* Notification Items */
 .notification-item {
   display: flex;
   align-items: flex-start;
@@ -755,8 +698,6 @@ button:hover {
   background: #f0f7ff;
   border-color: #cce5ff;
 }
-
-/* Notification Icon */
 .notification-icon {
   width: 40px;
   height: 40px;
@@ -772,8 +713,6 @@ button:hover {
 .notification-icon i {
   font-size: 1.1rem;
 }
-
-/* Notification Content */
 .notification-content {
   flex: 1;
 }
@@ -806,8 +745,6 @@ button:hover {
   border-radius: 50%;
   display: block;
 }
-
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -905,15 +842,11 @@ button:hover {
     position: sticky;
     bottom: 0;
   }
-
-  /* Safe area padding for modern mobile devices */
   .notifications-panel {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
-
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
