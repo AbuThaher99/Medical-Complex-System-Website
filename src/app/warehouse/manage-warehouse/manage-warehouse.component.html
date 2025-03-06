@@ -25,7 +25,25 @@
     </tr>
     </tbody>
   </table>
-
+  <div class="mobile-card-view">
+    <div class="warehouse-card" *ngFor="let store of warehouseStores">
+      <div class="warehouse-card-header">
+        <div class="warehouse-card-title">{{ store.medicine?.name }}</div>
+        <div class="warehouse-card-id">ID: {{ store.id }}</div>
+      </div>
+      <div class="warehouse-card-content">
+        <div class="warehouse-card-row">
+          <span class="warehouse-card-label">Quantity:</span>
+          <span class="warehouse-card-value">{{ store.quantity }}</span>
+        </div>
+      </div>
+      <div class="warehouse-card-actions">
+        <button class="edit-btn" (click)="openEditModal(store)">Increase Quantity</button>
+        <button class="dec-btn" (click)="openDecreaseModal(store)">Decrease Quantity</button>
+        <button class="delete-btn" (click)="deleteWarehouseStore(store.id)">Delete</button>
+      </div>
+    </div>
+  </div>
   <!-- Pagination Section -->
   <div class="pagination-section">
     <button

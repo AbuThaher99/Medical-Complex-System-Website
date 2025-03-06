@@ -91,11 +91,16 @@ const routes: Routes = [
       { path: 'doctor/feedback', component: FeedbackComponent },
       {path: 'admin/treatment-profit', component: TreatmentProfitComponent},
       {path: 'admin/salary-report' , component: SalaryReportComponent},
+      { path: 'secretary/signup-patient', component: SignupPatientComponent }, // Under LayoutComponent ✅
     ],
   },
   { path: 'login', component: LoginComponent },
+  {
+    path: 'signup',
+    component: SignupPatientComponent,
+    data: { standalone: true } // This is just for reference, not required for logic
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'signup', component: SignupPatientComponent },
   { path: '**', redirectTo: '/dashboard' },
 ];
 

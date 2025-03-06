@@ -159,3 +159,117 @@
   font-weight: bold;
   color: #333;
 }
+/* Mobile Card View for Deleted Warehouse - Add this to your existing CSS */
+@media (max-width: 768px) {
+  .deleted-warehouse-table {
+    display: none; /* Hide table on mobile */
+  }
+
+  .deleted-mobile-card-view {
+    display: block; /* Show cards on mobile */
+  }
+
+  .deleted-warehouse-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+    border-left: 4px solid #ff6b6b; /* Red left border to indicate deleted status */
+  }
+
+  .deleted-warehouse-card-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+  }
+
+  .deleted-warehouse-card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .deleted-warehouse-card-title::before {
+    content: "⟲";  /* Recycling symbol to indicate deleted status */
+    margin-right: 8px;
+    color: #ff6b6b;
+  }
+
+  .deleted-warehouse-card-id {
+    font-size: 14px;
+    color: #777;
+    margin-top: 4px;
+  }
+
+  .deleted-warehouse-card-content {
+    margin-bottom: 16px;
+  }
+
+  .deleted-warehouse-card-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .deleted-warehouse-card-label {
+    font-weight: 500;
+    color: #555;
+  }
+
+  .deleted-warehouse-card-value {
+    font-weight: 400;
+    color: #333;
+  }
+
+  .deleted-warehouse-card-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .deleted-warehouse-card-actions .restore-btn {
+    width: 100%;
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .deleted-warehouse-card-actions .restore-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+
+  .deleted-warehouse-card-actions .restore-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Pagination adjustments */
+  .pagination-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .pagination-section button {
+    margin: 0;
+    padding: 10px 15px;
+  }
+}
+
+/* Desktop and Mobile View Toggle */
+@media (min-width: 769px) {
+  .deleted-mobile-card-view {
+    display: none; /* Hide cards on desktop */
+  }
+}

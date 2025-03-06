@@ -1,6 +1,6 @@
 <app-custom-alert></app-custom-alert>
 <div class="deleted-donor-container">
-  <h2>Manage Deleted Donors</h2>
+  <h2>Deleted Donors</h2>
 
   <!-- Filters -->
   <div class="filters">
@@ -40,37 +40,70 @@
         </label>
       </div>
     </div>
-
   </div>
 
-  <!-- Deleted Donors Table -->
-  <table class="deleted-donor-table">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Phone</th>
-      <th>Blood Type</th>
-      <th>Gender</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let donor of deletedDonors">
-      <td>{{ donor.id }}</td>
-      <td>{{ donor.name }}</td>
-      <td>{{ donor.phone }}</td>
-      <td>{{ donor.bloodType }}</td>
-      <td>{{ donor.gender }}</td>
-      <td class="action-buttons">
-        <button class="restore-btn" (click)="restoreDonor(donor.id)">Restore Donor</button>
-      </td>
-    </tr>
-    <tr *ngIf="deletedDonors.length === 0">
-      <td colspan="6" class="no-data">No deleted donors found.</td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- Desktop Table View -->
+  <div class="desktop-view">
+    <table class="deleted-donor-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Blood Type</th>
+        <th>Gender</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let donor of deletedDonors">
+        <td>{{ donor.id }}</td>
+        <td>{{ donor.name }}</td>
+        <td>{{ donor.phone }}</td>
+        <td>{{ donor.bloodType }}</td>
+        <td>{{ donor.gender }}</td>
+        <td class="action-buttons">
+          <button class="restore-btn" (click)="restoreDonor(donor.id)">Restore Donor</button>
+        </td>
+      </tr>
+      <tr *ngIf="deletedDonors.length === 0">
+        <td colspan="6" class="no-data">No deleted donors found.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="mobile-view">
+    <div class="donor-card" *ngFor="let donor of deletedDonors">
+      <div class="donor-id">#{{ donor.id }}</div>
+      <div class="donor-badge" [ngClass]="donor.bloodType.toLowerCase()">{{ donor.bloodType }}</div>
+
+      <div class="donor-info">
+        <div class="info-group">
+          <label>Name</label>
+          <span>{{ donor.name }}</span>
+        </div>
+        <div class="info-group">
+          <label>Phone</label>
+          <span>{{ donor.phone }}</span>
+        </div>
+        <div class="info-group">
+          <label>Gender</label>
+          <span>{{ donor.gender }}</span>
+        </div>
+      </div>
+
+      <button class="restore-btn" (click)="restoreDonor(donor.id)">
+        <i class="fas fa-undo-alt"></i> Restore Donor
+      </button>
+    </div>
+
+    <div class="no-data-card" *ngIf="deletedDonors.length === 0">
+      <i class="fas fa-inbox"></i>
+      <p>No deleted donors found.</p>
+    </div>
+  </div>
 
   <!-- Pagination -->
   <div class="pagination-section">

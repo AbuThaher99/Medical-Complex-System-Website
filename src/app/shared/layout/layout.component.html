@@ -3,65 +3,118 @@
     <div class="header-left">
       <div class="logo-container">
         <img src="assets/img.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/40x40?text=HC'">
-        <span class="brand-name">HealthCare Dashboard</span>
+        <span class="brand-name">HealthCare App</span>
       </div>
     </div>
 
-    <!-- User Profile and Notifications -->
     <div class="header-right">
-      <!-- Mobile menu toggle -->
-      <div class="mobile-menu-toggle d-md-none" (click)="toggleMobileNav()">
+      <!-- Enhanced Notifications Section -->
+      <div class="mobile-menu-toggle" (click)="toggleMobileNav()">
         <i class="fas fa-bars"></i>
       </div>
-
-      <!-- Notifications (Only for Patient Role) -->
-      <div *ngIf="user?.role === 'PATIENT'" class="notifications">
-        <i class="fas fa-bell" (click)="onNotificationClick()"></i>
-        <span class="notification-count" *ngIf="unreadNotificationsCount > 0">
+      <div *ngIf="user?.role === 'PATIENT'" class="notifications-wrapper">
+        <button class="notification-button" (click)="onNotificationClick()" [class.has-notifications]="unreadNotificationsCount > 0">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">
           {{ unreadNotificationsCount }}
         </span>
+        </button>
 
-        <!-- Notifications Dropdown -->
-        <div class="notifications-dropdown" *ngIf="showNotifications">
-          <h4>Notifications</h4>
-          <ul *ngIf="notifications.length > 0; else emptyNotifications">
-            <li *ngFor="let notification of notifications" (click)="markAsRead(notification.id)">
-              <span [class.read]="notification.read" [class.unread]="!notification.read">{{ notification.message }}</span>
-              <small>{{ notification.createdDate | date: 'short' }}</small>
-            </li>
-          </ul>
-          <ng-template #emptyNotifications>
-            <div class="empty-notifications">
-              <i class="fas fa-inbox"></i>
-              <p>No notifications yet</p>
+        <!-- Enhanced Notifications Panel -->
+        <div class="notifications-panel" *ngIf="showNotifications" [@slideInOut]>
+          <div class="notifications-header">
+            <h3>
+              <i class="fas fa-bell"></i>
+              Notifications
+            </h3>
+            <button class="close-button" (click)="closeNotifications()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="notifications-content"
+               (touchstart)="onTouchStart($event)"
+               (touchmove)="onTouchMove($event)"
+               (touchend)="onTouchEnd()">
+
+            <!-- Pull to Refresh Indicator -->
+            <div class="refresh-indicator" *ngIf="isRefreshing">
+              <div class="spinner"></div>
+              <span>Updating...</span>
             </div>
-          </ng-template>
+
+            <!-- Notifications List -->
+            <div class="notifications-list" *ngIf="notifications.length > 0; else emptyState">
+              <div class="notification-item"
+                   *ngFor="let notification of notifications"
+                   [class.unread]="!notification.read"
+                   (click)="markAsRead(notification.id)">
+
+                <div class="notification-icon">
+                  <i class="fas" [ngClass]="{
+                  'fa-calendar-check': notification.type === 'APPOINTMENT',
+                  'fa-pills': notification.type === 'MEDICATION',
+                  'fa-file-medical': notification.type === 'REPORT',
+                  'fa-bell': !notification.type
+                }"></i>
+                </div>
+
+                <div class="notification-content">
+                  <p class="notification-message">{{ notification.message }}</p>
+                  <span class="notification-time">
+                  <i class="far fa-clock"></i>
+                    {{ notification.createdDate | date: 'MMM d, h:mm a' }}
+                </span>
+                </div>
+
+                <div class="notification-status" *ngIf="!notification.read">
+                  <span class="unread-dot"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <ng-template #emptyState>
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <i class="far fa-bell-slash"></i>
+                </div>
+                <h4>No New Notifications</h4>
+                <p>We'll notify you when there are updates about your health care</p>
+              </div>
+            </ng-template>
+          </div>
+
+
         </div>
       </div>
 
-      <!-- User Profile and Logout -->
+      <!-- User Profile Section -->
       <div class="user-profile" (click)="toggleDropdown()">
-        <img [src]="user?.image || './assets/profile.png'" alt="User Image" class="user-image" />
-        <span class="user-name">{{ user?.firstName || 'User' }} {{ user?.lastName || '' }}</span>
+        <img [src]="user?.image || './assets/profile.png'" alt="Profile" class="user-image">
+        <span class="user-name">{{ user?.firstName }} {{ user?.lastName }}</span>
         <i class="fas fa-caret-down"></i>
       </div>
 
-      <!-- Dropdown Menu -->
+      <!-- User Dropdown Menu -->
       <div class="dropdown-menu" *ngIf="isDropdownOpen">
         <ul>
           <li>
-            <a routerLink="/profile">
-              <i class="fas fa-user-circle"></i> My Profile
+            <a href="/profile">
+              <i class="fas fa-user"></i>
+              Profile
             </a>
           </li>
           <li>
-            <a routerLink="/settings">
-              <i class="fas fa-cog"></i> Settings
+            <a href="/settings">
+              <i class="fas fa-cog"></i>
+              Settings
             </a>
           </li>
           <li>
             <a (click)="logout()">
-              <i class="fas fa-sign-out-alt"></i> Logout
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
             </a>
           </li>
         </ul>
@@ -354,6 +407,5 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-
 
 </div>

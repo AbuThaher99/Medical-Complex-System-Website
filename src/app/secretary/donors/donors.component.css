@@ -80,6 +80,40 @@
   background-color: #f1f1f1;
   transition: background-color 0.3s ease;
 }
+/*================*/
+/* donation Table */
+.donation-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.donation-table th,
+.donation-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.donation-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.donation-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.donation-table tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
+}
+/*================*/
 .dropdown {
   position: relative;
   display: inline-block;
@@ -428,4 +462,227 @@
 
 .modal-dropdown .dropdown-list::-webkit-scrollbar-thumb:hover {
   background: #0056b3;
+}
+.donor-cards{
+  display: none;
+}
+@media (max-width: 768px) {
+  .donor-table {
+    display: none;
+  }
+
+  .donor-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .donor-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid #007bff;
+  }
+
+  .donor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    text-transform: capitalize;
+  }
+
+  .donor-id {
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .card-body {
+    padding: 10px 0;
+  }
+
+  .card-body p {
+    font-size: 1rem;
+    margin: 8px 0;
+    color: #555;
+  }
+
+  .card-body p strong {
+    color: #222;
+    font-weight: 600;
+  }
+
+  /* Action Buttons */
+  .card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .card-actions button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+  }
+
+  .edit-btn {
+    background: #28a745;
+    color: white;
+  }
+
+  .edit-btn:hover {
+    background: #218838;
+    transform: scale(1.05);
+  }
+
+  .delete-btn {
+    background: #dc3545;
+    color: white;
+  }
+
+  .delete-btn:hover {
+    background: #c82333;
+    transform: scale(1.05);
+  }
+
+  .add-donation-btn {
+    background: #007bff;
+    color: white;
+  }
+
+  .add-donation-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+  }
+
+  .view-donations-btn {
+    background: #ffc107;
+    color: white;
+  }
+
+  .view-donations-btn:hover {
+    background: #e0a800;
+    transform: scale(1.05);
+  }
+
+  .donation-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .donation-table th,
+  .donation-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .donation-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+  }
+
+  .donation-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .donation-table tr:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Ensure modal content is fully visible on mobile */
+  .modal-content {
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+/* Mobile Modal Adjustments */
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+}
+
+/* Modal Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.dropdown-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
 }

@@ -1,29 +1,39 @@
+/* General Container */
 .add-donor-container {
-  max-width: 400px;
+  max-width: 420px;
   margin: 40px auto;
   padding: 25px;
-  background-color: #fff;
+  background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', sans-serif;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
+.add-donor-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Title */
 .add-donor-container h2 {
   font-size: 26px;
   margin-bottom: 25px;
   text-align: center;
   color: #333;
-  font-weight: 600;
+  font-weight: 700;
 }
 
+/* Labels */
 .add-donor-container label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  color: #555;
-  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  font-size: 15px;
 }
 
+/* Input Fields */
 .add-donor-container input,
 .add-donor-container select {
   width: 100%;
@@ -41,16 +51,20 @@
   border-color: #007bff;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
   background-color: #fff;
+  outline: none;
 }
 
+/* Dropdown Styling */
 .add-donor-container select {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 12px;
+  padding-right: 30px;
 }
 
+/* Submit Button */
 .add-donor-container button {
   width: 100%;
   padding: 12px 15px;
@@ -91,4 +105,49 @@
 .add-donor-container select,
 .add-donor-container button {
   animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .add-donor-container {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .add-donor-container h2 {
+    font-size: 24px;
+  }
+
+  .add-donor-container input,
+  .add-donor-container select {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .add-donor-container button {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-donor-container {
+    max-width: 95%;
+    padding: 15px;
+  }
+
+  .add-donor-container h2 {
+    font-size: 22px;
+  }
+
+  .add-donor-container input,
+  .add-donor-container select {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .add-donor-container button {
+    font-size: 14px;
+    padding: 10px;
+  }
 }

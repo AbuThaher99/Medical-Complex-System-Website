@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.isLoading = true; // Start loading
+    this.isLoading = true;
     this.errorMessage = '';
 
     const url = `${this.configService.apiUrl}auth/login`; // API endpoint
@@ -38,28 +38,27 @@ export class LoginComponent implements OnInit {
       'Content-Type': 'application/json'
     });
 
-    // Send the login request
     this.http.post(url, this.credentials, { headers })
       .subscribe({
         next: (response: any) => {
-          this.isLoading = false; // Stop loading
-
-          // Save tokens to localStorage
+          this.isLoading = false;
           if (response.access_token && response.refresh_token) {
             localStorage.setItem('access_token', response.access_token);
             localStorage.setItem('refresh_token', response.refresh_token);
           }
-
-          // Redirect to home page
           this.router.navigate(['/home']);
         },
         error: (error) => {
-          this.isLoading = false; // Stop loading
+          this.isLoading = false;
           console.error('Login failed:', error);
-          this.errorMessage = error.error.message || 'Invalid email or password';
+          setTimeout(() => {
+            this.errorMessage = error.error?.message || 'Invalid email or password';
+          });
+
         }
       });
   }
+
 
   // Refresh token logic
   private refreshToken() {

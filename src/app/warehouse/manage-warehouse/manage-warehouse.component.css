@@ -309,3 +309,125 @@ button[type='submit']:active {
     font-size: 14px;
   }
 }
+/* Mobile Card View - Add this to your existing CSS */
+@media (max-width: 768px) {
+  .warehouse-table {
+    display: none; /* Hide table on mobile */
+  }
+
+  .mobile-card-view {
+    display: block; /* Show cards on mobile */
+  }
+
+  .warehouse-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .warehouse-card-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+  }
+
+  .warehouse-card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+
+  .warehouse-card-id {
+    font-size: 14px;
+    color: #777;
+    margin-top: 4px;
+  }
+
+  .warehouse-card-content {
+    margin-bottom: 16px;
+  }
+
+  .warehouse-card-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .warehouse-card-label {
+    font-weight: 500;
+    color: #555;
+  }
+
+  .warehouse-card-value {
+    font-weight: 400;
+    color: #333;
+  }
+
+  .warehouse-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .warehouse-card-actions button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  /* Maintain same button styles but adjust for mobile */
+  .warehouse-card-actions .edit-btn {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .warehouse-card-actions .dec-btn {
+    background-color: #284ca7;
+    color: white;
+  }
+
+  .warehouse-card-actions .delete-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .warehouse-card-actions button:active {
+    transform: scale(0.98);
+  }
+
+  /* Modal adjustments for mobile */
+  .modal-content {
+    width: 90%;
+    max-width: none;
+    margin: 20% auto;
+    padding: 20px;
+  }
+
+  /* Pagination adjustments */
+  .pagination-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .pagination-section button {
+    margin: 0;
+    padding: 10px 15px;
+  }
+}
+
+/* Desktop and Mobile View Toggle */
+@media (min-width: 769px) {
+  .mobile-card-view {
+    display: none; /* Hide cards on desktop */
+  }
+}
