@@ -104,4 +104,15 @@ export class SignupPatientComponent {
       },
     });
   }
+
+  navigateBasedOnRole() {
+    const userRole = localStorage.getItem('role');
+
+    if (!userRole) {
+      this.router.navigate(['/login']); // Redirect to login if role is empty
+    } else {
+      this.router.navigate(['/dashboard']); // Redirect to dashboard if role exists
+    }
+  }
+
 }

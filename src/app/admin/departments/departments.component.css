@@ -373,3 +373,247 @@ button[type="submit"]:active {
 .dropdown-list::-webkit-scrollbar-thumb:hover {
   background: #0056b3;
 }
+/* Advanced Mobile Responsiveness */
+@media (max-width: 768px) {
+  .departments-container {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    margin: 8px;
+  }
+
+  /* Search Section Mobile Optimization */
+  .search-section {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .search-section input {
+    flex: 1;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-section button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+
+  /* Advanced Card-like Table */
+  .departments-table {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .departments-table thead {
+    display: none;
+  }
+
+  .departments-table tr {
+    display: block;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .departments-table tr:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .departments-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    position: relative;
+  }
+
+  .departments-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6c757d;
+    margin-right: 10px;
+    min-width: 100px;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  .departments-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Action Buttons in Mobile */
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .action-buttons .edit-btn,
+  .action-buttons .delete-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  /* Pagination Mobile */
+  .pagination-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .pagination-section button {
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  /* Advanced Modal Styling */
+  .modal {
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    backdrop-filter: blur(10px);
+  }
+
+  .modal-content {
+    width: 95%;
+    max-width: 500px;
+    margin: 0;
+    border-radius: 20px;
+    padding: 25px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slide-up 0.3s ease-out;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 20px;
+  }
+
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 28px;
+    color: #aaa;
+    transition: color 0.3s ease;
+  }
+
+  .close:hover {
+    color: #333;
+  }
+
+  /* Dropdown Improvements */
+  .modal-dropdown {
+    margin-bottom: 15px;
+  }
+
+  .modal-dropdown input {
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+
+  .dropdown-list {
+    max-height: 250px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .dropdown-list label {
+    padding: 12px 15px;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+  }
+
+  .dropdown-list label:hover {
+    background-color: #f0f0f0;
+  }
+
+  /* Form Styling */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  form div {
+    width: 100%;
+  }
+
+  label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #495057;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 375px) {
+  .modal-content {
+    padding: 15px;
+  }
+
+  .departments-table td::before {
+    min-width: 80px;
+    font-size: 11px;
+  }
+}

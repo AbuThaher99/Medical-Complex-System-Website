@@ -15,6 +15,7 @@ export class DonorsComponent implements OnInit {
 
   page = 1; // Current page number
   size = 10; // Number of items per page
+  donorSize = 5; // Number of items per page for the dropdown
   totalPages = 1; // Total number of pages
   searchQuery = ''; // Search text
   bloodType = ''; // Selected blood type filter
@@ -50,7 +51,7 @@ export class DonorsComponent implements OnInit {
 
     this.loadingDonors = true;
 
-    this.donorService.getDonors(this.donorPage, this.size, '', '', [], '').subscribe(
+    this.donorService.getDonors(this.donorPage, this.donorSize, '', '', [], '').subscribe(
       (data) => {
         this.donorTotalPages = data.totalPages; // Update the total pages
         this.donorsList = [...this.donorsList, ...data.content]; // Append new donors

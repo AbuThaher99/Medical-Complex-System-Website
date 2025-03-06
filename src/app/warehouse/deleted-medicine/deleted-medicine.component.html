@@ -39,7 +39,37 @@
     </tr>
     </tbody>
   </table>
-
+  <div class="deleted-medicines-cards">
+    <div class="deleted-medicine-card" *ngFor="let medicine of deletedMedicines">
+      <div class="deleted-medicine-card-header">
+        <div class="deleted-medicine-card-title">{{ medicine.name }}</div>
+        <div class="deleted-medicine-card-id">ID: {{ medicine.id }}</div>
+      </div>
+      <div class="deleted-medicine-card-content">
+        <div>
+          <div class="deleted-medicine-card-label">Buy Price</div>
+          <div class="deleted-medicine-card-value">{{ medicine.buyPrice }}</div>
+        </div>
+        <div>
+          <div class="deleted-medicine-card-label">Purchase Price</div>
+          <div class="deleted-medicine-card-value">{{ medicine.purchasePrice }}</div>
+        </div>
+        <div>
+          <div class="deleted-medicine-card-label">Expiration Date</div>
+          <div class="deleted-medicine-card-value">{{ medicine.expirationDate | date: 'mediumDate' }}</div>
+        </div>
+        <div *ngIf="medicine.supplier">
+          <div class="deleted-medicine-card-label">Supplier</div>
+          <div class="deleted-medicine-card-value">{{ medicine.supplier.displayText }}</div>
+        </div>
+      </div>
+      <div class="deleted-medicine-card-actions">
+        <button class="restore-btn" (click)="restoreMedicine(medicine.id)">
+          Restore
+        </button>
+      </div>
+    </div>
+  </div>
   <!-- Pagination Section -->
   <div class="pagination-section">
     <button

@@ -14,6 +14,7 @@ export class DonationsComponent implements OnInit {
 
   page = 1;
   size = 10;
+  donorSize =4;
   totalPages = 1;
   searchQuery = '';
   bloodType = '';
@@ -42,7 +43,7 @@ export class DonationsComponent implements OnInit {
 
     this.loadingDonors = true;
 
-    this.donorService.getDonors(this.donorPage, this.size, '', '', [], '').subscribe(
+    this.donorService.getDonors(this.donorPage, this.donorSize, '', '', [], '').subscribe(
       (data) => {
         this.donorTotalPages = data.totalPages;
         this.donorsList = [...this.donorsList, ...data.content];

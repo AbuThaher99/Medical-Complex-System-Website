@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DonorService } from '../../services/donor.service';
-import {CustomAlertService} from "../../services/custom-alert.service";
+import { CustomAlertService } from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-deleted-donor',
@@ -23,6 +23,12 @@ export class DeletedDonorComponent implements OnInit {
 
   showDonorDropdown = false; // Dropdown visibility state
 
+  // New pagination variables for donor dropdown
+  donorDropdownPage = 1;
+  donorDropdownSize = 10;
+  donorDropdownTotalPages = 1;
+  isLoadingDonors = false;
+
   bloodTypes = [
     'A_POSITIVE',
     'A_NEGATIVE',
@@ -35,32 +41,83 @@ export class DeletedDonorComponent implements OnInit {
   ];
   genders = ['MALE', 'FEMALE'];
 
-  constructor(private donorService: DonorService,private customAlertService: CustomAlertService) {}
+  constructor(private donorService: DonorService, private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
     this.loadDeletedDonors();
-    this.loadDonorList(); // Load donors for dropdown
+    this.loadDonorList(); // Load initial batch of donors for dropdown
   }
 
   loadDonorList(): void {
-    this.donorService.getDeletedDonors(1, 100, '', '', [], '').subscribe((data) => {
-      this.donorsList = data.content;
-      this.filteredDonors = [...this.donorsList]; // Initialize filtered donors
+    // Prevent multiple simultaneous requests
+    if (this.isLoadingDonors) {
+      return;
+    }
+
+    // Don't load more if we've already loaded all pages
+    if (this.donorDropdownPage > this.donorDropdownTotalPages && this.donorDropdownTotalPages !== 1) {
+      return;
+    }
+
+    this.isLoadingDonors = true;
+
+    this.donorService.getDeletedDonors(
+      this.donorDropdownPage,
+      this.donorDropdownSize,
+      this.donorSearchQuery,
+      '',
+      [],
+      ''
+    ).subscribe({
+      next: (data) => {
+        if (this.donorDropdownPage === 1) {
+          // First page - initialize the list
+          this.donorsList = data.content;
+        } else {
+          // Append new donors to existing list
+          this.donorsList = [...this.donorsList, ...data.content];
+        }
+
+        this.donorDropdownTotalPages = data.totalPages;
+        this.filteredDonors = [...this.donorsList]; // Update filtered donors
+        this.isLoadingDonors = false;
+
+        // Increment page for next load
+        this.donorDropdownPage++;
+      },
+      error: (error) => {
+        console.error('Error loading donors:', error);
+        this.isLoadingDonors = false;
+        this.customAlertService.show('Error', 'Failed to load donors: ' + error.message);
+      }
     });
   }
 
   onDropdownScroll(event: any): void {
-    const bottomReached = event.target.scrollHeight - event.target.scrollTop <= event.target.clientHeight + 10;
-    if (bottomReached) {
-      this.loadDonorList(); // Load the next batch of donors
+    const element = event.target;
+    const scrollPosition = element.scrollTop + element.clientHeight;
+    const scrollThreshold = element.scrollHeight - 20; // 20px before bottom
+
+    // Load more donors when scrolled near bottom
+    if (scrollPosition >= scrollThreshold && !this.isLoadingDonors) {
+      this.loadDonorList();
     }
   }
 
   filterDonors(): void {
+    // Reset pagination when filtering
+    this.donorDropdownPage = 1;
+
     if (this.donorSearchQuery.trim()) {
+      // Filter locally first
       this.filteredDonors = this.donorsList.filter((donor) =>
         `${donor.id} - ${donor.name}`.toLowerCase().includes(this.donorSearchQuery.toLowerCase())
       );
+
+      // If we have few results, fetch from server with search term
+      if (this.filteredDonors.length < 5) {
+        this.loadDonorList();
+      }
     } else {
       this.filteredDonors = [...this.donorsList]; // Reset to full list if query is empty
     }
@@ -102,6 +159,16 @@ export class DeletedDonorComponent implements OnInit {
     }, 200); // Delay to allow checkbox clicks to register
   }
 
+  // Reset donor dropdown when opening
+  openDonorDropdown(): void {
+    this.showDonorDropdown = true;
+    // If we have very few items loaded, load the first page again
+    if (this.donorsList.length < this.donorDropdownSize) {
+      this.donorDropdownPage = 1;
+      this.loadDonorList();
+    }
+  }
+
   restoreDonor(donorId: number): void {
     this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this donor?').then((confirmed) => {
       if (!confirmed) {
@@ -111,6 +178,14 @@ export class DeletedDonorComponent implements OnInit {
         next: () => {
           this.customAlertService.show('Success', 'Donor restored successfully!');
           this.loadDeletedDonors();
+
+          // Remove restored donor from selected IDs
+          this.selectedDonorIds = this.selectedDonorIds.filter(id => id !== donorId);
+
+          // Refresh donor dropdown list as well
+          this.donorDropdownPage = 1;
+          this.donorsList = [];
+          this.loadDonorList();
         },
         error: (error) => {
           console.error('Failed to restore donor:', error.message);

@@ -1,10 +1,9 @@
-/* General Container */
 .filter-container {
   margin-bottom: 20px;
   padding: 20px;
-  background-color: #ffffff; /* Bright and clean background */
-  border-radius: 12px; /* Softer corners for a modern design */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Form Group */
@@ -15,170 +14,246 @@
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-weight: bold;
-  color: #333;
-  font-size: 15px; /* Slightly larger font for clarity */
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 15px;
 }
 
 .form-group input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #e1e8ed;
   border-radius: 8px;
   font-size: 16px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Subtle focus glow */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
-/* Table Styles */
+/* Desktop Table View */
+.desktop-view {
+  display: block;
+}
+
 .table-container {
-  margin-top: 20px;
-  overflow-x: auto;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff; /* Bright and clean table */
-  border-radius: 12px; /* Softer corners for the table */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 table th,
 table td {
-  padding: 14px 16px;
-  border: 1px solid #ddd;
+  padding: 16px;
+  border-bottom: 1px solid #e1e8ed;
   text-align: left;
-  font-size: 14px; /* Clear table font size */
 }
 
 table th {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase; /* Optional: capitalize headers */
-}
-
-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-table tr:hover {
-  background-color: #f1f1f1;
-  transition: background-color 0.3s ease; /* Smooth hover effect */
-}
-
-/* Action Buttons */
-.actions {
-  display: flex;
-  gap: 10px; /* Spacing between buttons */
-}
-
-.actions button {
-  padding: 10px 14px; /* Comfortable padding for usability */
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
   font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle button shadow */
 }
 
-.actions button:hover {
-  transform: translateY(-2px); /* Slight lift on hover */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+table tr:last-child td {
+  border-bottom: none;
 }
 
-.btn-update {
-  background-color: #28a745;
-  color: white;
+/* Mobile Card View */
+.mobile-view {
+  display: none;
 }
 
-.btn-update:hover {
-  background-color: #218838;
+.supplier-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.btn-delete {
-  background-color: #dc3545;
-  color: white;
+.company-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e1e8ed;
 }
 
-.btn-delete:hover {
-  background-color: #c82333;
+.supplier-info {
+  margin-bottom: 20px;
 }
 
-.btn-medicines {
-  background-color: #17a2b8;
-  color: white;
+.info-group {
+  margin-bottom: 12px;
 }
 
-.btn-medicines:hover {
-  background-color: #138496;
+.info-group label {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-group span {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: 500;
 }
 
 /* Restore Button */
 .btn-restore {
-  background-color: #4caf50; /* Pleasant green */
+  width: 100%;
+  padding: 12px;
+  background: #00c853;
   color: white;
   border: none;
-  padding: 12px 18px; /* Larger padding for better usability */
-  border-radius: 8px; /* Softer corners */
+  border-radius: 8px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn-restore:hover {
-  background-color: #45a049; /* Slightly darker green on hover */
+  background: #00a844;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+  box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2);
 }
 
-.btn-restore:active {
-  background-color: #3e8e41; /* Darker green when clicked */
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.btn-restore i {
+  font-size: 16px;
 }
 
-/* Pagination Styles */
+/* No Data Card */
+.no-data-card {
+  text-align: center;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.no-data-card i {
+  font-size: 48px;
+  color: #6c757d;
+  margin-bottom: 16px;
+}
+
+.no-data-card p {
+  color: #6c757d;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Pagination */
 .pagination {
   margin-top: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
 }
 
 .pagination button {
-  margin: 0 8px;
-  padding: 10px 16px;
-  background-color: #007bff;
+  padding: 10px 20px;
+  background: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.pagination button:hover {
-  background-color: #0056b3;
+.pagination button:hover:not(:disabled) {
+  background: #0056b3;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
 }
 
 .pagination button:disabled {
-  background-color: #ccc;
+  background: #e1e8ed;
   cursor: not-allowed;
 }
 
 .pagination span {
-  font-size: 16px; /* Larger font for visibility */
-  font-weight: bold;
-  color: #333;
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .desktop-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .form-group input {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  .supplier-card {
+    margin-bottom: 12px;
+  }
+
+  .btn-restore {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .pagination button {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+  .btn-restore {
+    padding: 16px;
+  }
+
+  .form-group input {
+    font-size: 16px;
+  }
+
+  .supplier-card {
+    padding: 16px;
+  }
 }

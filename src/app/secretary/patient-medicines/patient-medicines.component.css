@@ -390,3 +390,128 @@
 .dropdown-list::-webkit-scrollbar-thumb:hover {
   background: #0056b3;
 }
+.medicine-cards {
+  display: none;
+}
+@media (max-width: 768px) {
+  .patientMedicine-table {
+    display: none;
+  }
+
+  .medicine-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .medicine-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid #007bff;
+  }
+
+  .medicine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    text-transform: capitalize;
+  }
+
+  .medicine-id {
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .card-body {
+    padding: 10px 0;
+  }
+
+  .card-body p {
+    font-size: 1rem;
+    margin: 8px 0;
+    color: #555;
+  }
+
+  .card-body p strong {
+    color: #222;
+    font-weight: 600;
+  }
+
+  /* Action Buttons */
+  .card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .card-actions button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+  }
+
+  .edit-btn {
+    background: #28a745;
+    color: white;
+  }
+
+  .edit-btn:hover {
+    background: #218838;
+    transform: scale(1.05);
+  }
+
+  .delete-btn {
+    background: #dc3545;
+    color: white;
+  }
+
+  .delete-btn:hover {
+    background: #c82333;
+    transform: scale(1.05);
+  }
+}
+/* Mobile Modal Adjustments */
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+}
+
+/* Modal Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

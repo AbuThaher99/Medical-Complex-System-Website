@@ -39,6 +39,33 @@
     </tbody>
   </table>
 
+  <div class="medicine-cards">
+    <div class="medicine-card" *ngFor="let medicine of medicines">
+      <div class="medicine-card-header">
+        <div class="medicine-card-title">{{ medicine.name }}</div>
+        <div class="medicine-card-id">ID: {{ medicine.id }}</div>
+      </div>
+      <div class="medicine-card-content">
+        <div>
+          <div class="medicine-card-label">Buy Price</div>
+          <div class="medicine-card-value">{{ medicine.buyPrice }}</div>
+        </div>
+        <div>
+          <div class="medicine-card-label">Purchase Price</div>
+          <div class="medicine-card-value">{{ medicine.purchasePrice }}</div>
+        </div>
+        <div>
+          <div class="medicine-card-label">Expiration Date</div>
+          <div class="medicine-card-value">{{ medicine.expirationDate | date: 'mediumDate' }}</div>
+        </div>
+      </div>
+      <div class="medicine-card-actions">
+        <button class="edit-btn" (click)="openEditModal(medicine)">Edit</button>
+        <button class="delete-btn" (click)="deleteMedicine(medicine.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Pagination Section -->
   <div class="pagination-section">
     <button

@@ -21,35 +21,78 @@
     </div>
   </form>
 
-  <div class="table-container">
-    <table>
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Company Name</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let supplier of suppliers">
-        <td>{{ supplier.name }}</td>
-        <td>{{ supplier.companyName }}</td>
-        <td>{{ supplier.phone }}</td>
-        <td>{{ supplier.address }}</td>
-        <td class="actions">
-          <button class="btn-update" (click)="openEditModal(supplier)">Update</button>
-          <button class="btn-delete" (click)="onDelete(supplier)">Delete</button>
-          <button class="btn-medicines" (click)="openMedicinesModal(supplier)">
-            Show Medicines
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <!-- Desktop Table View -->
+  <div class="desktop-view">
+    <div class="table-container">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Company Name</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let supplier of suppliers">
+          <td>{{ supplier.name }}</td>
+          <td>{{ supplier.companyName }}</td>
+          <td>{{ supplier.phone }}</td>
+          <td>{{ supplier.address }}</td>
+          <td class="actions">
+            <button class="btn-update" (click)="openEditModal(supplier)">
+              <i class="fas fa-edit"></i> Update
+            </button>
+            <button class="btn-delete" (click)="onDelete(supplier)">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+            <button class="btn-medicines" (click)="openMedicinesModal(supplier)">
+              <i class="fas fa-pills"></i> Show Medicines
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="mobile-view">
+    <div class="supplier-card" *ngFor="let supplier of suppliers">
+      <div class="company-name">{{ supplier.companyName }}</div>
+
+      <div class="supplier-info">
+        <div class="info-group">
+          <label>Name</label>
+          <span>{{ supplier.name }}</span>
+        </div>
+        <div class="info-group">
+          <label>Phone</label>
+          <span>{{ supplier.phone }}</span>
+        </div>
+        <div class="info-group">
+          <label>Address</label>
+          <span>{{ supplier.address }}</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-update" (click)="openEditModal(supplier)">
+          <i class="fas fa-edit"></i> Update
+        </button>
+        <button class="btn-delete" (click)="onDelete(supplier)">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+        <button class="btn-medicines" (click)="openMedicinesModal(supplier)">
+          <i class="fas fa-pills"></i> Show Medicines
+        </button>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Edit Modal -->
 <div *ngIf="showEditModal" class="modal">
   <div class="modal-content">
     <span class="close" (click)="closeEditModal()">&times;</span>

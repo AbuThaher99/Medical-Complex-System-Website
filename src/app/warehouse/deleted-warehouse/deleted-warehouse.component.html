@@ -23,7 +23,23 @@
     </tr>
     </tbody>
   </table>
-
+  <div class="deleted-mobile-card-view">
+    <div class="deleted-warehouse-card" *ngFor="let store of deletedWarehouseStores">
+      <div class="deleted-warehouse-card-header">
+        <div class="deleted-warehouse-card-title">{{ store.medicine?.name }}</div>
+        <div class="deleted-warehouse-card-id">ID: {{ store.id }}</div>
+      </div>
+      <div class="deleted-warehouse-card-content">
+        <div class="deleted-warehouse-card-row">
+          <span class="deleted-warehouse-card-label">Quantity:</span>
+          <span class="deleted-warehouse-card-value">{{ store.quantity }}</span>
+        </div>
+      </div>
+      <div class="deleted-warehouse-card-actions">
+        <button class="restore-btn" (click)="restoreWarehouseStore(store.id)">Restore</button>
+      </div>
+    </div>
+  </div>
   <!-- Pagination Section -->
   <div class="pagination-section">
     <button

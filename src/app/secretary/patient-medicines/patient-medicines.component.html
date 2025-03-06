@@ -84,7 +84,24 @@
     </tbody>
   </table>
 
-
+  <div class="medicine-cards">
+    <div *ngFor="let record of patientMedicines" class="medicine-card">
+      <div class="card-header">
+        <h3>{{ record.treatment.patient.user.firstName }} {{ record.treatment.patient.user.lastName }}</h3>
+        <span class="medicine-id">#{{ record.id }}</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Treatment:</strong> {{ record.treatment.id }} - ${{ record.treatment.price }}</p>
+        <p><strong>Medicine:</strong> {{ record.medicine.name }} (${{ record.medicine.buyPrice }})</p>
+        <p><strong>Quantity:</strong> {{ record.quantity }}</p>
+        <p><strong>Total Price:</strong> ${{ calculateTotalPrice(record) }}</p>
+      </div>
+      <div class="card-actions">
+        <button class="edit-btn" (click)="openEditModal(record)">Edit</button>
+        <button class="delete-btn" (click)="deletePatientMedicine(record.id)">Delete</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Pagination -->
   <div class="pagination">

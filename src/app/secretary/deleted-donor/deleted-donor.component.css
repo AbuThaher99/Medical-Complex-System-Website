@@ -1,80 +1,95 @@
 /* General Container */
 .deleted-donor-container {
   padding: 20px;
-  background-color: #f4f4f4; /* Lighter background for a clean look */
-  border-radius: 12px; /* Softer corners for modern design */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
-  max-width: 1200px; /* Constrain container width */
+  max-width: 1200px;
 }
 
 /* Section Title */
 .deleted-donor-container h2 {
-  font-size: 26px; /* Larger font for better emphasis */
+  font-size: 26px;
   font-weight: bold;
   color: #333;
   margin-bottom: 25px;
   text-align: center;
 }
 
-/* Search Section */
-.search-section {
+/* Filters Section */
+.filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
-  margin-bottom: 25px;
-  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.search-section input {
+.filters input,
+.filters select {
   flex: 1;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px; /* Increased font size for readability */
+  font-size: 14px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.search-section input:focus {
+.filters input:focus,
+.filters select:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Subtle glow effect */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
-.search-section button {
-  background-color: #007bff;
-  color: white;
-  padding: 12px 20px; /* Larger padding for better usability */
-  border: none;
+.filters select {
+  min-width: 220px;
+}
+
+/* Fixed Dropdown Scroll */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+}
+
+.dropdown-content {
+  position: absolute;
+  background: white;
+  width: 100%;
   border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 250px; /* Ensuring proper scrolling */
+  overflow-y: auto;
+  z-index: 10;
 }
 
-.search-section button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); /* Lift effect for hover */
+.dropdown-content::-webkit-scrollbar {
+  width: 6px;
 }
 
-.search-section button:active {
-  background-color: #004494;
-  transform: translateY(0); /* Reset position on click */
+.dropdown-content::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 6px;
 }
 
-/* Departments Table */
+/* Table View (Desktop) */
+.desktop-view {
+  display: block;
+}
+
 .deleted-donor-table {
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
-  border-radius: 12px; /* Rounded corners for table */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .deleted-donor-table th,
 .deleted-donor-table td {
-  padding: 14px 16px; /* Increased padding for better spacing */
+  padding: 14px 16px;
   border: 1px solid #ddd;
   text-align: left;
   font-size: 14px;
@@ -92,48 +107,81 @@
 
 .deleted-donor-table tr:hover {
   background-color: #f1f1f1;
-  transition: background-color 0.3s ease; /* Smooth hover effect */
+  transition: background-color 0.3s ease;
 }
 
-/* Action Buttons */
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+/* Mobile View (Hidden by Default) */
+.mobile-view {
+  display: none;
 }
 
-.action-buttons .restore-btn {
-  background-color: #4caf50; /* Green for restore */
-  color: white;
-  padding: 10px 14px; /* Increased padding for better usability */
-  border: none;
-  border-radius: 6px;
+/* Mobile Card */
+.donor-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.donor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.donor-id {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.donor-info {
+  padding: 10px 0;
+}
+
+.info-group {
+  margin-bottom: 8px;
+}
+
+.info-group label {
+  display: block;
+  color: #64748b;
   font-size: 14px;
   font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-.action-buttons .restore-btn:hover {
-  background-color: #45a049; /* Slightly darker green on hover */
-  transform: translateY(-2px); /* Lift effect */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+.info-group span {
+  color: #1e293b;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.action-buttons .restore-btn:active {
-  background-color: #3e8e41; /* Darker green when clicked */
-  transform: translateY(0); /* Reset position */
+/* Restore Button */
+.restore-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  width: 100%;
+  transition: all 0.3s ease;
 }
 
-/* Pagination Section */
+.restore-btn:hover {
+  background: #059669;
+}
+
+/* Pagination */
 .pagination-section {
-  margin-top: 25px;
+  margin-top: 20px;
   text-align: center;
 }
 
 .pagination-section button {
-  margin: 0 8px;
+  margin: 5px;
   padding: 10px 16px;
   background-color: #007bff;
   color: white;
@@ -146,47 +194,18 @@
 
 .pagination-section button:hover {
   background-color: #0056b3;
-  transform: translateY(-2px); /* Lift effect */
+  transform: translateY(-2px);
 }
 
-.pagination-section button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
 
-.pagination-section span {
-  font-size: 16px; /* Larger font for better visibility */
-  font-weight: bold;
-  color: #333;
-}
-/* Filters Section */
-.filters {
-  display: flex;
-  gap: 15px;
-  justify-content: space-between;
-  margin-bottom: 25px;
-}
-
-
-.filters input,
-.filters select {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.filters input:focus,
-.filters select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-}
-
-.filters select {
-  min-width: 220px;
+  .mobile-view {
+    display: block;
+  }
 }
 .dropdown {
   position: relative;
@@ -209,8 +228,4 @@
   display: block;
   padding: 8px;
   cursor: pointer;
-}
-
-.dropdown-content label:hover {
-  background: #f1f1f1;
 }

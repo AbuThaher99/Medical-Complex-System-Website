@@ -12,11 +12,12 @@ import {CustomAlertService} from "../../services/custom-alert.service";
 export class DeletedUsersComponent implements OnInit {
   users: any[] = [];
   page = 1;
-  size = 10;
+  size = 2;
   search = '';
   role = '';
   totalUsers = 0;
-
+  isLoading = false;
+  isRestoring = false;
   constructor(private userService: UserService, private http: HttpClient, private configService: ConfigService,private customAlertService: CustomAlertService
   ) {}
 
@@ -49,11 +50,12 @@ export class DeletedUsersComponent implements OnInit {
       next: (response: any) => {
         this.users = response.content;
         this.totalUsers = response.totalElements;
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Failed to fetch deleted users:', error);
         this.customAlertService.show('Error', 'Failed to fetch deleted users. Please try again.');
-
+        this.isLoading = false;
       }
     });
   }
@@ -63,19 +65,24 @@ export class DeletedUsersComponent implements OnInit {
     this.fetchDeletedUsers();
   }
 
-  restoreUser(userId: number): void {
-    this.customAlertService.confirm('Confirm Restore', 'Are you sure you want to restore this user').then((confirmed) => {
+  async restoreUser(userId: number): Promise<void> {
+    try {
+      const confirmed = await this.customAlertService.confirm(
+        'Confirm Restore',
+        'Are you sure you want to restore this user?'
+      );
 
       if (!confirmed) {
         return;
       }
 
+      this.isRestoring = true;
       const url = `${this.configService.apiUrl}admin/user/restore/${userId}`;
       const accessToken = localStorage.getItem('access_token');
 
       if (!accessToken) {
         this.customAlertService.show('Error', 'No access token found. Please log in.');
-
+        this.isRestoring = false;
         return;
       }
 
@@ -84,19 +91,15 @@ export class DeletedUsersComponent implements OnInit {
         'Authorization': `Bearer ${accessToken}`
       });
 
-      this.http.post(url, null, {headers}).subscribe({
-        next: () => {
-          this.customAlertService.show('Success', 'User restored successfully!');
-
-          this.fetchDeletedUsers();
-        },
-        error: (error) => {
-          console.error('Failed to restore user:', error);
-          this.customAlertService.show('Error', 'Failed to restore user. Please try again.');
-
-        }
-      });
-    });
+      await this.http.post(url, null, { headers }).toPromise();
+      this.customAlertService.show('Success', 'User restored successfully!');
+      await this.fetchDeletedUsers();
+    } catch (error) {
+      console.error('Failed to restore user:', error);
+      this.customAlertService.show('Error', 'Failed to restore user. Please try again.');
+    } finally {
+      this.isRestoring = false;
+    }
   }
 
   protected readonly Math = Math;

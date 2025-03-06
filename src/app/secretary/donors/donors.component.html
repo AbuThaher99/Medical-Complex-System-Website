@@ -67,6 +67,25 @@
     </tr>
     </tbody>
   </table>
+  <div class="donor-cards">
+    <div class="donor-card" *ngFor="let donor of donors">
+      <div class="card-header">
+        <span class="donor-name">{{ donor.name }}</span>
+        <span class="donor-id">#{{ donor.id }}</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Phone:</strong> {{ donor.phone }}</p>
+        <p><strong>Blood Type:</strong> {{ donor.bloodType }}</p>
+        <p><strong>Gender:</strong> {{ donor.gender }}</p>
+      </div>
+      <div class="card-actions">
+        <button class="edit-btn" (click)="openEditModal(donor)">Edit</button>
+        <button class="delete-btn" (click)="deleteDonor(donor.id)">Delete</button>
+        <button class="add-donation-btn" (click)="openAddDonationModal(donor)">Add Donation</button>
+        <button class="view-donations-btn" (click)="openViewDonationsModal(donor)">View Donations</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Pagination -->
   <div class="pagination">
@@ -127,7 +146,7 @@
     <span class="close" (click)="closeViewDonationsModal()">&times;</span>
     <h2>Donations for {{ currentDonor?.name }}</h2>
 
-    <table class="donor-table">
+    <table class="donation-table" *ngIf="currentDonor?.donations?.length > 0">
       <thead>
       <tr>
         <th>Donation ID</th>

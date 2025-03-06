@@ -63,7 +63,38 @@
     </tr>
     </tbody>
   </table>
+  <!-- Mobile Cards for Deleted Records (visible only on mobile) -->
+  <div class="deleted-mobile-cards">
+    <div class="deleted-patient-card" *ngFor="let record of deletedPatientBlood">
+      <span class="deleted-status">Deleted</span>
 
+      <div class="deleted-patient-card-header">
+        <span class="patient-name">{{ record.patient.user.firstName }} {{ record.patient.user.lastName }}</span>
+        <span class="patient-id">#{{ record.id }}</span>
+      </div>
+
+      <div class="deleted-patient-info">
+        <div class="info-item">
+          <span class="info-label">Phone</span>
+          <span class="info-value">{{ record.patient.user.phone }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Blood Type</span>
+          <span class="info-value">{{ record.bloodType }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Quantity</span>
+          <span class="info-value">{{ record.quantity }}</span>
+        </div>
+      </div>
+
+      <div class="deleted-card-actions">
+        <button class="restore-btn" (click)="restorePatientBlood(record.id)">Restore</button>
+      </div>
+    </div>
+  </div>
   <!-- Pagination -->
   <div class="pagination-section">
     <button (click)="page = page - 1; loadDeletedPatientBlood()" [disabled]="page === 1">

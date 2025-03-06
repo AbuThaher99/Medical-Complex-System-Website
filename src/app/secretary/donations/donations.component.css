@@ -214,3 +214,383 @@
 .dropdown-content label:hover {
   background: #f1f1f1;
 }
+.donation-card {
+  display: none;
+}
+
+/* Card Container with Grid Layout */
+.mobile-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 10px;
+}
+
+/* Enhanced Cards with Modern Design */
+.donation-card {
+  background: linear-gradient(145deg, #ffffff, #f5f7fa);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 5px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  border: 1px solid rgba(230, 230, 230, 0.7);
+  overflow: hidden;
+}
+
+.donation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+  opacity: 0.8;
+}
+
+.donation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 8px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Card Header with Icon */
+.donation-id {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 12px;
+}
+
+.donation-id i {
+  color: #4facfe;
+  font-size: 20px;
+  background: rgba(79, 172, 254, 0.1);
+  padding: 8px;
+  border-radius: 50%;
+}
+
+/* Badge for Blood Type */
+.blood-type-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: white;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #ff5f6d, #ffc371);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Blood Type Color Variations */
+.a_positive {
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+}
+
+.a_negative {
+  background: linear-gradient(to right, #43cea2, #185a9d);
+}
+
+.b_positive {
+  background: linear-gradient(to right, #ff5f6d, #ffc371);
+}
+
+.b_negative {
+  background: linear-gradient(to right, #f857a6, #ff5858);
+}
+
+.o_positive {
+  background: linear-gradient(to right, #11998e, #38ef7d);
+}
+
+.o_negative {
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
+}
+
+.ab_positive {
+  background: linear-gradient(to right, #834d9b, #d04ed6);
+}
+
+.ab_negative {
+  background: linear-gradient(to right, #5614b0, #dbd65c);
+}
+
+/* Improved Information Layout */
+.donation-info {
+  padding: 12px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.info-group {
+  margin-bottom: 14px;
+  transition: all 0.2s ease;
+}
+
+.info-group:hover {
+  transform: translateX(5px);
+}
+
+.info-group label {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-group span {
+  color: #1e293b;
+  font-size: 16px;
+  font-weight: 500;
+  display: block;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* Date Styling */
+.info-group.date span {
+  font-family: monospace;
+  background-color: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Footer with Analytics */
+.donation-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.donation-timestamp {
+  font-size: 12px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.donation-timestamp i {
+  font-size: 14px;
+}
+
+/* Enhanced Responsive Design */
+@media screen and (max-width: 1200px) {
+  .mobile-view {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+  .donation-card {
+    display: block;
+  }
+
+  .mobile-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+  }
+
+  .filters input:focus,
+  .filters select:focus {
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+    outline: none;
+  }
+
+  .dropdown {
+    position: relative;
+    width: 100%;
+  }
+
+  .dropdown-content {
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    margin-top: 5px;
+    z-index: 100;
+  }
+
+  .dropdown-content label {
+    display: block;
+    padding: 10px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+  }
+
+  .dropdown-content label:hover {
+    background-color: #f5f5f5;
+  }
+
+  .dropdown-content label:last-child {
+    border-bottom: none;
+  }
+
+  .pagination-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    margin-top: 20px;
+  }
+
+  .pagination-section button {
+    padding: 12px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pagination-section button:disabled {
+    background: #e0e0e0;
+    cursor: not-allowed;
+  }
+
+  .pagination-section span {
+    text-align: center;
+    font-weight: 500;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .mobile-view {
+    grid-template-columns: 1fr;
+  }
+
+  .donation-info {
+    grid-template-columns: 1fr;
+  }
+
+  .donations-container h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+}
+
+/* Loading Indicators & Animation */
+.loading-indicator {
+  text-align: center;
+  padding: 12px;
+  color: #64748b;
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Custom Scrollbar for Dropdown */
+.dropdown-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* Empty State */
+.no-data-container {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  margin: 20px 0;
+}
+
+.no-data-container i {
+  font-size: 48px;
+  color: #cbd5e1;
+  margin-bottom: 16px;
+}
+
+.no-data-container p {
+  color: #64748b;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.no-data-container button {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.no-data-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+}

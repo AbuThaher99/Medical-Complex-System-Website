@@ -67,7 +67,24 @@
     </tr>
     </tbody>
   </table>
-
+    <!-- Patients Cards (Visible on Mobile) -->
+    <div class="patient-cards">
+      <div *ngFor="let patient of patients" class="patient-card">
+        <div class="card-header">
+          <h3>{{ patient.user.firstName }} {{ patient.user.lastName }}</h3>
+          <span class="patient-id">#{{ patient.id }}</span>
+        </div>
+        <div class="card-body">
+          <p><strong>Email:</strong> {{ patient.user.email }}</p>
+          <p><strong>Phone:</strong> {{ patient.user.phone }}</p>
+          <p><strong>Address:</strong> {{ patient.user.address }}</p>
+        </div>
+        <div class="card-actions">
+          <button class="edit-btn" (click)="getPatientById(patient.user.id)">View</button>
+          <button class="delete-btn" (click)="deletePatient(patient.user.email)">Delete</button>
+        </div>
+      </div>
+    </div>
   <!-- Pagination -->
   <div class="pagination">
     <button (click)="onPageChange(page - 1)" [disabled]="page === 1">

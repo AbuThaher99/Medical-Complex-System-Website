@@ -21,32 +21,65 @@
     </div>
   </form>
 
-  <!-- Integrated Table -->
-  <div class="table-container">
-    <table>
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Company Name</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let supplier of deletedSuppliers">
-        <td>{{ supplier.name }}</td>
-        <td>{{ supplier.companyName }}</td>
-        <td>{{ supplier.phone }}</td>
-        <td>{{ supplier.address }}</td>
-        <td>
-          <button class="btn-restore" (click)="restoreSupplier(supplier.id)">
-            Restore
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <!-- Desktop Table View -->
+  <div class="desktop-view">
+    <div class="table-container">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Company Name</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let supplier of deletedSuppliers">
+          <td>{{ supplier.name }}</td>
+          <td>{{ supplier.companyName }}</td>
+          <td>{{ supplier.phone }}</td>
+          <td>{{ supplier.address }}</td>
+          <td>
+            <button class="btn-restore" (click)="restoreSupplier(supplier.id)">
+              <i class="fas fa-undo-alt"></i> Restore
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="mobile-view">
+    <div class="supplier-card" *ngFor="let supplier of deletedSuppliers">
+      <div class="company-name">{{ supplier.companyName }}</div>
+
+      <div class="supplier-info">
+        <div class="info-group">
+          <label>Name</label>
+          <span>{{ supplier.name }}</span>
+        </div>
+        <div class="info-group">
+          <label>Phone</label>
+          <span>{{ supplier.phone }}</span>
+        </div>
+        <div class="info-group">
+          <label>Address</label>
+          <span>{{ supplier.address }}</span>
+        </div>
+      </div>
+
+      <button class="btn-restore" (click)="restoreSupplier(supplier.id)">
+        <i class="fas fa-undo-alt"></i> Restore Supplier
+      </button>
+    </div>
+
+    <div class="no-data-card" *ngIf="deletedSuppliers.length === 0">
+      <i class="fas fa-inbox"></i>
+      <p>No deleted suppliers found</p>
+    </div>
   </div>
 </div>
 

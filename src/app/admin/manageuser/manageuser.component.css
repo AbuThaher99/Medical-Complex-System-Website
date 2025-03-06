@@ -1,11 +1,11 @@
-/* General Container */
 .manage-user-container {
   padding: 20px;
-  background-color: #f4f4f4; /* Slightly brighter background */
-  border-radius: 12px; /* Softer rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
-  max-width: 1200px; /* Constrain container width for better readability */
+  max-width: 1200px;
+  width: 95%;
 }
 
 /* Section Title */
@@ -23,6 +23,7 @@
   gap: 15px;
   align-items: center;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .search-filter-section input,
@@ -30,8 +31,10 @@
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px; /* Larger font for better readability */
+  font-size: 16px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  flex: 1;
+  min-width: 200px;
 }
 
 .search-filter-section input:focus,
@@ -41,26 +44,13 @@
   outline: none;
 }
 
-.search-filter-section button {
-  background-color: #007bff;
-  color: white;
-  padding: 12px 20px; /* Increased padding for better usability */
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+/* Desktop Table View */
+.desktop-view {
+  display: block;
 }
 
-.search-filter-section button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); /* Subtle lift effect */
-}
-
-.search-filter-section button:active {
-  background-color: #004494;
-  transform: translateY(0);
+.mobile-view {
+  display: none;
 }
 
 /* User Table */
@@ -69,13 +59,13 @@
   border-collapse: collapse;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  overflow: hidden; /* Ensures rounded corners are applied */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .user-table th,
 .user-table td {
-  padding: 14px 16px; /* Increased padding for better spacing */
+  padding: 14px 16px;
   border: 1px solid #ddd;
   text-align: left;
   font-size: 14px;
@@ -96,6 +86,49 @@
   transition: background-color 0.3s ease;
 }
 
+/* Mobile Card View */
+.user-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: #007bff;
+  color: white;
+  padding: 15px;
+  font-weight: bold;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-field {
+  margin-bottom: 10px;
+}
+
+.card-field label {
+  font-weight: bold;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.card-field span {
+  color: #333;
+}
+
+.card-actions {
+  padding: 15px;
+  background: #f8f9fa;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 /* Action Buttons */
 .action-buttons {
   display: flex;
@@ -103,32 +136,35 @@
   gap: 10px;
 }
 
-.action-buttons .view-btn,
-.action-buttons .delete-btn {
-  padding: 10px 14px; /* Larger padding for better usability */
+.view-btn,
+.delete-btn {
+  padding: 10px 14px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.action-buttons .view-btn {
+.view-btn {
   background-color: #17a2b8;
   color: white;
 }
 
-.action-buttons .view-btn:hover {
+.view-btn:hover {
   background-color: #138496;
   transform: translateY(-2px);
 }
 
-.action-buttons .delete-btn {
+.delete-btn {
   background-color: #dc3545;
   color: white;
 }
 
-.action-buttons .delete-btn:hover {
+.delete-btn:hover {
   background-color: #c82333;
   transform: translateY(-2px);
 }
@@ -136,11 +172,14 @@
 /* Pagination Section */
 .pagination-section {
   margin-top: 25px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .pagination-section button {
-  margin: 0 8px;
   padding: 10px 16px;
   background-color: #007bff;
   color: white;
@@ -148,10 +187,11 @@
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  min-width: 100px;
 }
 
-.pagination-section button:hover {
+.pagination-section button:hover:not(:disabled) {
   background-color: #0056b3;
   transform: translateY(-2px);
 }
@@ -162,11 +202,10 @@
 }
 
 .pagination-section span {
-  font-size: 16px; /* Slightly larger font for better visibility */
+  font-size: 16px;
   font-weight: bold;
   color: #333;
 }
-
 
 /* User Details Modal */
 .user-details-modal {
@@ -180,6 +219,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 20px;
 }
 
 .modal-content {
@@ -189,6 +229,8 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -200,13 +242,13 @@
   text-align: center;
 }
 
-.modal-content .user-info p {
+.user-info p {
   margin: 8px 0;
   font-size: 14px;
   color: #555;
 }
 
-.modal-content .user-info p strong {
+.user-info p strong {
   color: #333;
 }
 
@@ -218,18 +260,21 @@
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   margin-top: 20px;
   display: block;
+  width: 100%;
+  max-width: 200px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .close-button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-/* Fade-in Animation */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -238,5 +283,46 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .manage-user-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .search-filter-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-filter-section input,
+  .search-filter-section select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .desktop-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .pagination-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination-section button {
+    width: 100%;
+  }
+
+  .modal-content {
+    padding: 15px;
+    width: 95%;
   }
 }

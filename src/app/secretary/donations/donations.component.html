@@ -38,31 +38,87 @@
   </div>
 
   <!-- Donations Table -->
-  <table class="donations-table">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Donor</th>
-      <th>Phone</th>
-      <th>Blood Type</th>
-      <th>Quantity</th>
-      <th>Donation Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let donation of donations">
-      <td>{{ donation.id }}</td>
-      <td>{{ donation.donor.name }}</td>
-      <td>{{ donation.donor.phone }}</td>
-      <td>{{ donation.bloodType }}</td>
-      <td>{{ donation.quantity }}</td>
-      <td>{{ donation.donationDate | date: 'medium' }}</td>
-    </tr>
-    <tr *ngIf="donations.length === 0">
-      <td colspan="6" class="no-data">No donations found.</td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="desktop-view">
+    <table class="donations-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Donor</th>
+        <th>Phone</th>
+        <th>Blood Type</th>
+        <th>Quantity</th>
+        <th>Donation Date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let donation of donations">
+        <td>{{ donation.id }}</td>
+        <td>{{ donation.donor.name }}</td>
+        <td>{{ donation.donor.phone }}</td>
+        <td>{{ donation.bloodType }}</td>
+        <td>{{ donation.quantity }}</td>
+        <td>{{ donation.donationDate | date: 'medium' }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mobile-view">
+    <div class="donation-card" *ngFor="let donation of donations">
+      <!-- Card Header with Icon -->
+      <div class="donation-id">
+        <i class="fas fa-hand-holding-medical"></i>
+        #{{ donation.id }}
+      </div>
+
+      <!-- Blood Type Badge -->
+      <div class="blood-type-badge" [ngClass]="donation.bloodType.toLowerCase().replace('_', '')">
+        {{ donation.bloodType }}
+      </div>
+
+      <!-- Donation Information -->
+      <div class="donation-info">
+        <div class="info-group">
+          <label>Donor</label>
+          <span>{{ donation.donor.name }}</span>
+        </div>
+
+        <div class="info-group">
+          <label>Phone</label>
+          <span>{{ donation.donor.phone }}</span>
+        </div>
+
+        <div class="info-group">
+          <label>Blood Type</label>
+          <span>{{ donation.bloodType }}</span>
+        </div>
+
+        <div class="info-group">
+          <label>Quantity</label>
+          <span>{{ donation.quantity }} ml</span>
+        </div>
+
+        <div class="info-group date">
+          <label>Donation Date</label>
+          <span>{{ donation.donationDate | date: 'medium' }}</span>
+        </div>
+      </div>
+
+      <!-- Card Footer with Timestamp -->
+      <div class="donation-footer">
+        <div class="donation-timestamp">
+          <i class="far fa-clock"></i> {{ donation.donationDate | date: 'shortTime' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="no-data-container" *ngIf="donations.length === 0">
+      <i class="fas fa-tint-slash"></i>
+      <p>No donations found matching your criteria</p>
+      <button (click)="resetFilters()">Reset Filters</button>
+    </div>
+  </div>
 
   <!-- Pagination -->
   <div class="pagination-section">

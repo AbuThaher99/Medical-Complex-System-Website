@@ -218,3 +218,159 @@
 .dropdown-content label:hover {
   background: #f1f1f1;
 }
+.deleted-mobile-cards {
+  display: none;
+}
+
+/* Mobile Responsive Layout */
+@media (max-width: 768px) {
+  .deleted-patient-blood-container {
+    padding: 15px;
+    margin: 10px;
+    max-width: 100%;
+  }
+
+  .deleted-patient-blood-container h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  /* Stack filters vertically on mobile */
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dropdown {
+    width: 100%;
+  }
+
+  /* Hide table on mobile */
+  .deleted-patient-blood-table {
+    display: none;
+  }
+
+  /* Mobile Cards Display */
+  .deleted-mobile-cards {
+    display: block;
+  }
+
+  .deleted-patient-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    padding: 0;
+    position: relative;
+    border-left: 4px solid #dc3545; /* Red left border to indicate deleted status */
+    overflow: hidden;
+  }
+
+  .deleted-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #dc3545;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .deleted-patient-card-header {
+    padding: 15px;
+    padding-right: 90px; /* Make room for the status badge */
+  }
+
+  .patient-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+  }
+
+  .deleted-patient-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 15px 15px 15px;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .info-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+  }
+
+  .info-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .deleted-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+  }
+
+  .deleted-card-actions .restore-btn {
+    padding: 8px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Adjust pagination for mobile */
+  .pagination-section {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pagination-section button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    background-color: #e9e9e9;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+  }
+
+  .pagination-section button:disabled {
+    background-color: #ccc;
+    color: #666;
+  }
+
+  .pagination-section button.active,
+  .pagination-section button:not(:disabled):hover {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .pagination-section span {
+    margin: 0 10px;
+  }
+  .patient-id {
+    background-color: #6c757d; /* Gray for deleted records */
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+}

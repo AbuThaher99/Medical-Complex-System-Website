@@ -26,6 +26,11 @@ export class LayoutComponent implements OnInit {
   notifications: any[] = [];
   unreadNotificationsCount = 0;
 
+  isRefreshing = false;
+  private touchStartY = 0;
+  private touchMoveY = 0;
+  private readonly REFRESH_THRESHOLD = 100;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -44,40 +49,116 @@ export class LayoutComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
-    // Close dropdowns when clicking outside
     const userProfileElement = document.querySelector('.user-profile');
     const dropdownMenuElement = document.querySelector('.dropdown-menu');
     const notificationsElement = document.querySelector('.notifications');
     const notificationsDropdownElement = document.querySelector('.notifications-dropdown');
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const navElement = document.querySelector('.dashboard-nav');
 
-    if (userProfileElement && dropdownMenuElement) {
-      if (!userProfileElement.contains(event.target as Node) &&
-        !dropdownMenuElement.contains(event.target as Node)) {
-        this.isDropdownOpen = false;
+    // Mobile nav specific handling
+    if (window.innerWidth < 768) {
+      // Close notifications dropdown when clicking outside
+      if (notificationsElement && notificationsDropdownElement) {
+        if (!notificationsElement.contains(event.target as Node) &&
+          !notificationsDropdownElement.contains(event.target as Node)) {
+          this.showNotifications = false;
+        }
+      }
+
+      // Close mobile nav when clicking outside, except for nav toggle and nav itself
+      if (this.mobileNavOpen &&
+        navElement &&
+        !navElement.contains(event.target as Node) &&
+        !(mobileMenuToggle && mobileMenuToggle.contains(event.target as Node))) {
+        this.mobileNavOpen = false;
+        this.sidebarCollapsed = true;
+      }
+    } else {
+      // Desktop navigation handling (previous logic)
+      if (userProfileElement && dropdownMenuElement) {
+        if (!userProfileElement.contains(event.target as Node) &&
+          !dropdownMenuElement.contains(event.target as Node)) {
+          this.isDropdownOpen = false;
+        }
+      }
+
+      if (notificationsElement && notificationsDropdownElement) {
+        if (!notificationsElement.contains(event.target as Node) &&
+          !notificationsDropdownElement.contains(event.target as Node)) {
+          this.showNotifications = false;
+        }
       }
     }
+  }
+  onTouchStart(event: TouchEvent) {
+    const notificationsList = document.querySelector('.notifications-list');
+    if (notificationsList?.scrollTop === 0) {
+      this.touchStartY = event.touches[0].clientY;
+    }
+  }
 
-    if (notificationsElement && notificationsDropdownElement) {
-      if (!notificationsElement.contains(event.target as Node) &&
-        !notificationsDropdownElement.contains(event.target as Node)) {
-        this.showNotifications = false;
+  onTouchMove(event: TouchEvent) {
+    if (this.touchStartY > 0) {
+      this.touchMoveY = event.touches[0].clientY;
+      const pull = this.touchMoveY - this.touchStartY;
+
+      if (pull > 0 && pull < this.REFRESH_THRESHOLD) {
+        event.preventDefault();
       }
     }
   }
 
+  onTouchEnd() {
+    if (this.touchStartY > 0 && this.touchMoveY > 0) {
+      const pull = this.touchMoveY - this.touchStartY;
+
+      if (pull > this.REFRESH_THRESHOLD) {
+        this.refreshNotifications();
+      }
+    }
+
+    this.touchStartY = 0;
+    this.touchMoveY = 0;
+  }
+
+  refreshNotifications() {
+    this.isRefreshing = true;
+    this.fetchNotifications().then(() => {
+      setTimeout(() => {
+        this.isRefreshing = false;
+      }, 1000);
+    });
+  }
   checkScreenSize() {
-    // Auto-collapse sidebar on small screens
     if (window.innerWidth < 768) {
       this.sidebarCollapsed = true;
+      this.mobileNavOpen = false;
+      this.showNotifications = false; // Close notifications when resizing
+    } else {
+      this.mobileNavOpen = false;
+      this.sidebarCollapsed = false;
     }
   }
 
+
   toggleSidebar() {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    // For mobile: when nav is open, closing sidebar means closing nav
+    if (window.innerWidth < 768 && this.mobileNavOpen) {
+      this.mobileNavOpen = false;
+      this.sidebarCollapsed = true;
+    } else {
+      this.sidebarCollapsed = !this.sidebarCollapsed;
+    }
   }
 
   toggleMobileNav() {
     this.mobileNavOpen = !this.mobileNavOpen;
+
+    // When opening mobile nav, always collapse sidebar
+    if (this.mobileNavOpen) {
+      this.sidebarCollapsed = false;
+    }
   }
 
   closeMobileNav() {
@@ -114,29 +195,53 @@ export class LayoutComponent implements OnInit {
     });
   }
 
-  fetchNotifications(): void {
+  async fetchNotifications(): Promise<void> {
     const accessToken = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${accessToken}`,
       accept: '*/*',
     });
 
-    this.http
-      .get(`${this.configService.apiUrl}patients/treatment/patientNotifications`, { headers })
-      .subscribe((response: any) => {
-        this.notifications = response;
-        this.unreadNotificationsCount = this.notifications.filter((n) => !n.read).length;
-      }, (error) => {
-        console.error('Failed to fetch notifications:', error);
-      });
-  }
-
-  toggleNotifications(): void {
-    this.showNotifications = !this.showNotifications;
+    return new Promise((resolve, reject) => {
+      this.http
+        .get(`${this.configService.apiUrl}patients/treatment/patientNotifications`, { headers })
+        .subscribe({
+          next: (response: any) => {
+            this.notifications = response;
+            this.unreadNotificationsCount = this.notifications.filter((n) => !n.read).length;
+            resolve();
+          },
+          error: (error) => {
+            console.error('Failed to fetch notifications:', error);
+            reject(error);
+          }
+        });
+    });
   }
 
   onNotificationClick(): void {
-    this.toggleNotifications();
+    this.showNotifications = !this.showNotifications;
+
+    if (window.innerWidth < 768) {
+      // Force full-screen behavior and prevent scrolling
+      document.body.style.overflow = this.showNotifications ? 'hidden' : 'auto';
+      document.documentElement.style.overflow = this.showNotifications ? 'hidden' : 'auto';
+    }
+
+    // Close other dropdowns when opening notifications
+    if (this.showNotifications) {
+      this.isDropdownOpen = false;
+    }
+  }
+
+  closeNotifications(): void {
+    this.showNotifications = false;
+
+    if (window.innerWidth < 768) {
+      // Restore scrolling when closing notifications
+      document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+    }
   }
 
   markAsRead(notificationId: number): void {
