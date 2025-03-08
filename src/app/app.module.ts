@@ -50,6 +50,7 @@ import { SafeUrlPipe } from './safe-url.pipe';
 import { SalaryReportComponent } from './admin/salary-report/salary-report.component';
 import { SignupPatientComponent } from './signup-patient/signup-patient.component';
 import { CustomAlertComponent } from './custom-alert/custom-alert.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import { CustomAlertComponent } from './custom-alert/custom-alert.component';
     SalaryReportComponent,
     SignupPatientComponent,
     CustomAlertComponent,
+    LoadingSpinnerComponent,
   ],
     imports: [
         BrowserModule,
