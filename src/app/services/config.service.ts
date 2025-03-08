@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ConfigService {
-  readonly apiUrl: string = 'http://localhost:8080/';
+    readonly apiUrl: string = 'https://medical-latest.onrender.com/';
 
-  constructor() {}
+    constructor() {}
 }
