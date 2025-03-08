@@ -1,40 +1,82 @@
 <app-custom-alert></app-custom-alert>
 <div class="treatments-container">
   <h2>My Treatments</h2>
-  <table class="treatments-table">
-    <thead>
-    <tr>
-      <th>Disease Description</th>
-      <th>Doctor</th>
-      <th>Treatment Date</th>
-      <th>Price</th>
-      <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let treatment of treatments">
-      <td>{{ treatment.diseaseDescription }}</td>
-      <td>{{ treatment.doctor.user.firstName }} {{ treatment.doctor.user.lastName }}</td>
-      <td>{{ treatment.treatmentDate | date: 'medium' }}</td>
-      <td>${{ treatment.price }}</td>
-      <td>
+  <!-- Desktop Table View -->
+  <div class="desktop-view">
+    <table class="treatments-table">
+      <thead>
+      <tr>
+        <th>Disease Description</th>
+        <th>Doctor</th>
+        <th>Treatment Date</th>
+        <th>Price</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let treatment of treatments">
+        <td>{{ treatment.diseaseDescription }}</td>
+        <td>{{ treatment.doctor.user.firstName }} {{ treatment.doctor.user.lastName }}</td>
+        <td>{{ treatment.treatmentDate | date: 'medium' }}</td>
+        <td>${{ treatment.price }}</td>
+        <td>
+          <button
+            (click)="openFeedbackModal(
+                treatment.doctor.id,
+                treatment.patient.id,
+                treatment.id,
+                treatment.rated
+              )"
+            class="add-medicine-btn"
+            [disabled]="treatment.rated"
+          >
+            {{ treatment.rated ? 'Feedback Submitted' : 'Give Feedback' }}
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mobile-view">
+    <div class="treatment-card" *ngFor="let treatment of treatments">
+      <div class="card-header">
+        <h3>Treatment Details</h3>
+        <span class="price">${{ treatment.price }}</span>
+      </div>
+
+      <div class="card-content">
+        <div class="info-group">
+          <label>Disease:</label>
+          <p>{{ treatment.diseaseDescription }}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Doctor:</label>
+          <p>{{ treatment.doctor.user.firstName }} {{ treatment.doctor.user.lastName }}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Date:</label>
+          <p>{{ treatment.treatmentDate | date: 'medium' }}</p>
+        </div>
+      </div>
+
+      <div class="card-footer">
         <button
           (click)="openFeedbackModal(
-              treatment.doctor.id,
-              treatment.patient.id,
-              treatment.id,
-              treatment.rated
-            )"
+            treatment.doctor.id,
+            treatment.patient.id,
+            treatment.id,
+            treatment.rated
+          )"
           class="add-medicine-btn"
           [disabled]="treatment.rated"
         >
           {{ treatment.rated ? 'Feedback Submitted' : 'Give Feedback' }}
         </button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-
+      </div>
+    </div>
+  </div>
   <div class="pagination">
     <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
     <span>Page {{ page }} of {{ totalPages }}</span>
@@ -48,7 +90,7 @@
     <span class="close" (click)="closeModal()">&times;</span>
     <h2>Give Feedback</h2>
     <label>Comment</label>
-    <textarea [(ngModel)]="feedback.comment"></textarea>
+    <textarea [(ngModel)]="feedback.comment" placeholder="Share your experience..."></textarea>
     <label>Rating (0-5)</label>
     <input type="number" [(ngModel)]="feedback.rating" min="0" max="5" />
     <button (click)="submitFeedback()">Submit</button>

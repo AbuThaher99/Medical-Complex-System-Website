@@ -45,6 +45,10 @@ export class MyTreatmentsComponent implements OnInit {
   }
 
   submitFeedback(): void {
+    if (this.feedback.rating === 0 || this.feedback.rating === null || this.feedback.comment === '') {
+      this.customAlertService.show('Error', 'Please select a rating.');
+      return;
+    }
     const payload = {
       comment: this.feedback.comment,
       rating: this.feedback.rating,

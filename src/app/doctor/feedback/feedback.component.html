@@ -1,26 +1,42 @@
 <div class="feedback-container">
   <h2>Patient Feedback</h2>
 
-  <table class="feedback-table">
-    <thead>
-    <tr>
-      <th>Comment</th>
-      <th>Rating</th>
-      <th>Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let feedback of feedbacks">
-      <td>{{ feedback.comment }}</td>
-      <td>
-          <span *ngFor="let star of [1, 2, 3, 4, 5]">
-            <i class="fas" [ngClass]="star <= feedback.rating ? 'fa-star filled' : 'fa-star'"></i>
-          </span>
-      </td>
-      <td>{{ feedback.createdDate | date: 'medium' }}</td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- Desktop Table View (will be hidden on mobile) -->
+  <div class="desktop-view">
+    <table class="feedback-table">
+      <thead>
+      <tr>
+        <th>Comment</th>
+        <th>Rating</th>
+        <th>Date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let feedback of feedbacks">
+        <td>{{ feedback.comment }}</td>
+        <td>
+            <span *ngFor="let star of [1, 2, 3, 4, 5]">
+              <i class="fas" [ngClass]="star <= feedback.rating ? 'fa-star filled' : 'fa-star'"></i>
+            </span>
+        </td>
+        <td>{{ feedback.createdDate | date: 'medium' }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Card View (will be shown only on mobile) -->
+  <div class="mobile-view">
+    <div class="feedback-card" *ngFor="let feedback of feedbacks">
+      <div class="card-rating">
+        <span *ngFor="let star of [1, 2, 3, 4, 5]">
+          <i class="fas" [ngClass]="star <= feedback.rating ? 'fa-star filled' : 'fa-star'"></i>
+        </span>
+      </div>
+      <div class="card-date">{{ feedback.createdDate | date: 'medium' }}</div>
+      <div class="card-comment">{{ feedback.comment }}</div>
+    </div>
+  </div>
 
   <div class="pagination">
     <button (click)="previousPage()" [disabled]="page === 1">Previous</button>

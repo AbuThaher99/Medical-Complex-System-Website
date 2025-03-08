@@ -14,6 +14,7 @@
   font-weight: bold;
 }
 
+/* Desktop Table Styles */
 .feedback-table {
   width: 100%;
   border-collapse: collapse;
@@ -44,11 +45,43 @@
 .feedback-table tr:hover {
   background-color: #f1f1f1;
   transition: background-color 0.3s ease;
-
 }
 
+/* Mobile Card Styles */
+.mobile-view {
+  display: none;
+}
 
+.feedback-card {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
 
+.feedback-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-rating {
+  margin-bottom: 8px;
+}
+
+.card-date {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.card-comment {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Star Rating Styles */
 .fa-star {
   color: #ccc;
 }
@@ -74,16 +107,40 @@
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
 .pagination button:hover {
   background-color: #0056b3;
   transform: translateY(-2px);
 }
+
 .pagination button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
 .pagination span {
   font-size: 14px;
   font-weight: bold;
   color: #333;
+}
+
+/* Responsive Media Queries */
+@media screen and (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .feedback-container {
+    padding: 15px;
+    margin: 15px auto;
+  }
+
+  .pagination button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
 }
