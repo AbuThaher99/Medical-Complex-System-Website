@@ -79,59 +79,7 @@
   background-color: #f1f1f1;
   transition: background-color 0.3s ease;
 }
-.dropdown {
-  position: relative;
-  display: inline-block;
-  width: 300px;
-}
 
-.dropdown-content {
-  position: absolute;
-  background: white;
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
-}
-
-.dropdown-content label {
-  display: block;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.dropdown-content label:hover {
-  background: #f1f1f1;
-}
-
-.hint-text {
-  font-size: 12px;
-  color: gray;
-  margin-top: 5px;
-}
-/* Action Buttons */
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-.modal-dropdown select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.modal-dropdown option {
-  padding: 8px;
-  font-size: 14px;
-}
-
-.action-buttons .edit-btn,
-.action-buttons .delete-btn,
 .add-medicine-btn{
   padding: 8px 12px;
   border: none;
@@ -143,25 +91,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.action-buttons .edit-btn {
-  background-color: #28a745;
-  color: white;
-}
-
-.action-buttons .edit-btn:hover {
-  background-color: #218838;
-  transform: translateY(-2px);
-}
-
-.action-buttons .delete-btn {
-  background-color: #dc3545;
-  color: white;
-}
-
-.action-buttons .delete-btn:hover {
-  background-color: #c82333;
-  transform: translateY(-2px);
-}
  .add-medicine-btn {
   background-color: #007bff; /* Blue */
   color: white;
@@ -209,7 +138,6 @@
   color: #333;
 }
 
-/* Modal Styling */
 /* Modal Styling */
 .modal {
   display: flex;
@@ -297,36 +225,7 @@
   color: #333;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .modal-content {
-    width: 80%;
-  }
 
-  .patientMedicine-container {
-    max-width: 90%;
-  }
-
-  .filters {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal-content {
-    width: 90%;
-  }
-
-  .patientMedicine-container {
-    max-width: 95%;
-    padding: 15px;
-  }
-
-  .filters {
-    flex-direction: column;
-  }
-}
 .modal-dropdown {
   position: relative;
   width: 100%;
@@ -351,54 +250,128 @@
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
-/* Dropdown list */
-.dropdown-list {
-  position: absolute;
-  width: 100%;
-  max-height: 200px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
-  z-index: 10;
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: translateY(0);
-}
 
-/* Dropdown options */
-.dropdown-list label {
+.desktop-view {
   display: block;
-  padding: 10px 12px;
+}
+
+.mobile-view {
+  display: none;
+}
+.treatment-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: #f8f9fa;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.card-header .price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.info-group {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.info-group:last-child {
+  margin-bottom: 0;
+}
+
+.info-group label {
+  display: block;
   font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  color: #666;
+  margin-bottom: 4px;
 }
 
-.dropdown-list label:hover {
-  background: #f1f1f1;
+.info-group p {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
 }
 
-/* Scrollbar styling */
-.dropdown-list {
-  scrollbar-width: thin;
-  scrollbar-color: #007bff #f1f1f1;
+.card-footer {
+  padding: 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .treatments-container {
+    margin: 20px auto;
+    padding: 16px;
+  }
+
+  .pagination {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .pagination button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    margin: 20px;
+  }
 }
 
-.dropdown-list::-webkit-scrollbar {
-  width: 6px;
-}
+@media (max-width: 480px) {
+  .treatments-container {
+    margin: 10px;
+    padding: 12px;
+  }
 
-.dropdown-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
+  .card-header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
 
-.dropdown-list::-webkit-scrollbar-thumb {
-  background: #007bff;
-  border-radius: 10px;
-}
+  .pagination {
+    flex-direction: column;
+    gap: 12px;
+  }
 
-.dropdown-list::-webkit-scrollbar-thumb:hover {
-  background: #0056b3;
+  .pagination button {
+    width: 100%;
+  }
+
+  .modal-content {
+    padding: 16px;
+    margin: 16px;
+  }
 }
