@@ -1,26 +1,104 @@
 <app-custom-alert></app-custom-alert>
-<div class="check-in-out-container">
-  <h2>Employee Check-In / Check-Out</h2>
 
-  <div class="form-group">
-    <label for="email">Employee Email</label>
-    <input
-      type="email"
-      id="email"
-      [(ngModel)]="email"
-      placeholder="Enter employee email"
-      required
-    />
+<div class="attendance-card">
+  <!-- Card Header -->
+  <div class="attendance-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h2>Attendance Tracker</h2>
+      <p>Record employee check-in and check-out</p>
+    </div>
   </div>
 
-  <div class="button-group">
-    <button (click)="checkIn()" [disabled]="isProcessing">
-      {{ isProcessing ? 'Processing...' : 'Check In' }}
-    </button>
-    <button (click)="checkOut()" [disabled]="isProcessing">
-      {{ isProcessing ? 'Processing...' : 'Check Out' }}
-    </button>
+  <!-- Current Time Section -->
+  <div class="time-section">
+    <div class="current-time">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span>{{ currentTime | date:'EEEE, MMMM d • h:mm a' }}</span>
+    </div>
+    <div class="time-indicator" [class.pulse]="isProcessing">
+      <div class="time-dot" [ngClass]="{'checked-in': checkedInStatus, 'checked-out': !checkedInStatus && recentAction}"></div>
+      <span *ngIf="checkedInStatus">Currently Checked In</span>
+      <span *ngIf="!checkedInStatus && recentAction">Currently Checked Out</span>
+      <span *ngIf="!checkedInStatus && !recentAction">Attendance Status</span>
+    </div>
   </div>
 
-  <p *ngIf="message" class="status-message">{{ message }}</p>
+  <!-- Form Section -->
+  <div class="form-container">
+    <div class="input-group">
+      <label for="email">Employee Email</label>
+      <div class="input-with-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          placeholder="Enter employee email"
+          [class.error]="showEmailError"
+          (focus)="showEmailError = false"
+          required
+        />
+      </div>
+      <small class="error-message" *ngIf="showEmailError">Please enter a valid email address</small>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="check-in-btn" (click)="checkIn()">
+        <div class="button-content">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span>{{ isProcessing && !isCheckOutMode ? 'Processing...' : 'Check In' }}</span>
+          <div class="loading-spinner" *ngIf="isProcessing && !isCheckOutMode"></div>
+        </div>
+      </button>
+      <button class="check-out-btn" (click)="checkOut()" >
+        <div class="button-content">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18"></path>
+            <path d="M6 6l12 12"></path>
+          </svg>
+          <span>{{ isProcessing && isCheckOutMode ? 'Processing...' : 'Check Out' }}</span>
+          <div class="loading-spinner" *ngIf="isProcessing && isCheckOutMode"></div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+
+  <div class="status-card" *ngIf="message" [@fadeInOut]>
+    <div class="status-icon" [ngClass]="{'success': !message.includes('Failed'), 'error': message.includes('Failed')}">
+      <svg *ngIf="!message.includes('Failed')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <svg *ngIf="message.includes('Failed')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <p class="status-message">{{ message }}</p>
+    <p class="time-stamp" *ngIf="!message.includes('Failed')">{{ lastActionTime | date:'h:mm:ss a' }}</p>
+    <button class="close-status" (click)="message = ''">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
 </div>

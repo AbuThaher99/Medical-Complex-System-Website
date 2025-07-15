@@ -1,0 +1,361 @@
+/* Star Rating */
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stars {
+  position: relative;
+  width: 100px;
+  height: 20px;
+}
+
+.stars-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23E2E8F0' stroke='none'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+  background-size: 20px 20px;
+  background-repeat: repeat-x;
+}
+
+.stars-filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23ECC94B' stroke='none'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+  background-size: 20px 20px;
+  background-repeat: repeat-x;
+}
+
+.rating-text {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+/* Date Display */
+.date-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.date {
+  font-size: 14px;
+  color: #2d3748;
+  font-weight: 500;
+}
+
+.time {
+  font-size: 12px;
+  color: #718096;
+}
+
+/* Patient Info */
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #4299e1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.patient-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.patient-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+/* ===== Card View ===== */
+.card-view {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.feedback-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.feedback-card:last-child {
+  margin-bottom: 0;
+}
+
+.feedback-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-card.highlight {
+  border-left: 4px solid #4299e1;
+}
+
+.card-header {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-header .patient-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-header .patient-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.card-header .patient-name {
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-comment {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #2d3748;
+}
+
+/* ===== Pagination ===== */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pagination-info {
+  color: #718096;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-numbers button {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #4a5568;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.page-numbers button:hover:not(:disabled):not(.active) {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.page-numbers button.active {
+  background-color: #4299e1;
+  color: white;
+  border-color: #4299e1;
+  font-weight: 500;
+}
+
+.page-numbers button.ellipsis {
+  border: none;
+  background: transparent;
+  cursor: default;
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 992px) {
+  .feedback-dashboard {
+    padding: 16px;
+  }
+
+  .dashboard-header,
+  .stat-card {
+    padding: 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
+  }
+
+  .feedback-table .rating-col {
+    width: 100px;
+  }
+
+  .feedback-table .date-col {
+    width: 130px;
+  }
+
+  .feedback-table .patient-col {
+    width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hide view toggle on mobile */
+  .hide-on-mobile {
+    display: none;
+  }
+
+  .dropdown-menu {
+    width: 260px;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* The table view will be hidden on mobile due to ngIf condition in the template */
+}
+
+@media (max-width: 576px) {
+  .feedback-dashboard {
+    padding: 12px;
+  }
+
+  .dashboard-header {
+    padding: 16px;
+  }
+
+  .header-title h1 {
+    font-size: 22px;
+  }
+
+  .header-title p {
+    font-size: 14px;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .dropdown {
+    width: 100%;
+  }
+
+  .filter-btn, .sort-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 12px 12px 0 0;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card-header .patient-info {
+    width: 100%;
+  }
+
+  .page-numbers button {
+    min-width: 32px;
+    height: 32px;
+  }
+}

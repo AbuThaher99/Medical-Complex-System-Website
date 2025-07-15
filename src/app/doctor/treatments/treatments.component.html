@@ -1,6 +1,18 @@
 <app-custom-alert></app-custom-alert>
+
 <div class="treatments-container">
-  <h2>Manage Treatments</h2>
+  <div class="treatments-header">
+    <h2>Manage Treatments</h2>
+    <!-- Replace your existing view toggle buttons with this -->
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="activeView === 'grid'" (click)="toggleView('grid')" data-view="grid" title="Grid View">
+        <i class="fas fa-th-large"></i>
+      </button>
+      <button class="toggle-btn" [class.active]="activeView === 'table'" (click)="toggleView('table')" data-view="table" title="List View">
+        <i class="fas fa-list"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- Loading Spinner for Main Content -->
   <app-loading-spinner *ngIf="isLoading" message="Loading treatments..."></app-loading-spinner>
@@ -9,27 +21,35 @@
   <ng-container *ngIf="!isLoading">
     <!-- Filters -->
     <div class="filters">
-      <input type="text" placeholder="Search treatments..." (input)="onSearch($event)" />
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" placeholder="Search treatments..." (input)="onSearch($event)" />
+      </div>
 
       <!-- Multi-select dropdown with search -->
       <div class="dropdown" #dropdown>
-        <input type="text"
-               placeholder="Search patients..."
-               [(ngModel)]="patientSearchQuery"
-               (input)="filterPatients()"
-               (focus)="loadPatientsForFilter()"
-               (click)="showPatientFilterDropdown = true"
-               (blur)="hideDropdown($event, 'patient', 'filter')" />
+        <div class="dropdown-header">
+          <i class="fas fa-user-injured"></i>
+          <input type="text"
+                 placeholder="Search patients..."
+                 [(ngModel)]="patientSearchQuery"
+                 (input)="filterPatients()"
+                 (focus)="loadPatientsForFilter()"
+                 (click)="showPatientFilterDropdown = true"
+                 (blur)="hideDropdown($event, 'patient', 'filter')" />
+          <i class="fas fa-chevron-down"></i>
+        </div>
 
         <div class="dropdown-content"
              *ngIf="showPatientFilterDropdown"
              (scroll)="onPatientDropdownScroll($event)">
 
-          <label *ngFor="let patient of filteredPatients">
+          <label *ngFor="let patient of filteredPatients" class="patient-checkbox">
             <input type="checkbox"
                    [checked]="selectedPatientIds.includes(patient.id)"
                    (change)="toggleSelection(selectedPatientIds, patient.id, $event)" />
-            {{ patient.displayText }}
+            <span class="checkbox-icon"></span>
+            <span class="patient-name">{{ patient.displayText }}</span>
           </label>
 
           <div *ngIf="loadingMorePatients" class="loading-indicator">
@@ -37,172 +57,324 @@
           </div>
         </div>
       </div>
+
+      <button class="add-treatment-btn" (click)="openAddModal()">
+        <i class="fas fa-plus"></i>
+        <span>New Treatment</span>
+      </button>
     </div>
 
     <!-- Treatments Table -->
-    <table class="treatments-table">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Patient</th>
-        <th>Doctor</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let treatment of treatments">
-        <td>{{ treatment.id }}</td>
-        <td>{{ treatment.treatmentDate | date: 'mediumDate' }}</td>
-        <td>{{ treatment.patient?.user?.firstName }} {{ treatment.patient?.user?.lastName }}</td>
-        <td>{{ treatment.doctor?.user?.firstName }} {{ treatment.doctor?.user?.lastName }}</td>
-        <td>{{ treatment.diseaseDescription }}</td>
-        <td>${{ treatment.price }}</td>
-        <td class="action-buttons">
-          <button class="edit-btn" (click)="openEditModal(treatment)">Edit</button>
-          <button class="delete-btn" (click)="deleteTreatment(treatment.id)">Delete</button>
-          <button class="add-medicine-btn" (click)="openAddMedicineModal(treatment)">Add Medicine</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <div class="treatment-cards">
+    <div class="table-view">
+      <table class="treatments-table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Patient</th>
+          <th>Doctor</th>
+          <th>Description</th>
+          <th>Note</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let treatment of treatments">
+          <td><span class="id-badge">{{ treatment.id }}</span></td>
+          <td>
+            <div class="date-cell">
+              <i class="far fa-calendar-alt"></i>
+              <span>{{ treatment.treatmentDate | date: 'mediumDate' }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="user-info">
+              <div class="user-avatar patient">
+                {{ treatment.patient?.user?.firstName.charAt(0) }}{{ treatment.patient?.user?.lastName.charAt(0) }}
+              </div>
+              <span>{{ treatment.patient?.user?.firstName }} {{ treatment.patient?.user?.lastName }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="user-info">
+              <div class="user-avatar doctor">
+                {{ treatment.doctor?.user?.firstName.charAt(0) }}{{ treatment.doctor?.user?.lastName.charAt(0) }}
+              </div>
+              <span>{{ treatment.doctor?.user?.firstName }} {{ treatment.doctor?.user?.lastName }}</span>
+            </div>
+          </td>
+          <td>{{ treatment.diseaseDescription }}</td>
+          <td>{{ treatment.note }}</td>
+          <td><span class="price-badge">${{ treatment.price }}</span></td>
+          <td class="action-buttons">
+            <button class="edit-btn" (click)="openEditModal(treatment)" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="add-medicine-btn" (click)="openAddMedicineModal(treatment)" title="Add Medicine">
+              <i class="fas fa-pills"></i>
+            </button>
+            <button class="delete-btn" (click)="deleteTreatment(treatment.id)" title="Delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Treatments Cards View -->
+    <div class="card-view">
       <div *ngFor="let treatment of treatments" class="treatment-card">
-        <div class="card-header">
-          <h3>{{ treatment.patient?.user?.firstName }} {{ treatment.patient?.user?.lastName }}</h3>
-          <span class="treatment-date">{{ treatment.treatmentDate | date: 'mediumDate' }}</span>
+        <div class="card-badge">
+          <span class="badge-id">ID: {{ treatment.id }}</span>
+          <span class="badge-date">{{ treatment.treatmentDate | date: 'mediumDate' }}</span>
         </div>
-        <div class="card-body">
-          <p><strong>Doctor:</strong> {{ treatment.doctor?.user?.firstName }} {{ treatment.doctor?.user?.lastName }}</p>
-          <p><strong>Description:</strong> {{ treatment.diseaseDescription }}</p>
-          <p><strong>Price:</strong> ${{ treatment.price }}</p>
+
+        <div class="card-users">
+          <div class="card-user patient">
+            <div class="user-avatar patient">
+              {{ treatment.patient?.user?.firstName.charAt(0) }}{{ treatment.patient?.user?.lastName.charAt(0) }}
+            </div>
+            <div class="user-details">
+              <span class="user-label">Patient</span>
+              <span class="user-name">{{ treatment.patient?.user?.firstName }} {{ treatment.patient?.user?.lastName }}</span>
+            </div>
+          </div>
+
+          <div class="card-user doctor">
+            <div class="user-avatar doctor">
+              {{ treatment.doctor?.user?.firstName.charAt(0) }}{{ treatment.doctor?.user?.lastName.charAt(0) }}
+            </div>
+            <div class="user-details">
+              <span class="user-label">Doctor</span>
+              <span class="user-name">{{ treatment.doctor?.user?.firstName }} {{ treatment.doctor?.user?.lastName }}</span>
+            </div>
+          </div>
         </div>
+
+        <div class="card-details">
+          <div class="detail-item description">
+            <span class="detail-label">Description</span>
+            <p class="detail-value">{{ treatment.diseaseDescription }}</p>
+          </div>
+
+          <div class="detail-item price">
+            <span class="detail-label">Price</span>
+            <span class="price-badge">${{ treatment.price }}</span>
+          </div>
+        </div>
+
         <div class="card-actions">
-          <button class="edit-btn" (click)="openEditModal(treatment)">Edit</button>
-          <button class="delete-btn" (click)="deleteTreatment(treatment.id)">Delete</button>
-          <button class="add-medicine-btn" (click)="openAddMedicineModal(treatment)">Add Medicine</button>
+          <button class="edit-btn" (click)="openEditModal(treatment)">
+            <i class="fas fa-edit"></i>
+            <span>Edit</span>
+          </button>
+          <button class="add-medicine-btn" (click)="openAddMedicineModal(treatment)">
+            <i class="fas fa-pills"></i>
+            <span>Add Medicine</span>
+          </button>
+          <button class="delete-btn" (click)="deleteTreatment(treatment.id)">
+            <i class="fas fa-trash-alt"></i>
+            <span>Delete</span>
+          </button>
         </div>
       </div>
     </div>
+
     <!-- Pagination -->
     <div class="pagination">
-      <button (click)="onPageChange(page - 1)" [disabled]="page === 1">Previous</button>
-      <span>Page {{ page }} of {{ Math.ceil(totalTreatments / size) }}</span>
-      <button (click)="onPageChange(page + 1)" [disabled]="page === Math.ceil(totalTreatments / size)">Next</button>
+      <button class="page-btn" (click)="onPageChange(page - 1)" [disabled]="page === 1">
+        <i class="fas fa-chevron-left"></i>
+        <span>Previous</span>
+      </button>
+      <div class="page-info">
+        <span>Page {{ page }} of {{ Math.ceil(totalTreatments / size) }}</span>
+      </div>
+      <button class="page-btn" (click)="onPageChange(page + 1)" [disabled]="page === Math.ceil(totalTreatments / size)">
+        <span>Next</span>
+        <i class="fas fa-chevron-right"></i>
+      </button>
     </div>
   </ng-container>
 </div>
 
 <!-- Edit Treatment Modal -->
 <div class="modal" *ngIf="showEditModal">
-  <div class="modal-content">
-    <span class="close" (click)="closeEditModal()">&times;</span>
-    <h2>Edit Treatment</h2>
+  <div class="modal-backdrop" (click)="closeEditModal()"></div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>Edit Treatment</h3>
+      <button class="close-btn" (click)="closeEditModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
     <!-- Loading spinner for modal loading state -->
-    <app-loading-spinner *ngIf="isEditModalLoading" message="Loading treatment data..."></app-loading-spinner>
+    <div class="modal-loading" *ngIf="isEditModalLoading">
+      <app-loading-spinner message="Loading treatment data..."></app-loading-spinner>
+    </div>
 
-    <form (ngSubmit)="saveEdit()" *ngIf="!isEditModalLoading">
-      <label>Date:</label>
-      <input type="date" [(ngModel)]="editingTreatment.treatmentDate" name="treatmentDate" required />
-
-      <!-- Lazy Load Doctors -->
-      <div class="modal-dropdown">
-        <label for="doctor">Doctor:</label>
-        <input type="text" id="doctor-search"
-               placeholder="Search Doctors..."
-               [value]="editingTreatment.doctor.displayText"
-               (click)="showDoctorDropdownModal = true"
-               (blur)="hideDropdown($event, 'doctor', 'modal')"
-               (input)="onDoctorSearch($event)"
-        />
-        <div #doctorDropdown class="dropdown-list" *ngIf="showDoctorDropdownModal" (scroll)="onDoctorDropdownScroll($event)">
-          <label *ngFor="let doctor of filteredDoctors" (click)="selectDoctor(doctor)">
-            {{ doctor.id }} - {{ doctor.displayText }}
-          </label>
-          <div *ngIf="loadingMoreDoctors" class="loading-indicator">
-            <app-loading-spinner message="Loading more doctors..."></app-loading-spinner>
+    <div class="modal-body" *ngIf="!isEditModalLoading">
+      <form (ngSubmit)="saveEdit()">
+        <div class="form-group">
+          <label for="treatmentDate">Treatment Date</label>
+          <div class="input-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+            <input type="date" id="treatmentDate" [(ngModel)]="editingTreatment.treatmentDate" name="treatmentDate" required />
           </div>
         </div>
-      </div>
 
-      <!-- Lazy Load Patients -->
-      <div class="modal-dropdown">
-        <label for="patient">Patient:</label>
-        <input type="text" id="patient-search"
-               placeholder="Search Patients..."
-               [value]="editingTreatment.patient.displayText"
-               (click)="showPatientDropdownModal = true"
-               (blur)="hideDropdown($event, 'patient', 'modal')"
-               (input)="onPatientEditSearch($event)"
-        />
-        <div #patientDropdown class="dropdown-list" *ngIf="showPatientDropdownModal" (scroll)="onPatientEditDropdownScroll($event)">
-          <label *ngFor="let patient of filteredEditPatients" (click)="selectPatient(patient, 'modal')">
-            {{ patient.id }} - {{ patient.displayText }}
-          </label>
-          <div *ngIf="loadingMoreEditPatients" class="loading-indicator">
-            <app-loading-spinner message="Loading more patients..."></app-loading-spinner>
+        <!-- Lazy Load Doctors -->
+        <div class="form-group">
+          <label for="doctor">Doctor</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user-md"></i>
+            <input type="text" id="doctor-search"
+                   placeholder="Search Doctors..."
+                   [value]="editingTreatment.doctor.displayText"
+                   (click)="showDoctorDropdownModal = true"
+                   (blur)="hideDropdown($event, 'doctor', 'modal')"
+                   (input)="onDoctorSearch($event)" />
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </div>
+          <div class="dropdown-menu" *ngIf="showDoctorDropdownModal" (scroll)="onDoctorDropdownScroll($event)">
+            <div class="dropdown-item" *ngFor="let doctor of filteredDoctors" (click)="selectDoctor(doctor)">
+              {{ doctor.id }} - {{ doctor.displayText }}
+            </div>
+            <div *ngIf="loadingMoreDoctors" class="loading-indicator">
+              <app-loading-spinner message="Loading more doctors..."></app-loading-spinner>
+            </div>
           </div>
         </div>
-      </div>
 
-      <label>Description:</label>
-      <textarea [(ngModel)]="editingTreatment.diseaseDescription" name="diseaseDescription" required></textarea>
+        <!-- Lazy Load Patients -->
+        <div class="form-group">
+          <label for="patient">Patient</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user-injured"></i>
+            <input type="text" id="patient-search"
+                   placeholder="Search Patients..."
+                   [value]="editingTreatment.patient.displayText"
+                   (click)="showPatientDropdownModal = true"
+                   (blur)="hideDropdown($event, 'patient', 'modal')"
+                   (input)="onPatientEditSearch($event)" />
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </div>
+          <div class="dropdown-menu" *ngIf="showPatientDropdownModal" (scroll)="onPatientEditDropdownScroll($event)">
+            <div class="dropdown-item" *ngFor="let patient of filteredEditPatients" (click)="selectPatient(patient, 'modal')">
+              {{ patient.id }} - {{ patient.displayText }}
+            </div>
+            <div *ngIf="loadingMoreEditPatients" class="loading-indicator">
+              <app-loading-spinner message="Loading more patients..."></app-loading-spinner>
+            </div>
+          </div>
+        </div>
 
-      <label>Note:</label>
-      <textarea [(ngModel)]="editingTreatment.note" name="note"></textarea>
+        <div class="form-group">
+          <label for="diseaseDescription">Description</label>
+          <div class="input-wrapper textarea">
+            <i class="fas fa-comment-medical"></i>
+            <textarea id="diseaseDescription" [(ngModel)]="editingTreatment.diseaseDescription" name="diseaseDescription" required></textarea>
+          </div>
+        </div>
 
-      <label>Price:</label>
-      <input type="number" [(ngModel)]="editingTreatment.price" name="price" required />
+        <div class="form-group">
+          <label for="note">Notes</label>
+          <div class="input-wrapper textarea">
+            <i class="fas fa-sticky-note"></i>
+            <textarea id="note" [(ngModel)]="editingTreatment.note" name="note"></textarea>
+          </div>
+        </div>
 
-      <button type="submit" [disabled]="isSaving">
-        <span *ngIf="!isSaving">Save</span>
-        <span *ngIf="isSaving">Saving...</span>
-      </button>
-    </form>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <div class="input-wrapper">
+            <i class="fas fa-dollar-sign"></i>
+            <input type="number" id="price" [(ngModel)]="editingTreatment.price" name="price" required />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeEditModal()">Cancel</button>
+          <button type="submit" class="save-btn" [disabled]="isSaving">
+            <span *ngIf="!isSaving">Save Changes</span>
+            <span *ngIf="isSaving" class="saving-indicator">
+              <i class="fas fa-spinner fa-spin"></i> Saving...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
-<div *ngIf="showAddMedicineModal" class="modal">
-  <div class="modal-content">
-    <span class="close" (click)="closeAddMedicineModal()">&times;</span>
-    <h2>Add Medicine</h2>
+<!-- Add Medicine Modal -->
+<div class="modal" *ngIf="showAddMedicineModal">
+  <div class="modal-backdrop" (click)="closeAddMedicineModal()"></div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>Add Medicine</h3>
+      <button class="close-btn" (click)="closeAddMedicineModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
     <!-- Loading spinner for medicine modal loading state -->
-    <app-loading-spinner *ngIf="isMedicineModalLoading" message="Loading medicines..."></app-loading-spinner>
+    <div class="modal-loading" *ngIf="isMedicineModalLoading">
+      <app-loading-spinner message="Loading medicines..."></app-loading-spinner>
+    </div>
 
-    <form (ngSubmit)="saveMedicine()" *ngIf="!isMedicineModalLoading">
-      <div class="modal-dropdown">
-        <label for="medicine">Medicine:</label>
-        <input
-          type="text"
-          id="medicine-search"
-          placeholder="Search Medicines..."
-          [value]="selectedMedicineDisplayText"
-          (click)="showMedicineDropdownModal = true"
-          (blur)="hideDropdown($event, 'medicine', 'modal')"
-          (input)="onMedicineSearch($event)"
-        />
+    <div class="modal-body" *ngIf="!isMedicineModalLoading">
+      <form (ngSubmit)="saveMedicine()">
+        <div class="form-group">
+          <label for="medicine">Medicine</label>
+          <div class="input-wrapper">
+            <i class="fas fa-capsules"></i>
+            <input
+              type="text"
+              id="medicine-search"
+              placeholder="Search Medicines..."
+              [value]="selectedMedicineDisplayText"
+              (click)="showMedicineDropdownModal = true"
+              (blur)="hideDropdown($event, 'medicine', 'modal')"
+              (input)="onMedicineSearch($event)"
+            />
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </div>
 
-        <div #medicineDropdown class="dropdown-list" *ngIf="showMedicineDropdownModal" (scroll)="onMedicineScroll($event)">
-          <label *ngFor="let med of filteredMedicines" (click)="selectMedicine(med)">
-            {{ med.medicine.id }} - {{ med.medicine.name }} - ${{ med.medicine.buyPrice }}
-          </label>
-          <div *ngIf="loadingMoreMedicines" class="loading-indicator">
-            <app-loading-spinner message="Loading more medicines..."></app-loading-spinner>
+          <div class="dropdown-menu" *ngIf="showMedicineDropdownModal" (scroll)="onMedicineScroll($event)">
+            <div class="dropdown-item" *ngFor="let med of filteredMedicines" (click)="selectMedicine(med)">
+              <div class="medicine-item">
+                <span class="medicine-name">{{ med.medicine.name }}</span>
+                <span class="medicine-price">${{ med.medicine.buyPrice }}</span>
+              </div>
+              <span class="medicine-id">ID: {{ med.medicine.id }}</span>
+            </div>
+            <div *ngIf="loadingMoreMedicines" class="loading-indicator">
+              <app-loading-spinner message="Loading more medicines..."></app-loading-spinner>
+            </div>
           </div>
         </div>
-      </div>
 
-      <label>Quantity:</label>
-      <input type="number" [(ngModel)]="medicineQuantity" name="quantity" required min="1"/>
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <div class="input-wrapper">
+            <i class="fas fa-sort-numeric-up"></i>
+            <input type="number" id="quantity" [(ngModel)]="medicineQuantity" name="quantity" required min="1"/>
+          </div>
+        </div>
 
-      <button type="submit" [disabled]="isSavingMedicine">
-        <span *ngIf="!isSavingMedicine">Add Medicine</span>
-        <span *ngIf="isSavingMedicine">Adding...</span>
-      </button>
-    </form>
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeAddMedicineModal()">Cancel</button>
+          <button type="submit" class="save-btn" [disabled]="isSavingMedicine">
+            <span *ngIf="!isSavingMedicine">Add Medicine</span>
+            <span *ngIf="isSavingMedicine" class="saving-indicator">
+              <i class="fas fa-spinner fa-spin"></i> Adding...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

@@ -1,241 +1,751 @@
 <app-custom-alert></app-custom-alert>
-<div class="add-user-container">
-  <h2>Add New User</h2>
-  <form (ngSubmit)="onSubmit()">
-    <!-- Common Fields - Two Column Layout -->
-    <div class="form-group">
-      <label for="firstName">First Name</label>
-      <input
-        type="text"
-        id="firstName"
-        [(ngModel)]="user.firstName"
-        name="firstName"
-        required
-        placeholder="Enter first name"
-      />
+
+<div class="add-user-wizard">
+  <!-- Wizard Header -->
+  <div class="wizard-header">
+    <div class="wizard-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </div>
+    <h1>Create New User</h1>
+    <p class="wizard-subtitle">Please fill in the information to add a new user to the system</p>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="wizard-progress">
+    <div class="progress-step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1" (click)="currentStep = 1">
+      <div class="step-indicator">
+        <span *ngIf="currentStep <= 1">1</span>
+        <svg *ngIf="currentStep > 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="6 12 10 16 18 8"></polyline>
+        </svg>
+      </div>
+      <span class="step-name">Account</span>
     </div>
 
-    <div class="form-group">
-      <label for="lastName">Last Name</label>
-      <input
-        type="text"
-        id="lastName"
-        [(ngModel)]="user.lastName"
-        name="lastName"
-        required
-        placeholder="Enter last name"
-      />
+    <div class="progress-connector" [class.active]="currentStep > 1"></div>
+
+    <div class="progress-step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2" (click)="currentStep = 2">
+      <div class="step-indicator">
+        <span *ngIf="currentStep <= 2">2</span>
+        <svg *ngIf="currentStep > 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="6 12 10 16 18 8"></polyline>
+        </svg>
+      </div>
+      <span class="step-name">Personal</span>
     </div>
 
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        [(ngModel)]="user.email"
-        name="email"
-        required
-        placeholder="example@domain.com"
-      />
+    <div class="progress-connector" [class.active]="currentStep > 2"></div>
+
+    <div class="progress-step" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3" (click)="currentStep = 3">
+      <div class="step-indicator">
+        <span *ngIf="currentStep <= 3">3</span>
+        <svg *ngIf="currentStep > 3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="6 12 10 16 18 8"></polyline>
+        </svg>
+      </div>
+      <span class="step-name">Role</span>
     </div>
 
-    <div class="form-group">
-      <label for="phone">Phone</label>
-      <input
-        type="text"
-        id="phone"
-        [(ngModel)]="user.phone"
-        name="phone"
-        required
-        placeholder="Enter phone number"
-      />
-    </div>
+    <div class="progress-connector" [class.active]="currentStep > 3"></div>
 
-    <div class="form-group full-width">
-      <label for="address">Address</label>
-      <input
-        type="text"
-        id="address"
-        [(ngModel)]="user.address"
-        name="address"
-        required
-        placeholder="Enter full address"
-      />
+    <div class="progress-step" [class.active]="currentStep >= 4" [class.completed]="currentStep > 4" (click)="currentStep = 4">
+      <div class="step-indicator">
+        <span>4</span>
+      </div>
+      <span class="step-name">Confirm</span>
     </div>
+  </div>
 
-    <div class="form-group">
-      <label for="dateOfBirth">Date of Birth</label>
-      <input
-        type="date"
-        id="dateOfBirth"
-        [(ngModel)]="user.dateOfBirth"
-        name="dateOfBirth"
-        required
-      />
-    </div>
+  <!-- Wizard Content -->
+  <div class="wizard-content">
+    <form (ngSubmit)="onSubmit()" #userForm="ngForm">
+      <!-- Step 1: Account Information -->
+      <div class="wizard-step" [class.active]="currentStep === 1">
+        <div class="step-header">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Account Information
+          </h2>
+          <p>Create login credentials for the user</p>
+        </div>
 
-    <div class="form-group password-field">
-      <label for="password">Password</label>
-      <input
-        [type]="showPassword ? 'text' : 'password'"
-        id="password"
-        [(ngModel)]="user.password"
-        name="password"
-        required
-        placeholder="Minimum 8 characters"
-      />
-      <button
-        type="button"
-        class="password-toggle"
-        (click)="showPassword = !showPassword">
-        <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-      </button>
-      <p class="helper-text">Password should be at least 8 characters</p>
-    </div>
+        <div class="form-container">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input
+                type="email"
+                id="email"
+                [(ngModel)]="user.email"
+                name="email"
+                #emailInput="ngModel"
+                required
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                placeholder="Enter email address"
+              />
+              <div class="input-status">
+                <svg *ngIf="emailInput.valid && emailInput.touched" class="status-icon valid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 12 10 16 18 8"></polyline>
+                </svg>
+              </div>
+            </div>
+            <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="validation-error">
+              <span *ngIf="emailInput.errors?.['required']">Email is required</span>
+              <span *ngIf="emailInput.errors?.['pattern']">Please enter a valid email address</span>
+            </div>
+          </div>
 
-    <div class="form-group">
-      <label for="role">Role</label>
-      <select id="role" [(ngModel)]="user.role" name="role" required (change)="onRoleChange()">
-        <option value="" disabled selected>Select a role</option>
-        <option value="ADMIN">Admin</option>
-        <option value="DOCTOR">Doctor</option>
-        <option value="SECRETARY">Secretary</option>
-        <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
-        <option value="PATIENT">Patient</option>
-      </select>
-    </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                [(ngModel)]="user.password"
+                name="password"
+                #passwordInput="ngModel"
+                required
+                minlength="8"
+                placeholder="Minimum 8 characters"
+              />
+              <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+                <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+            <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="validation-error">
+              <span *ngIf="passwordInput.errors?.['required']">Password is required</span>
+              <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 8 characters</span>
+            </div>
 
-    <!-- Doctor Specific Fields -->
-    <div *ngIf="user.role === 'DOCTOR'" class="doctor-fields" data-section="Doctor Information">
-      <div class="form-group">
-        <label for="specialization">Specialization</label>
-        <select id="specialization" [(ngModel)]="doctor.specialization" name="specialization" required>
-          <option value="" disabled selected>Select specialization</option>
-          <option value="CARDIOLOGIST">Cardiologist</option>
-          <option value="DERMATOLOGIST">Dermatologist</option>
-          <option value="NEUROLOGIST">Neurologist</option>
-          <option value="ORTHOPEDIST">Orthopedist</option>
-          <option value="PEDIATRICIAN">Pediatrician</option>
-          <option value="PSYCHIATRIST">Psychiatrist</option>
-          <option value="SURGEON">Surgeon</option>
-        </select>
+            <div *ngIf="passwordInput.valid && passwordInput.touched" class="password-strength">
+              <div class="strength-meter">
+                <div class="strength-bar" [ngClass]="getPasswordStrength(user.password)"></div>
+              </div>
+              <div class="strength-text">
+                {{ getPasswordStrengthText(user.password) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="role">User Role</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              <select id="role" [(ngModel)]="user.role" name="role" required (change)="onRoleChange()">
+                <option value="" disabled>Select a role</option>
+                <option value="ADMIN">Administrator</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="SECRETARY">Secretary</option>
+                <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
+                <option value="PATIENT">Patient</option>
+              </select>
+            </div>
+            <div class="role-description">
+              <div *ngIf="user.role === 'ADMIN'" class="role-info">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Administrators have full system access and can manage all users</span>
+              </div>
+              <div *ngIf="user.role === 'DOCTOR'" class="role-info">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Doctor accounts have access to patient records and medical functions</span>
+              </div>
+              <div *ngIf="user.role === 'SECRETARY'" class="role-info">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Secretaries manage appointments and administrative tasks</span>
+              </div>
+              <div *ngIf="user.role === 'WAREHOUSE_EMPLOYEE'" class="role-info">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Warehouse employees manage inventory and supplies</span>
+              </div>
+              <div *ngIf="user.role === 'PATIENT'" class="role-info">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Patient accounts can view their medical records and appointments</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="beginTime">Begin Time</label>
-        <input
-          type="time"
-          id="beginTime"
-          [(ngModel)]="doctor.beginTime"
-          name="beginTime"
-          required
-        />
-        <p class="helper-text">Work shift start time</p>
+      <!-- Step 2: Personal Information -->
+      <div class="wizard-step" [class.active]="currentStep === 2">
+        <div class="step-header">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Personal Information
+          </h2>
+          <p>Enter user's personal details</p>
+        </div>
+
+        <div class="form-container">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input
+                  type="text"
+                  id="firstName"
+                  [(ngModel)]="user.firstName"
+                  name="firstName"
+                  #firstNameInput="ngModel"
+                  required
+                  placeholder="Enter first name"
+                />
+              </div>
+              <div *ngIf="firstNameInput.invalid && (firstNameInput.dirty || firstNameInput.touched)" class="validation-error">
+                <span>First name is required</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input
+                  type="text"
+                  id="lastName"
+                  [(ngModel)]="user.lastName"
+                  name="lastName"
+                  #lastNameInput="ngModel"
+                  required
+                  placeholder="Enter last name"
+                />
+              </div>
+              <div *ngIf="lastNameInput.invalid && (lastNameInput.dirty || lastNameInput.touched)" class="validation-error">
+                <span>Last name is required</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dateOfBirth">Date of Birth</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <input
+                  type="date"
+                  id="dateOfBirth"
+                  [(ngModel)]="user.dateOfBirth"
+                  name="dateOfBirth"
+                  #dobInput="ngModel"
+                  required
+                />
+              </div>
+              <div *ngIf="dobInput.invalid && (dobInput.dirty || dobInput.touched)" class="validation-error">
+                <span>Date of birth is required</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <input
+                  type="tel"
+                  id="phone"
+                  [(ngModel)]="user.phone"
+                  name="phone"
+                  #phoneInput="ngModel"
+                  required
+                  pattern="^[0-9+-\s()]{10,15}$"
+                  placeholder="Enter phone number"
+                />
+              </div>
+              <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)" class="validation-error">
+                <span *ngIf="phoneInput.errors?.['required']">Phone number is required</span>
+                <span *ngIf="phoneInput.errors?.['pattern']">Please enter a valid phone number</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">Address</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <input
+                type="text"
+                id="address"
+                [(ngModel)]="user.address"
+                name="address"
+                #addressInput="ngModel"
+                required
+                placeholder="Enter full address"
+              />
+            </div>
+            <div *ngIf="addressInput.invalid && (addressInput.dirty || addressInput.touched)" class="validation-error">
+              <span>Address is required</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="endTime">End Time</label>
-        <input
-          type="time"
-          id="endTime"
-          [(ngModel)]="doctor.endTime"
-          name="endTime"
-          required
-        />
-        <p class="helper-text">Work shift end time</p>
-      </div>
-    </div>
+      <!-- Step 3: Role-specific Information -->
+      <div class="wizard-step" [class.active]="currentStep === 3">
+        <div class="step-header">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            Role Information
+          </h2>
+          <p>Provide role-specific details</p>
+        </div>
 
-    <!-- Patient Specific Fields -->
-    <div *ngIf="user.role === 'PATIENT'" class="patient-fields" data-section="Patient Information">
-      <div class="form-group">
-        <label for="age">Age</label>
-        <input
-          type="number"
-          id="age"
-          [(ngModel)]="patient.age"
-          name="age"
-          required
-          placeholder="Enter age"
-          min="0"
-          max="120"
-        />
+        <!-- Doctor Fields -->
+        <div *ngIf="user.role === 'DOCTOR'" class="form-container role-section">
+          <div class="role-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            <h3>Doctor Details</h3>
+          </div>
+
+          <div class="form-group">
+            <label for="specialization">Specialization</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <select id="specialization" [(ngModel)]="doctor.specialization" name="specialization" required>
+                <option value="" disabled>Select specialization</option>
+                <option value="CARDIOLOGIST">Cardiologist</option>
+                <option value="DERMATOLOGIST">Dermatologist</option>
+                <option value="NEUROLOGIST">Neurologist</option>
+                <option value="ORTHOPEDIST">Orthopedist</option>
+                <option value="PEDIATRICIAN">Pediatrician</option>
+                <option value="PSYCHIATRIST">Psychiatrist</option>
+                <option value="SURGEON">Surgeon</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="beginTime">Work Start Time</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <input
+                  type="time"
+                  id="beginTime"
+                  [(ngModel)]="doctor.beginTime"
+                  name="beginTime"
+                  required
+                />
+              </div>
+              <div class="helper-text">Shift start time</div>
+            </div>
+
+            <div class="form-group">
+              <label for="endTime">Work End Time</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <input
+                  type="time"
+                  id="endTime"
+                  [(ngModel)]="doctor.endTime"
+                  name="endTime"
+                  required
+                />
+              </div>
+              <div class="helper-text">Shift end time</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Fields -->
+        <div *ngIf="user.role === 'PATIENT'" class="form-container role-section">
+          <div class="role-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            <h3>Patient Details</h3>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="age">Age</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9 12h6"></path>
+                  <path d="M12 9v6"></path>
+                </svg>
+                <input
+                  type="number"
+                  id="age"
+                  [(ngModel)]="patient.age"
+                  name="age"
+                  required
+                  min="0"
+                  max="120"
+                  placeholder="Enter age"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bloodType">Blood Type</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l.642 1.345c1.577 3.312 3.858 6.306 6.114 9.046 1.65 2.005 2.244 3.743 2.244 5.28 0 3.012-2.42 5.329-5.539 5.329-1.354 0-2.563-.585-3.461-1.511-.898.926-2.107 1.511-3.46 1.511-3.12 0-5.54-2.317-5.54-5.33 0-1.536.593-3.274 2.245-5.279C7.5 9.65 9.78 6.657 11.358 3.345L12 2z"></path>
+                </svg>
+                <select id="bloodType" [(ngModel)]="patient.bloodType.id" name="bloodType" required>
+                  <option value="" disabled>Select blood type</option>
+                  <option value="1">A+</option>
+                  <option value="2">A-</option>
+                  <option value="3">B+</option>
+                  <option value="4">B-</option>
+                  <option value="5">O+</option>
+                  <option value="6">O-</option>
+                  <option value="7">AB+</option>
+                  <option value="8">AB-</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary Fields -->
+        <div *ngIf="user.role !== 'PATIENT' && user.role" class="form-container role-section">
+          <div class="role-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <h3>Salary Information</h3>
+          </div>
+
+          <div class="form-group">
+            <label>Salary Type</label>
+            <div class="salary-type-options">
+              <div class="salary-option" [class.active]="user.salary.salaryType === 'MONTHLY'" (click)="user.salary.salaryType = 'MONTHLY'">
+                <div class="option-radio">
+                  <div class="radio-inner" *ngIf="user.salary.salaryType === 'MONTHLY'"></div>
+                </div>
+                <div>
+                  <h4>Monthly Salary</h4>
+                  <p>Fixed monthly amount</p>
+                </div>
+              </div>
+              <div class="salary-option" [class.active]="user.salary.salaryType === 'HOURLY'" (click)="user.salary.salaryType = 'HOURLY'">
+                <div class="option-radio">
+                  <div class="radio-inner" *ngIf="user.salary.salaryType === 'HOURLY'"></div>
+                </div>
+                <div>
+                  <h4>Hourly Rate</h4>
+                  <p>Payment based on hours worked</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="user.salary.salaryType === 'MONTHLY'" class="form-group">
+            <label for="salaryAmount">Monthly Salary Amount</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              <input
+                type="number"
+                id="salaryAmount"
+                [(ngModel)]="user.salary.fixedSalary"
+                name="salaryAmount"
+                required
+                min="0"
+                step="100"
+                placeholder="Enter monthly salary"
+              />
+            </div>
+          </div>
+
+          <div *ngIf="user.salary.salaryType === 'HOURLY'" class="form-row">
+            <div class="form-group">
+              <label for="hourRate">Hourly Rate</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <input
+                  type="number"
+                  id="hourRate"
+                  [(ngModel)]="user.salary.hourRate"
+                  name="hourRate"
+                  required
+                  min="0"
+                  step="0.5"
+                  placeholder="Enter hourly rate"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="hourWork">Hours Worked</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <input
+                  type="number"
+                  id="hourWork"
+                  [(ngModel)]="user.salary.hourWork"
+                  name="hourWork"
+                  required
+                  min="0"
+                  step="1"
+                  placeholder="Enter hours worked"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!user.role || user.role === ''" class="empty-role-state">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <h3>Role Selection Required</h3>
+          <p>Please go back to step 1 and select a user role to continue</p>
+          <button type="button" class="btn-secondary" (click)="currentStep = 1">Go to Role Selection</button>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="bloodType">Blood Type</label>
-        <select id="bloodType" [(ngModel)]="patient.bloodType.id" name="bloodType" required>
-          <option value="" disabled selected>Select blood type</option>
-          <option value="1">A+</option>
-          <option value="2">A-</option>
-          <option value="3">B+</option>
-          <option value="4">B-</option>
-          <option value="5">O+</option>
-          <option value="6">O-</option>
-          <option value="7">AB+</option>
-          <option value="8">AB-</option>
-        </select>
-      </div>
-    </div>
+      <!-- Step 4: Review & Submit -->
+      <div class="wizard-step" [class.active]="currentStep === 4">
+        <div class="step-header">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Review & Submit
+          </h2>
+          <p>Please review all information before submitting</p>
+        </div>
 
-    <!-- Salary Fields (Hidden for Patient) -->
-    <div *ngIf="user.role !== 'PATIENT' && user.role" class="salary-fields" data-section="Salary Information">
-      <div class="form-group">
-        <label for="salaryType">Salary Type</label>
-        <select id="salaryType" [(ngModel)]="user.salary.salaryType" name="salaryType" required>
-          <option value="" disabled selected>Select salary type</option>
-          <option value="MONTHLY">Monthly</option>
-          <option value="HOURLY">Hourly</option>
-        </select>
-      </div>
+        <div class="form-container">
+          <div class="review-section">
+            <h3>Account Information</h3>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Email</span>
+                <span class="review-value">{{ user.email }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Role</span>
+                <span class="review-value">{{ getRoleName(user.role) }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Password</span>
+                <span class="review-value">••••••••••</span>
+              </div>
+            </div>
+          </div>
 
-      <div *ngIf="user.salary.salaryType === 'MONTHLY'" class="form-group">
-        <label for="salaryAmount">Salary Amount</label>
-        <input
-          type="number"
-          id="salaryAmount"
-          [(ngModel)]="user.salary.fixedSalary"
-          name="salaryAmount"
-          required
-          placeholder="Enter monthly salary"
-          min="0"
-          step="100"
-        />
-        <p class="helper-text">Monthly fixed salary amount</p>
-      </div>
+          <div class="review-section">
+            <h3>Personal Information</h3>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Name</span>
+                <span class="review-value">{{ user.firstName }} {{ user.lastName }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Date of Birth</span>
+                <span class="review-value">{{ user.dateOfBirth | date: 'mediumDate' }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Phone</span>
+                <span class="review-value">{{ user.phone }}</span>
+              </div>
+              <div class="review-item full-width">
+                <span class="review-label">Address</span>
+                <span class="review-value">{{ user.address }}</span>
+              </div>
+            </div>
+          </div>
 
-      <div *ngIf="user.salary.salaryType === 'HOURLY'" class="form-group">
-        <label for="hourRate">Hour Rate</label>
-        <input
-          type="number"
-          id="hourRate"
-          [(ngModel)]="user.salary.hourRate"
-          name="hourRate"
-          required
-          placeholder="Enter hourly rate"
-          min="0"
-          step="0.5"
-        />
-        <p class="helper-text">Hourly payment rate</p>
-      </div>
+          <!-- Role-specific Review -->
+          <div class="review-section" *ngIf="user.role === 'DOCTOR'">
+            <h3>Doctor Information</h3>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Specialization</span>
+                <span class="review-value">{{ doctor.specialization }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Work Hours</span>
+                <span class="review-value">{{ doctor.beginTime }} to {{ doctor.endTime }}</span>
+              </div>
+            </div>
+          </div>
 
-      <div *ngIf="user.salary.salaryType === 'HOURLY'" class="form-group">
-        <label for="hourWork">Hours Worked</label>
-        <input
-          type="number"
-          id="hourWork"
-          [(ngModel)]="user.salary.hourWork"
-          name="hourWork"
-          required
-          placeholder="Enter hours worked"
-          min="0"
-          step="1"
-        />
-        <p class="helper-text">Number of hours worked</p>
-      </div>
-    </div>
+          <div class="review-section" *ngIf="user.role === 'PATIENT'">
+            <h3>Patient Information</h3>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Age</span>
+                <span class="review-value">{{ patient.age }}</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Blood Type</span>
+                <span class="review-value">{{ getBloodTypeName(patient.bloodType.id) }}</span>
+              </div>
+            </div>
+          </div>
 
-    <button type="submit" class="submit-button">Add User</button>
-  </form>
+          <div class="review-section" *ngIf="user.role !== 'PATIENT' && user.role">
+            <h3>Salary Information</h3>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Salary Type</span>
+                <span class="review-value">{{ user.salary.salaryType === 'MONTHLY' ? 'Monthly Salary' : 'Hourly Rate' }}</span>
+              </div>
+              <div class="review-item" *ngIf="user.salary.salaryType === 'MONTHLY'">
+                <span class="review-label">Monthly Amount</span>
+                <span class="review-value">${{ user.salary.fixedSalary }}</span>
+              </div>
+              <div class="review-item" *ngIf="user.salary.salaryType === 'HOURLY'">
+                <span class="review-label">Hourly Rate</span>
+                <span class="review-value">${{ user.salary.hourRate }}</span>
+              </div>
+              <div class="review-item" *ngIf="user.salary.salaryType === 'HOURLY'">
+                <span class="review-label">Hours Worked</span>
+                <span class="review-value">{{ user.salary.hourWork }} hours</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-actions">
+            <button type="button" class="btn-edit" (click)="currentStep = 1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Edit Information
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Wizard Navigation -->
+  <div class="wizard-footer">
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="previousStep()"
+      *ngIf="currentStep > 1"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Previous
+    </button>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="nextStep()"
+      *ngIf="currentStep < 4"
+      [disabled]="!canProceed()"
+    >
+      Next
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="btn-submit"
+      (click)="onSubmit()"
+      *ngIf="currentStep === 4"
+      [disabled]="isSubmitting"
+    >
+      <span *ngIf="!isSubmitting">Create User</span>
+      <div *ngIf="isSubmitting" class="btn-spinner"></div>
+    </button>
+  </div>
 </div>
-

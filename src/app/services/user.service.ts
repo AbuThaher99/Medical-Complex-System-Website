@@ -48,6 +48,22 @@ export class UserService {
     return this.http.get(url, { headers });
   }
 
+  viewDeletedUser(userId: number): Observable<any> {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      throw new Error('No access token found in local storage');
+    }
+
+    const headers = new HttpHeaders({
+      'accept': '*/*',
+      'Authorization': `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}/deleted/${userId}`;
+    return this.http.get(url, { headers });
+  }
+
   deleteUser(userId: number): Observable<any> {
     const token = localStorage.getItem('access_token');
 

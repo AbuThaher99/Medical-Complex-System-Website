@@ -1,20 +1,59 @@
 <app-custom-alert></app-custom-alert>
-<div class="deleted-departments-container">
-  <h2>Deleted Departments</h2>
 
-  <!-- Search Section -->
-  <div class="search-section">
-    <input
-      type="text"
-      [(ngModel)]="searchQuery"
-      (ngModelChange)="onSearchInputChange($event)"
-      placeholder="Search by name..."
-    />
+<div class="manage-user-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h2>Deleted Departments</h2>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="activeView === 'grid'" (click)="toggleView('grid')" data-view="grid" title="Grid View">
+        <i class="fas fa-th-large"></i>
+      </button>
+      <button class="toggle-btn" [class.active]="activeView === 'table'" (click)="toggleView('table')" data-view="table" title="Table View">
+        <i class="fas fa-list"></i>
+      </button>
+    </div>
   </div>
 
-  <!-- Desktop View -->
-  <div class="desktop-view">
-    <table class="deleted-departments-table">
+  <!-- Search and Filters -->
+  <div class="search-filter-section">
+    <!-- Search Input -->
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchInputChange($event)"
+        placeholder="Search deleted departments by name..."
+        aria-label="Search deleted departments"
+      >
+      <button *ngIf="searchQuery" class="search-clear" (click)="clearSearch()" aria-label="Clear search">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading-indicator" *ngIf="isLoading">
+    <app-loading-spinner message="Loading deleted departments..."></app-loading-spinner>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && deletedDepartments.length === 0">
+    <i class="fas fa-trash-alt empty-state-icon"></i>
+    <h3 class="empty-state-title">No deleted departments found</h3>
+    <p class="empty-state-description">
+      {{searchQuery ? 'Try adjusting your search to find what you\'re looking for.' : 'There are no deleted departments in the system.'}}
+    </p>
+    <button *ngIf="searchQuery" class="empty-state-action" (click)="clearSearch()">
+      <i class="fas fa-times-circle"></i> Clear Search
+    </button>
+  </div>
+
+  <!-- Table View -->
+  <div class="table-view" *ngIf="!isLoading && deletedDepartments.length > 0">
+    <table class="user-table">
       <thead>
       <tr>
         <th>ID</th>
@@ -26,59 +65,77 @@
       </thead>
       <tbody>
       <tr *ngFor="let department of deletedDepartments">
-        <td>{{ department.id }}</td>
-        <td>{{ department.name }}</td>
-        <td>{{ department.headId?.firstName }} {{ department.headId?.lastName }}</td>
-        <td>{{ department.secretaryId?.firstName }} {{ department.secretaryId?.lastName }}</td>
-        <td class="action-buttons">
-          <button class="restore-btn" (click)="restoreDepartment(department.id)">
-            <i class="fas fa-undo-alt"></i> Restore
-          </button>
+        <td data-label="ID">{{ department.id }}</td>
+        <td data-label="Name">{{ department.name }}</td>
+        <td data-label="Head">{{ department.headId?.firstName }} {{ department.headId?.lastName || 'Not Assigned' }}</td>
+        <td data-label="Secretary">{{ department.secretaryId?.firstName }} {{ department.secretaryId?.lastName || 'Not Assigned' }}</td>
+        <td data-label="Actions">
+          <div class="action-buttons">
+            <button class="action-btn restore-btn" (click)="restoreDepartment(department.id)" aria-label="Restore department">
+              <i class="fas fa-undo-alt"></i> Restore
+            </button>
+          </div>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Mobile View -->
-  <div class="mobile-view">
-    <div class="department-card" *ngFor="let department of deletedDepartments">
+  <!-- Grid View -->
+  <div class="grid-view" *ngIf="!isLoading && deletedDepartments.length > 0">
+    <div class="user-card" *ngFor="let department of deletedDepartments">
       <div class="card-header">
-        <h3>{{ department.name }}</h3>
-        <span class="department-id">#{{ department.id }}</span>
+        <div class="avatar">
+          {{ department.name?.charAt(0) }}{{ department.name?.charAt(1) }}
+        </div>
+        <div class="user-identity">
+          <h3 class="user-name">{{ department.name }}</h3>
+          <p class="user-email">Department ID: {{ department.id }}</p>
+        </div>
+        <span class="status-badge deleted">Deleted</span>
       </div>
+
       <div class="card-body">
-        <div class="info-group">
-          <label>Head:</label>
-          <span>{{ department.headId?.firstName }} {{ department.headId?.lastName || 'Not Assigned' }}</span>
-        </div>
-        <div class="info-group">
-          <label>Secretary:</label>
-          <span>{{ department.secretaryId?.firstName }} {{ department.secretaryId?.lastName || 'Not Assigned' }}</span>
+        <div class="card-info">
+          <div class="info-item">
+            <i class="fas fa-user-md info-icon"></i>
+            <span class="info-label">Head:</span>
+            <span class="info-value">{{ department.headId?.firstName }} {{ department.headId?.lastName || 'Not Assigned' }}</span>
+          </div>
+
+          <div class="info-item">
+            <i class="fas fa-user info-icon"></i>
+            <span class="info-label">Secretary:</span>
+            <span class="info-value">{{ department.secretaryId?.firstName }} {{ department.secretaryId?.lastName || 'Not Assigned' }}</span>
+          </div>
         </div>
       </div>
+
       <div class="card-actions">
-        <button class="restore-btn" (click)="restoreDepartment(department.id)">
-          <i class="fas fa-undo-alt"></i> Restore
+        <button class="action-btn restore-btn" (click)="restoreDepartment(department.id)">
+          <i class="fas fa-undo-alt"></i> Restore Department
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Pagination Section -->
-  <div class="pagination-section">
-    <button
-      (click)="onPageChange(page - 1)"
-      [disabled]="page === 1 || totalDepartments === 0"
-    >
-      <i class="fas fa-chevron-left"></i> Previous
-    </button>
-    <span>Page {{ page }} of {{ Math.ceil(totalDepartments / size) }}</span>
-    <button
-      (click)="onPageChange(page + 1)"
-      [disabled]="page === Math.ceil(totalDepartments / size)"
-    >
-      Next <i class="fas fa-chevron-right"></i>
-    </button>
+  <!-- Pagination -->
+  <div class="pagination-section" *ngIf="!isLoading && totalDepartments > 0">
+    <div class="page-info">
+      Showing {{ (page - 1) * size + 1 }} to {{ Math.min(page * size, totalDepartments) }} of {{ totalDepartments }} deleted departments
+    </div>
+    <div class="pagination-controls">
+      <button class="page-btn nav-btn" (click)="onPageChange(page - 1)" [disabled]="page === 1">
+        <i class="fas fa-chevron-left"></i> Previous
+      </button>
+      <button class="page-btn" *ngFor="let p of getPaginationArray()"
+              [class.active]="p === page"
+              (click)="onPageChange(p)">
+        {{ p }}
+      </button>
+      <button class="page-btn nav-btn" (click)="onPageChange(page + 1)" [disabled]="page === Math.ceil(totalDepartments / size)">
+        Next <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </div>
 </div>

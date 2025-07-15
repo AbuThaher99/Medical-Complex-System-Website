@@ -1,84 +1,147 @@
 <app-custom-alert></app-custom-alert>
-<div class="add-department">
-  <h2>Add Department</h2>
-  <form [formGroup]="addDepartmentForm" (ngSubmit)="onSubmit()">
-    <!-- Department Name -->
-    <div class="form-group">
-      <label for="name">Department Name</label>
-      <input
-        id="name"
-        type="text"
-        formControlName="name"
-        placeholder="Enter department name"
-        required
-      />
-    </div>
 
-    <!-- Head Dropdown with Lazy Loading and Search -->
-    <div class="form-group modal-dropdown">
-      <label for="head">Head (Doctor)</label>
-      <input
-        type="text"
-        id="head-search"
-        placeholder="Search Heads..."
-        [value]="headSearchTerm"
-        (click)="toggleHeadDropdown()"
-        (input)="filterHeads($event.target.value)"
-        (blur)="hideDropdown('head')"
-      />
-      <div
-        class="dropdown-list"
-        *ngIf="showHeadDropdown"
-        (scroll)="onHeadScroll($event)"
-      >
-        <label *ngFor="let head of filteredHeads" (click)="selectHead(head)">
-          {{ head.displayText }}
-        </label>
-        <label *ngIf="isLoadingHeads" class="loading-option">
-          Loading more heads...
-        </label>
-      </div>
-      <div *ngIf="selectedHeadInfo" class="user-info">
-        {{ selectedHeadInfo }}
-      </div>
-    </div>
+<div class="add-department-container">
+  <div class="header-section">
+    <h2>Add Department</h2>
+    <div class="header-decoration"></div>
+  </div>
 
-    <!-- Secretary Dropdown with Lazy Loading and Search -->
-    <div class="form-group modal-dropdown">
-      <label for="secretary">Secretary</label>
-      <input
-        type="text"
-        id="secretary-search"
-        placeholder="Search Secretaries..."
-        [value]="secretarySearchTerm"
-        (click)="toggleSecretaryDropdown()"
-        (input)="filterSecretaries($event.target.value)"
-        (blur)="hideDropdown('secretary')"
-      />
-      <div
-        class="dropdown-list"
-        *ngIf="showSecretaryDropdown"
-        (scroll)="onSecretaryScroll($event)"
-      >
-        <label
-          *ngFor="let secretary of filteredSecretaries"
-          (click)="selectSecretary(secretary)"
-        >
-          {{ secretary.displayText }}
+  <div class="form-card">
+    <form [formGroup]="addDepartmentForm" (ngSubmit)="onSubmit()">
+      <!-- Department Name -->
+      <div class="form-group">
+        <label for="name">
+          <i class="fas fa-building icon-label"></i>
+          Department Name
         </label>
-        <label *ngIf="isLoadingSecretaries" class="loading-option">
-          Loading more secretaries...
+        <div class="input-container">
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter department name"
+            required
+            [class.error]="addDepartmentForm.get('name')?.invalid && addDepartmentForm.get('name')?.touched"
+          />
+          <div class="validation-icon" *ngIf="addDepartmentForm.get('name')?.touched">
+            <i class="fas fa-check-circle" *ngIf="addDepartmentForm.get('name')?.valid"></i>
+            <i class="fas fa-exclamation-circle" *ngIf="addDepartmentForm.get('name')?.invalid"></i>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="addDepartmentForm.get('name')?.invalid && addDepartmentForm.get('name')?.touched">
+          Department name is required
+        </div>
+      </div>
+
+      <!-- Head Selection -->
+      <div class="form-group">
+        <label for="head-search">
+          <i class="fas fa-user-md icon-label"></i>
+          Department Head (Doctor)
         </label>
-      </div>
-      <div *ngIf="selectedSecretaryInfo" class="user-info">
-        {{ selectedSecretaryInfo }}
-      </div>
-    </div>
+        <div class="modal-dropdown">
+          <div class="input-container">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              id="head-search"
+              placeholder="Search for a doctor..."
+              [value]="selectedHeadInfo || headSearchTerm"
+              (click)="toggleHeadDropdown()"
+              (input)="filterHeads($event.target.value)"
+              (blur)="hideDropdown('head')"
+              [class.error]="addDepartmentForm.get('headId')?.invalid && addDepartmentForm.get('headId')?.touched"
+            />
+            <div class="validation-icon" *ngIf="addDepartmentForm.get('headId')?.touched">
+              <i class="fas fa-check-circle" *ngIf="addDepartmentForm.get('headId')?.valid"></i>
+              <i class="fas fa-exclamation-circle" *ngIf="addDepartmentForm.get('headId')?.invalid"></i>
+            </div>
+          </div>
 
+          <div class="dropdown-list" *ngIf="showHeadDropdown" (scroll)="onHeadScroll($event)">
+            <label *ngFor="let head of filteredHeads" (click)="selectHead(head)" class="dropdown-item">
+              <div class="user-avatar">{{ head.displayText.charAt(0) }}</div>
+              <div class="user-details">{{ head.displayText }}</div>
+            </label>
+            <div *ngIf="isLoadingHeads" class="loading-indicator">
+              <div class="loading-spinner"></div>
+              <span>Loading more doctors...</span>
+            </div>
+            <div *ngIf="filteredHeads.length === 0 && !isLoadingHeads" class="no-results">
+              No doctors found. Try a different search.
+            </div>
+          </div>
 
-    <!-- Submit Button -->
-    <button type="submit" [disabled]="addDepartmentForm.invalid">
-      Add Department
-    </button>
-  </form>
+          <div *ngIf="selectedHeadInfo" class="selected-info">
+            <div class="selected-avatar">
+              <i class="fas fa-user-md"></i>
+            </div>
+            <div class="selected-details">{{ selectedHeadInfo }}</div>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="addDepartmentForm.get('headId')?.invalid && addDepartmentForm.get('headId')?.touched">
+          Please select a department head
+        </div>
+      </div>
+
+      <!-- Secretary Selection -->
+      <div class="form-group">
+        <label for="secretary-search">
+          <i class="fas fa-user icon-label"></i>
+          Department Secretary
+        </label>
+        <div class="modal-dropdown">
+          <div class="input-container">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              id="secretary-search"
+              placeholder="Search for a secretary..."
+              [value]="selectedSecretaryInfo || secretarySearchTerm"
+              (click)="toggleSecretaryDropdown()"
+              (input)="filterSecretaries($event.target.value)"
+              (blur)="hideDropdown('secretary')"
+              [class.error]="addDepartmentForm.get('secretaryId')?.invalid && addDepartmentForm.get('secretaryId')?.touched"
+            />
+            <div class="validation-icon" *ngIf="addDepartmentForm.get('secretaryId')?.touched">
+              <i class="fas fa-check-circle" *ngIf="addDepartmentForm.get('secretaryId')?.valid"></i>
+              <i class="fas fa-exclamation-circle" *ngIf="addDepartmentForm.get('secretaryId')?.invalid"></i>
+            </div>
+          </div>
+
+          <div class="dropdown-list" *ngIf="showSecretaryDropdown" (scroll)="onSecretaryScroll($event)">
+            <label *ngFor="let secretary of filteredSecretaries" (click)="selectSecretary(secretary)" class="dropdown-item">
+              <div class="user-avatar">{{ secretary.displayText.charAt(0) }}</div>
+              <div class="user-details">{{ secretary.displayText }}</div>
+            </label>
+            <div *ngIf="isLoadingSecretaries" class="loading-indicator">
+              <div class="loading-spinner"></div>
+              <span>Loading more secretaries...</span>
+            </div>
+            <div *ngIf="filteredSecretaries.length === 0 && !isLoadingSecretaries" class="no-results">
+              No secretaries found. Try a different search.
+            </div>
+          </div>
+
+          <div *ngIf="selectedSecretaryInfo" class="selected-info">
+            <div class="selected-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="selected-details">{{ selectedSecretaryInfo }}</div>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="addDepartmentForm.get('secretaryId')?.invalid && addDepartmentForm.get('secretaryId')?.touched">
+          Please select a department secretary
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button type="submit" [disabled]="addDepartmentForm.invalid" class="submit-btn">
+          <i class="fas fa-plus-circle"></i>
+          Add Department
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

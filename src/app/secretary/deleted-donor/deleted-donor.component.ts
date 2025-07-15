@@ -5,7 +5,7 @@ import { CustomAlertService } from "../../services/custom-alert.service";
 @Component({
   selector: 'app-deleted-donor',
   templateUrl: './deleted-donor.component.html',
-  styleUrls: ['./deleted-donor.component.css'],
+  styleUrls: ['./deleted-donor.component.css','./deleted-donor-style.css'],
 })
 export class DeletedDonorComponent implements OnInit {
   deletedDonors: any[] = []; // Deleted donors displayed in the table
@@ -16,16 +16,18 @@ export class DeletedDonorComponent implements OnInit {
   page = 1;
   size = 10;
   totalPages = 1;
+  totalElements = 0; // Total number of deleted donors
   searchQuery = '';
   bloodType = '';
   gender = '';
   donorSearchQuery = ''; // Search query for dropdown filtering
 
   showDonorDropdown = false; // Dropdown visibility state
+  viewMode: 'table' | 'card' = 'card'; // Default to card view
 
   // New pagination variables for donor dropdown
   donorDropdownPage = 1;
-  donorDropdownSize = 10;
+  donorDropdownSize = 5;
   donorDropdownTotalPages = 1;
   isLoadingDonors = false;
 
@@ -44,8 +46,44 @@ export class DeletedDonorComponent implements OnInit {
   constructor(private donorService: DonorService, private customAlertService: CustomAlertService) {}
 
   ngOnInit(): void {
+    // Check screen size to set appropriate view
+    this.checkScreenSize();
+
+    // Listen for window resize events
+    window.addEventListener('resize', () => {
+      this.checkScreenSize();
+    });
+
     this.loadDeletedDonors();
     this.loadDonorList(); // Load initial batch of donors for dropdown
+  }
+
+  ngOnDestroy(): void {
+    // Remove event listener to prevent memory leaks
+    window.removeEventListener('resize', () => {
+      this.checkScreenSize();
+    });
+  }
+
+  // Check screen size and set view mode accordingly
+  checkScreenSize(): void {
+    if (window.innerWidth <= 768) {
+      // On mobile, always use card view
+      this.viewMode = 'card';
+    } else {
+      // On desktop, use saved preference or default to card
+      const savedViewMode = localStorage.getItem('deletedDonorViewMode') as 'table' | 'card';
+      this.viewMode = savedViewMode || 'card';
+    }
+  }
+
+  // Toggle between table and card view
+  toggleView(mode: 'table' | 'card'): void {
+    // Only allow toggling on desktop
+    if (window.innerWidth > 768) {
+      this.viewMode = mode;
+      localStorage.setItem('deletedDonorViewMode', mode);
+    }
   }
 
   loadDonorList(): void {
@@ -136,6 +174,7 @@ export class DeletedDonorComponent implements OnInit {
       .subscribe((data) => {
         this.deletedDonors = data.content;
         this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements || data.content.length;
       });
   }
 
@@ -194,4 +233,40 @@ export class DeletedDonorComponent implements OnInit {
       });
     });
   }
+
+  // Get donor name from ID
+  getDonorName(id: number): string {
+    const donor = this.donorsList.find(donor => donor.id === id);
+    if (donor) {
+      return donor.name;
+    }
+    return `Donor #${id}`;
+  }
+
+  // Remove a donor filter
+  removeDonorFilter(id: number): void {
+    this.selectedDonorIds = this.selectedDonorIds.filter(donorId => donorId !== id);
+    this.onSearchChange();
+  }
+
+  // Get initials from name
+  getInitials(name: string): string {
+    if (!name) return '';
+
+    const parts = name.split(' ');
+    if (parts.length === 1) {
+      return name.charAt(0).toUpperCase();
+    }
+
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  // Get blood type CSS class
+  getBloodTypeClass(bloodType: string): string {
+    if (!bloodType) return 'default';
+
+    return this.bloodTypes.includes(bloodType) ? bloodType : 'default';
+  }
+
+  protected readonly Math = Math;
 }

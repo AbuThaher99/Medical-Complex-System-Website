@@ -1,91 +1,381 @@
 <app-custom-alert></app-custom-alert>
-<div class="filter-container">
-  <form [formGroup]="filterForm">
-    <div class="form-group">
-      <label for="search">Search</label>
-      <input
-        type="text"
-        id="search"
-        formControlName="search"
-        placeholder="Search by name, phone, or address"
-      />
-    </div>
-    <div class="form-group">
-      <label for="companyName">Company Name</label>
-      <input
-        type="text"
-        id="companyName"
-        formControlName="companyName"
-        placeholder="Filter by company name"
-      />
-    </div>
-  </form>
 
-  <!-- Desktop Table View -->
-  <div class="desktop-view">
-    <div class="table-container">
-      <table>
+<div class="suppliers-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Deleted Suppliers</h1>
+        <p>View and restore previously deleted supplier records</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" (click)="refreshData()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+          </svg>
+          Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-icon suppliers-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"></path>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value">{{ totalItems || 0 }}</div>
+        <div class="stat-label">Deleted Suppliers</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon companies-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value">{{ uniqueCompanies }}</div>
+        <div class="stat-label">Companies</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon recovery-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value">{{ restoredCount }}</div>
+        <div class="stat-label">Restored Records</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="search-container">
+      <div class="search-input">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Search by name, phone, or address"
+          class="search-field"
+        >
+        <button *ngIf="searchControl.value" class="clear-search" (click)="clearSearch()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>Company</label>
+        <div class="custom-dropdown">
+          <!-- Dropdown Trigger -->
+          <div class="dropdown-trigger" (click)="toggleCompanyDropdown()">
+            <span>{{ companyControl.value || 'All Companies' }}</span>
+            <svg *ngIf="!isLoadingCompanies" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline [attr.points]="isCompanyDropdownOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"></polyline>
+            </svg>
+            <!-- Loading indicator -->
+            <div *ngIf="isLoadingCompanies" class="select-loading">
+              <div class="loading-spinner-sm"></div>
+            </div>
+          </div>
+
+          <!-- Dropdown Options -->
+          <div class="dropdown-options" *ngIf="isCompanyDropdownOpen">
+            <div class="dropdown-option" (click)="selectCompany('')" [class.selected]="!companyControl.value">
+              All Companies
+            </div>
+            <div
+              class="dropdown-option"
+              *ngFor="let company of companyList"
+              (click)="selectCompany(company)"
+              [class.selected]="companyControl.value === company"
+            >
+              {{ company }}
+            </div>
+            <!-- Empty state if no companies -->
+            <div class="dropdown-empty" *ngIf="!isLoadingCompanies && companyList.length === 0">
+              No companies available
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-reset" (click)="resetFilters()" [class.disabled]="!hasActiveFilters()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12a9 9 0 0 1-9 9"></path>
+            <path d="M3 12a9 9 0 0 1 9-9"></path>
+            <path d="M17 16l4-4-4-4"></path>
+            <path d="M7 8l-4 4 4 4"></path>
+          </svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading deleted suppliers...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && deletedSuppliers.length === 0" class="empty-state">
+    <div class="empty-illustration">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96" fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M3 6h18"></path>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        <path d="M10 11v6"></path>
+        <path d="M14 11v6"></path>
+      </svg>
+    </div>
+    <h2>No Deleted Suppliers</h2>
+    <p *ngIf="hasActiveFilters()">Try changing your search criteria or reset filters to see all deleted suppliers.</p>
+    <p *ngIf="!hasActiveFilters()">There are no deleted suppliers in the system.</p>
+    <div class="empty-actions">
+      <button *ngIf="hasActiveFilters()" class="btn-secondary" (click)="resetFilters()">Reset Filters</button>
+      <button class="btn-primary" routerLink="/warehouse/suppliers">View Active Suppliers</button>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div *ngIf="!isLoading && deletedSuppliers.length > 0" class="content-section">
+    <div class="view-toggle" *ngIf="!isMobile">
+      <button [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+        Grid
+      </button>
+      <button [class.active]="viewMode === 'table'" (click)="setViewMode('table')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        Table
+      </button>
+    </div>
+
+    <!-- Table View -->
+    <div *ngIf="viewMode === 'table'" class="table-view">
+      <table class="suppliers-table">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Company Name</th>
+          <th class="sortable" (click)="sortBy('name')" [class.sorted]="sortField === 'name'">
+            Name
+            <span class="sort-icon" *ngIf="sortField === 'name'">
+              <svg *ngIf="sortDirection === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+              <svg *ngIf="sortDirection === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </th>
+          <th class="sortable" (click)="sortBy('companyName')" [class.sorted]="sortField === 'companyName'">
+            Company Name
+            <span class="sort-icon" *ngIf="sortField === 'companyName'">
+              <svg *ngIf="sortDirection === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+              <svg *ngIf="sortDirection === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </th>
           <th>Phone</th>
           <th>Address</th>
+          <th>Deleted Date</th>
           <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let supplier of deletedSuppliers">
           <td>{{ supplier.name }}</td>
-          <td>{{ supplier.companyName }}</td>
-          <td>{{ supplier.phone }}</td>
-          <td>{{ supplier.address }}</td>
           <td>
-            <button class="btn-restore" (click)="restoreSupplier(supplier.id)">
-              <i class="fas fa-undo-alt"></i> Restore
+            <span class="company-badge">{{ supplier.companyName }}</span>
+          </td>
+          <td>
+            <div class="phone-link">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <a href="tel:{{ supplier.phone }}">{{ supplier.phone }}</a>
+            </div>
+          </td>
+          <td class="address-cell">
+            <div class="truncated-text" [title]="supplier.address">{{ supplier.address }}</div>
+          </td>
+          <td>{{ supplier.deletedAt | date:'medium' }}</td>
+          <td>
+            <button
+              class="restore-btn"
+              (click)="restoreSupplier(supplier.id)"
+              [disabled]="isRestoring && restoringId === supplier.id"
+            >
+              <span *ngIf="!(isRestoring && restoringId === supplier.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                Restore
+              </span>
+              <span *ngIf="isRestoring && restoringId === supplier.id" class="loading-spinner-sm"></span>
             </button>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- Mobile Card View -->
-  <div class="mobile-view">
-    <div class="supplier-card" *ngFor="let supplier of deletedSuppliers">
-      <div class="company-name">{{ supplier.companyName }}</div>
+    <!-- Grid View -->
+    <div *ngIf="viewMode === 'grid'" class="grid-view">
+      <div class="supplier-grid">
+        <div class="supplier-card" *ngFor="let supplier of deletedSuppliers">
+          <div class="card-header">
+            <div class="supplier-company">{{ supplier.companyName }}</div>
+            <div class="deleted-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+              Deleted
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="supplier-avatar">
+              {{ getSupplierInitials(supplier) }}
+            </div>
+            <h3 class="supplier-name">{{ supplier.name }}</h3>
 
-      <div class="supplier-info">
-        <div class="info-group">
-          <label>Name</label>
-          <span>{{ supplier.name }}</span>
-        </div>
-        <div class="info-group">
-          <label>Phone</label>
-          <span>{{ supplier.phone }}</span>
-        </div>
-        <div class="info-group">
-          <label>Address</label>
-          <span>{{ supplier.address }}</span>
+            <div class="supplier-details">
+              <div class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <span>{{ supplier.phone }}</span>
+              </div>
+              <div class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span class="address-text">{{ supplier.address }}</span>
+              </div>
+              <div class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Deleted on {{ supplier.deletedAt | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="card-btn restore-btn" (click)="restoreSupplier(supplier.id)" [disabled]="isRestoring && restoringId === supplier.id">
+              <span *ngIf="!(isRestoring && restoringId === supplier.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                Restore Supplier
+              </span>
+              <span *ngIf="isRestoring && restoringId === supplier.id" class="loading-spinner-sm"></span>
+            </button>
+          </div>
         </div>
       </div>
-
-      <button class="btn-restore" (click)="restoreSupplier(supplier.id)">
-        <i class="fas fa-undo-alt"></i> Restore Supplier
-      </button>
     </div>
 
-    <div class="no-data-card" *ngIf="deletedSuppliers.length === 0">
-      <i class="fas fa-inbox"></i>
-      <p>No deleted suppliers found</p>
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        <span>Showing {{ (page - 1) * size + 1 }} to {{ Math.min(page * size, totalItems) }} of {{ totalItems }} deleted suppliers</span>
+      </div>
+      <div class="pagination-controls">
+        <button class="pagination-btn" [disabled]="page === 1" (click)="previousPage()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Previous
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let pageNum of getPageNumbers()"
+            [class.active]="pageNum === page"
+            [class.ellipsis]="pageNum === -1"
+            [disabled]="pageNum === -1"
+            (click)="goToPage(pageNum)"
+          >
+            {{ pageNum === -1 ? '...' : pageNum }}
+          </button>
+        </div>
+
+        <button class="pagination-btn" [disabled]="page === totalPages" (click)="nextPage()">
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Pagination -->
-<div class="pagination">
-  <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
-  <span>Page {{ page }} of {{ totalPages }}</span>
-  <button (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+<!-- Restore Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showRestoreModal" (click)="cancelRestore()">
+  <div class="modal-content restore-modal" (click)="$event.stopPropagation()">
+    <div class="restore-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+    </div>
+
+    <h2>Restore Supplier</h2>
+    <p>Are you sure you want to restore the supplier <strong>{{ selectedSupplier?.name }}</strong> from <strong>{{ selectedSupplier?.companyName }}</strong>?</p>
+
+    <div *ngIf="selectedSupplier?.medicines && selectedSupplier?.medicines.length > 0" class="restore-notice">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>This supplier has {{ selectedSupplier?.medicines?.length }} medicines. Restoring this supplier will also make these medicines visible in your inventory.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancelRestore()">Cancel</button>
+      <button class="btn-restore" (click)="confirmRestore()" [class.loading]="isRestoring">
+        <span *ngIf="!isRestoring">Restore Supplier</span>
+        <span *ngIf="isRestoring" class="loading-spinner-sm"></span>
+      </button>
+    </div>
+  </div>
 </div>

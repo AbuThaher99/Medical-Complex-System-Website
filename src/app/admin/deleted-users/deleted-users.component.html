@@ -1,40 +1,75 @@
 <app-custom-alert></app-custom-alert>
-<div class="deleted-users-container">
-  <h2>Deleted Users</h2>
 
-  <!-- Search and Filter Section -->
-  <div class="search-filter-section">
-    <input [(ngModel)]="search"
-           (ngModelChange)="fetchDeletedUsers()"
-           placeholder="Search by name or email..."
-           type="search"
-           aria-label="Search users">
+<div class="manage-user-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h2>Deleted Users</h2>
 
-    <select [(ngModel)]="role"
-            (ngModelChange)="fetchDeletedUsers()"
-            aria-label="Filter by role">
-      <option value="">All Roles</option>
-      <option value="ADMIN">Admin</option>
-      <option value="DOCTOR">Doctor</option>
-      <option value="SECRETARY">Secretary</option>
-      <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
-      <option value="PATIENT">Patient</option>
-    </select>
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="activeView === 'grid'" (click)="toggleView('grid')" data-view="grid" title="Grid View">
+        <i class="fas fa-th-large"></i>
+      </button>
+      <button class="toggle-btn" [class.active]="activeView === 'table'" (click)="toggleView('table')" data-view="table" title="Table View">
+        <i class="fas fa-list"></i>
+      </button>
+    </div>
   </div>
 
-  <!-- Loading State -->
-  <div class="loading-overlay" *ngIf="isLoading">
-    <div class="loading-spinner"></div>
+  <!-- Search and Filters -->
+  <div class="search-filter-section">
+    <!-- Search Input -->
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search by name or email..."
+        aria-label="Search users"
+      >
+      <button *ngIf="search" class="search-clear" (click)="clearSearch()" aria-label="Clear search">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Role Filter -->
+    <div class="filter-container">
+      <i class="fas fa-filter filter-icon"></i>
+      <select
+        [(ngModel)]="role"
+        (ngModelChange)="onRoleChange($event)"
+        aria-label="Filter by role"
+      >
+        <option value="">All Roles</option>
+        <option value="ADMIN">Admin</option>
+        <option value="DOCTOR">Doctor</option>
+        <option value="SECRETARY">Secretary</option>
+        <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
+        <option value="PATIENT">Patient</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading-indicator" *ngIf="isLoading">
+    <app-loading-spinner message="Loading deleted users..."></app-loading-spinner>
   </div>
 
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="users.length === 0 && !isLoading">
-    <i class="fas fa-user-slash"></i>
-    <p>No deleted users found</p>
+  <div class="empty-state" *ngIf="!isLoading && users.length === 0">
+    <i class="fas fa-user-slash empty-state-icon"></i>
+    <h3 class="empty-state-title">No deleted users found</h3>
+    <p class="empty-state-description">
+      {{search || role ? 'Try adjusting your search filters to find what you\'re looking for.' : 'There are no deleted users in the system.'}}
+    </p>
+    <button *ngIf="search || role" class="empty-state-action" (click)="resetFilters()">
+      <i class="fas fa-times-circle"></i> Clear Filters
+    </button>
   </div>
 
-  <!-- Desktop Table View -->
-  <div class="desktop-view" *ngIf="users.length > 0">
+  <!-- Table View -->
+  <div class="table-view" *ngIf="!isLoading && users.length > 0">
     <table class="user-table">
       <thead>
       <tr>
@@ -50,65 +85,203 @@
         <td>{{ user.id }}</td>
         <td>{{ user.firstName }} {{ user.lastName }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-        <td class="action-buttons">
-          <button class="restore-btn"
-                  (click)="restoreUser(user.id)"
-                  [disabled]="isRestoring"
-                  aria-label="Restore user">
-            <i class="fas fa-undo-alt"></i>
-            Restore
-          </button>
+        <td>
+          <span class="role-badge {{user.role}}">{{ user.role }}</span>
+        </td>
+        <td>
+          <div class="action-buttons">
+            <button class="action-btn view-btn" (click)="viewUser(user.id)" aria-label="View user details">
+              <i class="fas fa-eye"></i> View
+            </button>
+            <button class="action-btn restore-btn" (click)="restoreUser(user.id)" [disabled]="isRestoring" aria-label="Restore user">
+              <i class="fas fa-undo-alt"></i> Restore
+            </button>
+          </div>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Mobile Card View -->
-  <div class="mobile-view" *ngIf="users.length > 0">
+  <!-- Grid View -->
+  <div class="grid-view" *ngIf="!isLoading && users.length > 0">
     <div class="user-card" *ngFor="let user of users">
       <div class="card-header">
-        <div class="user-role">{{ user.role }}</div>
-        <div class="user-id">#{{ user.id }}</div>
+        <div class="avatar">
+          {{ user.firstName?.charAt(0) }}{{ user.lastName?.charAt(0) }}
+        </div>
+        <div class="user-identity">
+          <h3 class="user-name">{{ user.firstName }} {{ user.lastName }}</h3>
+          <p class="user-email">{{ user.email }}</p>
+        </div>
+        <span class="role-badge {{user.role}}">{{ user.role }}</span>
       </div>
 
       <div class="card-body">
-        <div class="info-group">
-          <label>Name</label>
-          <div class="info-value">{{ user.firstName }} {{ user.lastName }}</div>
-        </div>
+        <div class="card-info">
+          <div class="info-item">
+            <i class="fas fa-id-badge info-icon"></i>
+            <span class="info-label">ID:</span>
+            <span class="info-value">{{ user.id }}</span>
+          </div>
 
-        <div class="info-group">
-          <label>Email</label>
-          <div class="info-value">{{ user.email }}</div>
+          <div class="info-item" *ngIf="user.phone">
+            <i class="fas fa-phone info-icon"></i>
+            <span class="info-label">Phone:</span>
+            <span class="info-value">{{ user.phone }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="user.address">
+            <i class="fas fa-map-marker-alt info-icon"></i>
+            <span class="info-label">Address:</span>
+            <span class="info-value">{{ user.address }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="user.dateOfBirth">
+            <i class="fas fa-birthday-cake info-icon"></i>
+            <span class="info-label">Birthday:</span>
+            <span class="info-value">{{ user.dateOfBirth | date: 'mediumDate' }}</span>
+          </div>
         </div>
       </div>
 
-      <div class="card-footer">
-        <button class="restore-btn"
-                (click)="restoreUser(user.id)"
-                [disabled]="isRestoring"
-                aria-label="Restore user">
-          <i class="fas fa-undo-alt"></i>
-          Restore User
+      <div class="card-actions">
+        <button class="action-btn view-btn" (click)="viewUser(user.id)">
+          <i class="fas fa-eye"></i> View Details
+        </button>
+        <button class="action-btn restore-btn" (click)="restoreUser(user.id)" [disabled]="isRestoring">
+          <i class="fas fa-undo-alt"></i> Restore User
         </button>
       </div>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="pagination-section" *ngIf="totalUsers > 0">
-    <button (click)="onPageChange(page - 1)"
-            [disabled]="page === 1 || totalUsers === 0"
-            aria-label="Previous page">
-      <i class="fas fa-chevron-left"></i> Previous
-    </button>
-    <span>Page {{ page }} of {{ Math.ceil(totalUsers / size) }}</span>
-    <button (click)="onPageChange(page + 1)"
-            [disabled]="page === Math.ceil(totalUsers / size) || totalUsers === 0"
-            aria-label="Next page">
-      Next <i class="fas fa-chevron-right"></i>
-    </button>
+  <div class="pagination-section" *ngIf="!isLoading && totalUsers > 0">
+    <div class="page-info">
+      Showing {{ (page - 1) * size + 1 }} to {{ Math.min(page * size, totalUsers) }} of {{ totalUsers }} deleted users
+    </div>
+    <div class="pagination-controls">
+      <button class="page-btn nav-btn" (click)="onPageChange(page - 1)" [disabled]="page === 1">
+        <i class="fas fa-chevron-left"></i> Previous
+      </button>
+      <button class="page-btn" *ngFor="let p of getPaginationArray()"
+              [class.active]="p === page"
+              (click)="onPageChange(p)">
+        {{ p }}
+      </button>
+      <button class="page-btn nav-btn" (click)="onPageChange(page + 1)" [disabled]="page === Math.ceil(totalUsers / size)">
+        Next <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal" *ngIf="selectedUser">
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">User Profile</h2>
+      <button class="modal-close" (click)="closeModal()" aria-label="Close modal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="user-profile">
+        <div class="user-avatar">
+          {{ getUserInitials(selectedUser) }}
+        </div>
+        <h3 class="user-full-name">{{ getUserFullName(selectedUser) }}</h3>
+        <span class="modal-role-badge {{getUserRole(selectedUser)}}">{{ getUserRole(selectedUser) }}</span>
+        <p class="user-email">{{ getUserEmail(selectedUser) }}</p>
+      </div>
+
+      <div class="details-grid">
+        <!-- Basic Information -->
+        <div class="detail-group">
+          <h4 class="detail-heading">Basic Information</h4>
+
+          <div class="detail-item">
+            <span class="detail-label">User ID</span>
+            <span class="detail-value">{{ selectedUser.user?.id || selectedUser.id }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="selectedUser.user?.phone || selectedUser.phone">
+            <span class="detail-label">Phone Number</span>
+            <span class="detail-value">{{ selectedUser.user?.phone || selectedUser.phone }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="selectedUser.user?.address || selectedUser.address">
+            <span class="detail-label">Address</span>
+            <span class="detail-value">{{ selectedUser.user?.address || selectedUser.address }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="selectedUser.user?.dateOfBirth || selectedUser.dateOfBirth">
+            <span class="detail-label">Date of Birth</span>
+            <span class="detail-value">{{ (selectedUser.user?.dateOfBirth || selectedUser.dateOfBirth) | date: 'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <!-- Role-specific Information -->
+        <div class="detail-group" *ngIf="isDoctor(selectedUser)">
+          <h4 class="detail-heading">Doctor Information</h4>
+
+          <div class="detail-item" *ngIf="selectedUser.specialization">
+            <span class="detail-label">Specialization</span>
+            <span class="detail-value">{{ selectedUser.specialization }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="selectedUser.beginTime">
+            <span class="detail-label">Working Hours</span>
+            <span class="detail-value">{{ selectedUser.beginTime }} - {{ selectedUser.endTime }}</span>
+          </div>
+        </div>
+
+        <div class="detail-group" *ngIf="isPatient(selectedUser)">
+          <h4 class="detail-heading">Patient Information</h4>
+
+          <div class="detail-item" *ngIf="selectedUser.age">
+            <span class="detail-label">Age</span>
+            <span class="detail-value">{{ selectedUser.age }} years</span>
+          </div>
+
+          <div class="detail-item" *ngIf="selectedUser.bloodType">
+            <span class="detail-label">Blood Type</span>
+            <span class="detail-value">{{ selectedUser.bloodType }}</span>
+          </div>
+        </div>
+
+        <!-- Salary Information -->
+        <div class="detail-group" *ngIf="hasSalary(selectedUser)">
+          <h4 class="detail-heading">Employment Details</h4>
+
+          <div class="detail-item">
+            <span class="detail-label">Salary Type</span>
+            <span class="detail-value">{{ getSalaryType(selectedUser) }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="isMonthlySalary(selectedUser)">
+            <span class="detail-label">Monthly Salary</span>
+            <span class="detail-value">{{ getMonthlySalary(selectedUser) | currency }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="isHourlySalary(selectedUser)">
+            <span class="detail-label">Hourly Rate</span>
+            <span class="detail-value">{{ getHourlyRate(selectedUser) | currency }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="isHourlySalary(selectedUser)">
+            <span class="detail-label">Hours Worked</span>
+            <span class="detail-value">{{ getHoursWorked(selectedUser) }} hours</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn cancel-btn" (click)="closeModal()">Close</button>
+    </div>
+</div>
 </div>

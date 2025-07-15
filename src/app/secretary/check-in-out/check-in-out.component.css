@@ -1,54 +1,440 @@
-.check-in-out-container {
-  max-width: 400px;
-  margin: auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* Main card container */
+.attendance-card {
+  max-width: 500px;
+  margin: 30px auto;
+  border-radius: 16px;
   background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.button-group {
+/* Card Header */
+.attendance-header {
+  background: linear-gradient(135deg, #4568dc, #3f5efb);
+  color: white;
+  padding: 20px 24px;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 }
 
-button {
-  width: 48%;
-  padding: 10px;
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.header-text h2 {
+  margin: 0 0 5px 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.header-text p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Current Time Display */
+.time-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.current-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+  font-size: 15px;
+}
+
+.current-time svg {
+  color: #4568dc;
+}
+
+.time-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.time-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #aaa;
+}
+
+.time-dot.checked-in {
+  background-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.time-dot.checked-out {
+  background-color: #f44336;
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2);
+}
+
+.time-indicator span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.time-indicator.pulse .time-dot {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* Form Container */
+.form-container {
+  padding: 24px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.input-with-icon input:focus {
+  border-color: #4568dc;
+  box-shadow: 0 0 0 3px rgba(69, 104, 220, 0.2);
+  outline: none;
+}
+
+.input-with-icon input.error {
+  border-color: #f44336;
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+.error-message {
+  display: block;
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.action-buttons button {
+  position: relative;
   border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
+  border-radius: 8px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+  height: 48px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
 }
 
-button:hover {
-  background-color: #0056b3;
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  height: 100%;
+  width: 100%;
+}
+
+.check-in-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.check-out-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.check-in-btn:hover:not(:disabled) {
+  background-color: #3d8b40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.check-out-btn:hover:not(:disabled) {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+.action-buttons button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Status Card */
+.status-card {
+  margin: 10px 24px 24px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.status-icon {
+  flex-shrink: 0;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.status-icon.success {
+  background-color: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.status-icon.error {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #f44336;
 }
 
 .status-message {
-  margin-top: 15px;
-  text-align: center;
-  font-weight: bold;
+  margin: 0 0 4px 0;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.time-stamp {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.close-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-status:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #555;
+}
+
+/* Recent Activity Section */
+.recent-activity {
+  margin: 0 24px 24px;
+}
+
+.recent-activity h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recent-activity h3 svg {
+  color: #4568dc;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+  background-color: #f1f3f9;
+}
+
+.activity-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.activity-icon.check-in {
+  background-color: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.activity-icon.check-out {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+.activity-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.activity-email {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: #888;
+}
+
+.activity-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  color: #555;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .attendance-card {
+    margin: 15px;
+    border-radius: 12px;
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-item {
+    flex-wrap: wrap;
+  }
+
+  .activity-status {
+    margin-top: 8px;
+    margin-left: 40px;
+  }
+}
+
+/* Animation for the status card */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }

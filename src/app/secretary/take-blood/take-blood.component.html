@@ -1,41 +1,147 @@
 <app-custom-alert></app-custom-alert>
-<div class="take-blood-container">
-  <h2>Take Blood from Patient</h2>
 
-  <!-- Patient Selection -->
-  <div class="take-blood-dropdown">
-    <input
-      type="text"
-      placeholder="Search Patients..."
-      [(ngModel)]="patientSearchQuery"
-      (input)="filterPatients()"
-      (focus)="showPatientDropdown = true"
-      (blur)="hideDropdown()"
-    />
-    <div
-      class="take-blood-dropdown-content"
-      *ngIf="showPatientDropdown"
-      (scroll)="onDropdownScroll($event)"
-    >
-      <label *ngFor="let patient of filteredPatients" (click)="selectPatient(patient.id)">
-        {{ patient.id }} - {{ patient.user.firstName }} {{ patient.user.lastName }} - {{ patient.user.email }}
-      </label>
+<div class="take-blood-card">
+  <!-- Header Section -->
+  <div class="take-blood-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2l.642 1.345c1.577 3.312 3.858 6.306 6.114 9.046 1.65 2.005 2.244 3.743 2.244 5.28 0 3.012-2.42 5.329-5.539 5.329-1.354 0-2.563-.585-3.461-1.511-.898.926-2.107 1.511-3.46 1.511-3.12 0-5.54-2.317-5.54-5.33 0-1.536.593-3.274 2.245-5.279C7.5 9.65 9.78 6.657 11.358 3.345L12 2z" />
+      </svg>
+    </div>
+    <div class="header-text">
+      <h2>Take Blood from Patient</h2>
+      <p>Select a patient and specify quantity for blood extraction</p>
+    </div>
+  </div>
 
-      <!-- Loading Indicator -->
-      <div *ngIf="isLoading" class="loading-spinner">
-        Loading more patients...
+  <!-- Content Section -->
+  <div class="take-blood-content">
+    <!-- Patient Selection -->
+    <div class="form-group">
+      <label>Select Patient</label>
+      <div class="input-with-icon modal-dropdown">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search patients by name or email..."
+          [(ngModel)]="patientSearchQuery"
+          (input)="filterPatients()"
+          (focus)="showPatientDropdown = true"
+          (blur)="hideDropdown()"
+        />
+        <div class="dropdown-list" *ngIf="showPatientDropdown" (scroll)="onDropdownScroll($event)">
+          <div class="dropdown-header">
+            <span>Patient Selection</span>
+            <small>{{filteredPatients.length}} result(s)</small>
+          </div>
+          <div class="dropdown-items">
+            <div
+              *ngFor="let patient of filteredPatients"
+              class="dropdown-item"
+              (click)="selectPatient(patient.id)">
+              <div class="patient-avatar">{{ getPatientInitials(patient) }}</div>
+              <div class="patient-info">
+                <span class="patient-name">
+                  <span class="patient-id">#{{patient.id}}</span>
+                  {{patient.user.firstName}} {{patient.user.lastName}}
+                </span>
+                <span class="patient-email">{{patient.user.email}}</span>
+              </div>
+            </div>
+            <div *ngIf="isLoading" class="loading-option">
+              <div class="loading-spinner"></div>
+              <span>Loading more patients...</span>
+            </div>
+            <div *ngIf="filteredPatients.length === 0 && !isLoading" class="no-results">
+              No patients found
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Patient Card -->
+    <div class="selected-patient-card" *ngIf="selectedPatient">
+      <div class="patient-details">
+        <div class="patient-avatar large">{{ getPatientInitials(selectedPatient) }}</div>
+        <div class="patient-info">
+          <div class="patient-name">{{selectedPatient.user.firstName}} {{selectedPatient.user.lastName}}</div>
+          <div class="patient-email">{{selectedPatient.user.email}}</div>
+          <div class="patient-metadata">
+            <span class="metadata-item">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 7V5H6v2M9 21h6M12 3v18" />
+              </svg>
+              Blood: {{selectedPatient.bloodType || 'Unknown'}}
+            </span>
+            <span class="metadata-item">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Age: {{selectedPatient.age || 'N/A'}}
+            </span>
+          </div>
+        </div>
+      </div>
+      <button class="change-patient-btn" (click)="changePatient()">Change</button>
+    </div>
+
+    <!-- No Patient Selected Message -->
+    <div class="no-selection-message" *ngIf="!selectedPatient">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+      <p>Please select a patient to proceed</p>
+    </div>
+
+    <!-- Blood Quantity Input -->
+    <div class="form-group" *ngIf="selectedPatient">
+      <label>Blood Quantity (ml)</label>
+      <div class="input-with-icon">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l.642 1.345c1.577 3.312 3.858 6.306 6.114 9.046 1.65 2.005 2.244 3.743 2.244 5.28 0 3.012-2.42 5.329-5.539 5.329-1.354 0-2.563-.585-3.461-1.511-.898.926-2.107 1.511-3.46 1.511-3.12 0-5.54-2.317-5.54-5.33 0-1.536.593-3.274 2.245-5.279C7.5 9.65 9.78 6.657 11.358 3.345L12 2z" />
+          </svg>
+        </div>
+        <input
+          type="number"
+          placeholder="Enter quantity in ml"
+          [(ngModel)]="quantity"
+          min="1"
+          max="1000"
+        />
+      </div>
+      <div class="quantity-range" *ngIf="quantity">
+        <div class="quantity-bar">
+          <div class="quantity-fill" [style.width]="getQuantityPercentage() + '%'"></div>
+        </div>
+        <div class="quantity-labels">
+          <span>0 ml</span>
+          <span>500 ml</span>
+          <span>1000 ml</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Selected Patient -->
-  <div *ngIf="selectedPatientId" class="take-blood-selected-patient">
-    Selected Patient: <strong>{{ selectedPatientId }}</strong>
+  <!-- Footer Section -->
+  <div class="take-blood-footer">
+    <button class="take-blood-btn" [disabled]="!isFormValid()" (click)="takeBlood()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2l.642 1.345c1.577 3.312 3.858 6.306 6.114 9.046 1.65 2.005 2.244 3.743 2.244 5.28 0 3.012-2.42 5.329-5.539 5.329-1.354 0-2.563-.585-3.461-1.511-.898.926-2.107 1.511-3.46 1.511-3.12 0-5.54-2.317-5.54-5.33 0-1.536.593-3.274 2.245-5.279C7.5 9.65 9.78 6.657 11.358 3.345L12 2z" />
+      </svg>
+      Take Blood
+    </button>
   </div>
-
-  <!-- Blood Quantity -->
-  <input type="number" class="take-blood-input" placeholder="Enter Quantity" [(ngModel)]="quantity" min="1" />
-
-  <!-- Take Blood Button -->
-  <button class="take-blood-btn" (click)="takeBlood()">Take Blood</button>
 </div>

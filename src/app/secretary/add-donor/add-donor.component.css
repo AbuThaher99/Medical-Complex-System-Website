@@ -1,153 +1,411 @@
-/* General Container */
-.add-donor-container {
-  max-width: 420px;
+/* Main Card Container */
+.donor-card {
+  max-width: 480px;
   margin: 40px auto;
-  padding: 25px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  font-family: 'Poppins', sans-serif;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.5s ease;
 }
 
-.add-donor-container:hover {
+.donor-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
-/* Title */
-.add-donor-container h2 {
-  font-size: 26px;
-  margin-bottom: 25px;
+/* Card Header */
+.donor-card-header {
+  background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+  color: white;
+  padding: 30px;
   text-align: center;
-  color: #333;
-  font-weight: 700;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Labels */
-.add-donor-container label {
+.donor-card-header h2 {
+  margin: 0 0 5px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.donor-card-header p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.blood-drop-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+/* Card Body */
+.donor-card-body {
+  padding: 30px;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 24px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.form-group label {
   display: block;
-  margin-bottom: 8px;
+  font-size: 14px;
   font-weight: 600;
-  color: #444;
-  font-size: 15px;
+  color: #555;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.form-group.focused label {
+  color: #e52d27;
+}
+
+/* Input Container with Icon */
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.form-group.focused .input-icon {
+  color: #e52d27;
 }
 
 /* Input Fields */
-.add-donor-container input,
-.add-donor-container select {
+.input-container input,
+.input-container select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #f9f9f9;
+  padding: 14px 14px 14px 45px;
+  font-size: 15px;
+  border: 1px solid #e1e1e1;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-.add-donor-container input:focus,
-.add-donor-container select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
-  background-color: #fff;
+.input-container input::placeholder {
+  color: #bbb;
+}
+
+.input-container input:focus,
+.input-container select:focus,
+.form-group.focused input,
+.form-group.focused select {
   outline: none;
+  border-color: #e52d27;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(229, 45, 39, 0.1);
 }
 
-/* Dropdown Styling */
-.add-donor-container select {
+/* Select Dropdown Styling */
+.input-container select {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px;
-  padding-right: 30px;
-}
-
-/* Submit Button */
-.add-donor-container button {
-  width: 100%;
-  padding: 12px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.add-donor-container button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+.input-container select.has-value {
+  color: #333;
 }
 
-.add-donor-container button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #aaa;
+  pointer-events: none;
+  transition: color 0.3s ease;
 }
 
-/* Optional: Add a subtle animation for form inputs */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+.form-group.focused .select-arrow {
+  color: #e52d27;
+}
+
+/* Radio Buttons for Gender */
+.gender-radio-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 100%;
+  padding: 8px;
+  margin-left: 50px;
+}
+
+.radio-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.radio-option input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio-box {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.radio-box::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: #e52d27;
+  transition: all 0.2s ease;
+}
+
+.radio-option.selected .radio-box {
+  border-color: #e52d27;
+}
+
+.radio-option.selected .radio-box::after {
+  width: 10px;
+  height: 10px;
+}
+
+.radio-label {
+  font-size: 15px;
+  color: #555;
+}
+
+.radio-option.selected .radio-label {
+  color: #e52d27;
+  font-weight: 500;
+}
+
+/* Error Messages */
+.error-message {
+  font-size: 12px;
+  color: #e52d27;
+  margin-top: 6px;
+  opacity: 0;
+  transform: translateY(-5px);
+  animation: showError 0.3s forwards;
+}
+
+@keyframes showError {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.add-donor-container input,
-.add-donor-container select,
-.add-donor-container button {
-  animation: fadeIn 0.5s ease-out;
+/* Blood Type Indicator */
+.blood-type-indicator {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.blood-drop {
+  position: relative;
+  width: 60px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  transform-origin: center bottom;
+  animation: wobble 4s infinite;
+}
+
+.blood-drop::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+  transform: scale(0.9);
+}
+
+.blood-drop span {
+  position: relative;
+  z-index: 2;
+}
+
+/* Blood Type Colors */
+.a_positive, .a_negative {
+  background: #e74c3c;
+}
+
+.b_positive, .b_negative {
+  background: #3498db;
+}
+
+.ab_positive, .ab_negative {
+  background: #9b59b6;
+}
+
+.o_positive, .o_negative {
+  background: #f39c12;
+}
+
+/* Submit Button */
+button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  background: #e0e0e0;
+  color: #777;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button.active {
+  background: #e52d27;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(229, 45, 39, 0.3);
+}
+
+button.active:hover {
+  background: #c21c17;
+  box-shadow: 0 6px 14px rgba(229, 45, 39, 0.4);
+  transform: translateY(-2px);
+}
+
+button.active:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(229, 45, 39, 0.4);
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wobble {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.03) rotate(-3deg); }
+  75% { transform: scale(1.03) rotate(3deg); }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .add-donor-container {
+  .donor-card {
     max-width: 90%;
-    padding: 20px;
+    margin: 30px auto;
   }
 
-  .add-donor-container h2 {
-    font-size: 24px;
+  .donor-card-header {
+    padding: 25px;
   }
 
-  .add-donor-container input,
-  .add-donor-container select {
-    font-size: 14px;
-    padding: 10px;
+  .donor-card-body {
+    padding: 25px;
   }
 
-  .add-donor-container button {
-    font-size: 15px;
-    padding: 12px;
+  .blood-drop-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .donor-card-header h2 {
+    font-size: 22px;
   }
 }
 
 @media (max-width: 480px) {
-  .add-donor-container {
+  .donor-card {
     max-width: 95%;
-    padding: 15px;
+    margin: 20px auto;
   }
 
-  .add-donor-container h2 {
-    font-size: 22px;
+  .donor-card-header {
+    padding: 20px;
   }
 
-  .add-donor-container input,
-  .add-donor-container select {
-    font-size: 13px;
-    padding: 8px;
+  .donor-card-body {
+    padding: 20px;
   }
 
-  .add-donor-container button {
+  .donor-card-header h2 {
+    font-size: 20px;
+  }
+
+  .blood-drop-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+  }
+
+  .input-container input,
+  .input-container select {
+    padding: 12px 12px 12px 40px;
     font-size: 14px;
-    padding: 10px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  button {
+    padding: 14px;
+    font-size: 15px;
   }
 }

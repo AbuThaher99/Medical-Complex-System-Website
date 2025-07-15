@@ -1,23 +1,158 @@
 <app-custom-alert></app-custom-alert>
-<div class="add-donor-container">
-  <h2>Add New Donor</h2>
-  <form (ngSubmit)="addDonor()">
-    <label for="name">Name:</label>
-    <input id="name" type="text" [(ngModel)]="donor.name" name="name" required />
 
-    <label for="phone">Phone:</label>
-    <input id="phone" type="text" [(ngModel)]="donor.phone" name="phone" required />
+<div class="donor-card">
+  <div class="donor-card-header">
+    <div class="blood-drop-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 21C16.4183 21 20 17.4183 20 13C20 8.58172 12 2 12 2C12 2 4 8.58172 4 13C4 17.4183 7.58172 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>Add New Donor</h2>
+    <p>Help save lives by adding a blood donor</p>
+  </div>
 
-    <label for="bloodType">Blood Type:</label>
-    <select id="bloodType" [(ngModel)]="donor.bloodType" name="bloodType" required>
-      <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
-    </select>
+  <div class="donor-card-body">
+    <form (ngSubmit)="addDonor()" #donorForm="ngForm">
+      <!-- Name Field -->
+      <div class="form-group" [class.focused]="nameFocused" [class.has-value]="donor.name">
+        <label for="name">Full Name</label>
+        <div class="input-container">
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <input
+            id="name"
+            type="text"
+            [(ngModel)]="donor.name"
+            name="name"
+            required
+            #nameInput="ngModel"
+            (focus)="nameFocused = true"
+            (blur)="nameFocused = false"
+            placeholder="Enter full name"
+          />
+        </div>
+        <div class="error-message" *ngIf="nameInput.invalid && nameInput.touched">
+          Name is required
+        </div>
+      </div>
 
-    <label for="gender">Gender:</label>
-    <select id="gender" [(ngModel)]="donor.gender" name="gender" required>
-      <option *ngFor="let gender of genders" [value]="gender">{{ gender }}</option>
-    </select>
+      <!-- Phone Field -->
+      <div class="form-group" [class.focused]="phoneFocused" [class.has-value]="donor.phone">
+        <label for="phone">Phone Number</label>
+        <div class="input-container">
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4741 21.8325 20.7293C21.7209 20.9845 21.5573 21.2136 21.3521 21.4018C21.1468 21.5901 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9451 19.82 21.92C16.7428 21.5856 13.787 20.5341 11.19 18.85C8.77382 17.3147 6.72533 15.2662 5.19 12.85C3.49998 10.2412 2.44824 7.27097 2.12 4.18C2.09501 3.90347 2.12788 3.62476 2.2165 3.36163C2.30513 3.09849 2.44757 2.85669 2.63477 2.65172C2.82196 2.44675 3.04981 2.28281 3.30379 2.17062C3.55778 2.05843 3.83221 2.00036 4.11 2H7.11C7.59531 1.99522 8.06579 2.16708 8.43376 2.4853C8.80173 2.80352 9.04208 3.24866 9.11 3.73C9.23662 4.68004 9.47144 5.6087 9.81 6.49C9.94454 6.82792 9.97366 7.1948 9.89391 7.54936C9.81415 7.90392 9.63055 8.23099 9.37 8.49L8.09 9.77C9.51351 12.2655 11.5344 14.2865 14.03 15.71L15.31 14.43C15.5687 14.1692 15.8959 13.9855 16.2505 13.9057C16.605 13.8259 16.972 13.8552 17.31 13.99C18.1913 14.3286 19.12 14.5634 20.07 14.69C20.5542 14.7577 20.9994 14.9975 21.3199 15.3647C21.6404 15.732 21.8152 16.2015 21.81 16.69L22 16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <input
+            id="phone"
+            type="tel"
+            [(ngModel)]="donor.phone"
+            name="phone"
+            required
+            #phoneInput="ngModel"
+            (focus)="phoneFocused = true"
+            (blur)="phoneFocused = false"
+            placeholder="Enter phone number"
+          />
+        </div>
+        <div class="error-message" *ngIf="phoneInput.invalid && phoneInput.touched">
+          Phone number is required
+        </div>
+      </div>
 
-    <button type="submit">Add Donor</button>
-  </form>
+      <!-- Blood Type Selection -->
+      <div class="form-group" [class.focused]="bloodTypeFocused" [class.has-value]="donor.bloodType">
+        <label for="bloodType">Blood Type</label>
+        <div class="input-container">
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 21C16.4183 21 20 17.4183 20 13C20 8.58172 12 2 12 2C12 2 4 8.58172 4 13C4 17.4183 7.58172 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <select
+            id="bloodType"
+            [(ngModel)]="donor.bloodType"
+            name="bloodType"
+            required
+            #bloodTypeInput="ngModel"
+            (focus)="bloodTypeFocused = true"
+            (blur)="bloodTypeFocused = false"
+            [class.has-value]="donor.bloodType"
+          >
+            <option value="" disabled selected>Select blood type</option>
+            <option *ngFor="let type of bloodTypes" [value]="type">{{ formatBloodType(type) }}</option>
+          </select>
+          <div class="select-arrow">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="bloodTypeInput.invalid && bloodTypeInput.touched">
+          Blood type is required
+        </div>
+      </div>
+
+      <!-- Gender Selection -->
+      <div class="form-group" [class.focused]="genderFocused" [class.has-value]="donor.gender">
+        <label for="gender">Gender</label>
+        <div class="input-container">
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 13C14.7614 13 17 10.7614 17 8C17 5.23858 14.7614 3 12 3C9.23858 3 7 5.23858 7 8C7 10.7614 9.23858 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19 21H5C5 21 5 19.2 5 18C5 16.5 7.5 13 12 13C16.5 13 19 16.5 19 18C19 19.2 19 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="gender-radio-group">
+            <label class="radio-option" [class.selected]="donor.gender === 'MALE'">
+              <input
+                type="radio"
+                name="gender"
+                value="MALE"
+                [(ngModel)]="donor.gender"
+                required
+              />
+              <span class="radio-box"></span>
+              <span class="radio-label">Male</span>
+            </label>
+            <label class="radio-option" [class.selected]="donor.gender === 'FEMALE'">
+              <input
+                type="radio"
+                name="gender"
+                value="FEMALE"
+                [(ngModel)]="donor.gender"
+                required
+              />
+              <span class="radio-box"></span>
+              <span class="radio-label">Female</span>
+            </label>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="donorForm.controls['gender']?.invalid && donorForm.controls['gender']?.touched">
+          Gender is required
+        </div>
+      </div>
+
+      <!-- Blood Drop Animation for Submit Button -->
+      <div class="blood-type-indicator" *ngIf="donor.bloodType">
+        <div class="blood-drop" [class]="donor.bloodType.toLowerCase()">
+          <span>{{ formatBloodType(donor.bloodType) }}</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="donorForm.invalid" [class.active]="donorForm.valid">
+        <svg class="button-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Add Donor</span>
+      </button>
+    </form>
+  </div>
 </div>

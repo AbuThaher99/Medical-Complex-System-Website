@@ -7,7 +7,7 @@ import {CustomAlertService} from "../../services/custom-alert.service";
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
-  styleUrls: ['./patients.component.css'],
+  styleUrls: ['./patients.component.css','./patients-style.css'],
 })
 export class PatientsComponent implements OnInit {
   patients: any[] = [];
@@ -29,6 +29,7 @@ export class PatientsComponent implements OnInit {
   doctorsSize: number = 10;
   totalDoctorsPages: number = 1;
   loadingDoctors: boolean = false;
+  viewMode: 'table' | 'card' = 'table';
   constructor(
     private patientService: PatientService,
     private doctorService: DoctorService,
@@ -36,7 +37,16 @@ export class PatientsComponent implements OnInit {
 
   ) {}
 
+
   ngOnInit(): void {
+    // Check screen size to set appropriate view
+    this.checkScreenSize();
+
+    // Listen for window resize events
+    window.addEventListener('resize', () => {
+      this.checkScreenSize();
+    });
+
     this.fetchPatients();
     this.loadDoctors();
 
@@ -46,6 +56,13 @@ export class PatientsComponent implements OnInit {
       .subscribe(() => {
         this.fetchPatients();
       });
+  }
+
+  ngOnDestroy(): void {
+    // Remove event listener to prevent memory leaks
+    window.removeEventListener('resize', () => {
+      this.checkScreenSize();
+    });
   }
 
   fetchPatients(): void {
@@ -167,6 +184,100 @@ export class PatientsComponent implements OnInit {
     if (element.scrollHeight - element.scrollTop <= element.clientHeight + 10) {
       this.loadDoctors();
     }
+  }
+
+  toggleView(mode: 'table' | 'card'): void {
+    // Only allow toggling on desktop
+    if (window.innerWidth > 768) {
+      this.viewMode = mode;
+      localStorage.setItem('patientViewMode', mode);
+
+      // Force DOM update by applying classes
+      setTimeout(() => {
+        const tableContainer = document.querySelector('.table-container');
+        const cardsContainer = document.querySelector('.cards-container');
+
+        if (tableContainer && cardsContainer) {
+          if (mode === 'table') {
+            tableContainer.classList.add('active');
+            cardsContainer.classList.remove('active');
+          } else {
+            tableContainer.classList.remove('active');
+            cardsContainer.classList.add('active');
+          }
+        }
+      }, 0);
+    }
+  }
+  checkScreenSize(): void {
+    if (window.innerWidth <= 768) {
+      // On mobile, always use card view
+      this.viewMode = 'card';
+
+      // Force cards to show on mobile
+      setTimeout(() => {
+        const tableContainer = document.querySelector('.table-container');
+        const cardsContainer = document.querySelector('.cards-container');
+
+        if (tableContainer) tableContainer.classList.remove('active');
+        if (cardsContainer) cardsContainer.classList.add('active');
+      }, 0);
+    } else {
+      // On desktop, use saved preference or default to table
+      const savedViewMode = localStorage.getItem('patientViewMode') as 'table' | 'card';
+      this.viewMode = savedViewMode || 'table';
+
+      // Apply the correct active class
+      setTimeout(() => {
+        const tableContainer = document.querySelector('.table-container');
+        const cardsContainer = document.querySelector('.cards-container');
+
+        if (tableContainer && cardsContainer) {
+          if (this.viewMode === 'table') {
+            tableContainer.classList.add('active');
+            cardsContainer.classList.remove('active');
+          } else {
+            tableContainer.classList.remove('active');
+            cardsContainer.classList.add('active');
+          }
+        }
+      }, 0);
+    }
+  }
+// Get the initials from first and last name
+  getInitials(firstName: string, lastName: string): string {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  }
+
+// Truncate long addresses for better display in the table
+  truncateAddress(address: string): string {
+    return address.length > 30 ? address.substring(0, 30) + '...' : address;
+  }
+
+// Get doctor name from ID
+  getDoctorName(id: number): string {
+    const doctor = this.doctors.find(doc => doc.id === id);
+    if (doctor) {
+      return `${doctor.user.firstName} ${doctor.user.lastName}`;
+    }
+    return `Doctor #${id}`;
+  }
+
+// Remove a doctor filter
+  removeDoctorFilter(id: number): void {
+    this.selectedDoctorIds = this.selectedDoctorIds.filter(docId => docId !== id);
+    this.fetchPatients();
+  }
+
+  getSpecialtyClass(specialization: string): string {
+    const specialty = specialization.toLowerCase();
+    if (specialty.includes('neuro')) return 'neurologist';
+    if (specialty.includes('ortho')) return 'orthopedist';
+    if (specialty.includes('surg')) return 'surgeon';
+    if (specialty.includes('cardio')) return 'cardiologist';
+    if (specialty.includes('pediatr')) return 'pediatrician';
+    if (specialty.includes('derma')) return 'dermatologist';
+    return 'default';
   }
   protected readonly Math = Math;
 }

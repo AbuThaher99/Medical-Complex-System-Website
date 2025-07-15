@@ -1,0 +1,379 @@
+/* Table Styles */
+.table-container {
+  padding: 20px 30px;
+  overflow-x: auto;
+}
+
+.deleted-donors-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.deleted-donors-table th,
+.deleted-donors-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.deleted-donors-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.deleted-donors-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.deleted-donors-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.deleted-donors-table tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.deleted-donors-table tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+.deleted-donors-table tr:hover td {
+  background-color: #f8f9fa;
+}
+
+.td-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.td-with-icon svg {
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.donor-id-badge {
+  display: inline-block;
+  background: #e9ecef;
+  color: #495057;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.restore-btn {
+  background-color: #28a745;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.restore-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+/* No Results Placeholder */
+.no-results-row {
+  height: 200px;
+}
+
+.no-results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  color: #6c757d;
+}
+
+.no-results-container svg {
+  color: #adb5bd;
+  margin-bottom: 15px;
+}
+
+.no-results-container p {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 5px 0;
+}
+
+.no-results-container small {
+  font-size: 14px;
+}
+
+/* Card View */
+.cards-container {
+  padding: 20px 30px;
+}
+
+.donor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.donor-card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.donor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.donor-card .card-header {
+  padding: 15px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.donor-card .card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.donor-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #6c757d;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.donor-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  color: #212529;
+}
+
+.donor-info {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.info-item svg {
+  margin-right: 10px;
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+/* No Results Card */
+.no-results-card {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: white;
+  border-radius: 10px;
+  border: 1px dashed #dee2e6;
+  color: #6c757d;
+}
+
+.no-results-card svg {
+  color: #adb5bd;
+  margin-bottom: 20px;
+}
+
+.no-results-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.no-results-card p {
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+}
+
+/* Pagination */
+.pagination-container {
+  padding: 20px 30px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.pagination-info {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  color: #495057;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #ced4da;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  padding: 8px 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #495057;
+}
+
+/* Utility Functions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deleted-donors-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-icon {
+    margin-bottom: 10px;
+  }
+
+  .view-toggle {
+    align-self: flex-end;
+    margin-top: -40px;
+  }
+
+  .filters-section {
+    flex-direction: column;
+  }
+
+  .filter-group, .search-bar, .donor-filter {
+    width: 100%;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .deleted-donors-table {
+    display: none;
+  }
+
+  .table-container {
+    display: none;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+}
+
+@media (max-width: 576px) {
+  .donor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .view-toggle {
+    align-self: center;
+    margin-top: 10px;
+  }
+
+  .pagination-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

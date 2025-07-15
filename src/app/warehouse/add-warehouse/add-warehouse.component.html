@@ -1,51 +1,197 @@
 <app-custom-alert></app-custom-alert>
 
-<div class="add-to-warehouse-container">
-  <h2>Add Medicine to Warehouse</h2>
-
-  <form (ngSubmit)="onSubmit()">
-    <div class="form-group modal-dropdown">
-      <label for="medicine">Select Medicine:</label>
-      <input
-        type="text"
-        id="medicine-search"
-        placeholder="Search Medicines..."
-        [value]="medicineSearchTerm"
-        (click)="toggleMedicineDropdown()"
-        (input)="filterMedicines($event.target.value)"
-        (blur)="hideMedicineDropdown()"
-        required
-      />
-      <div
-        class="dropdown-list"
-        *ngIf="showMedicineDropdown"
-        (scroll)="onMedicineScroll($event)"
-      >
-        <label
-          *ngFor="let medicine of filteredMedicines"
-          (click)="selectMedicine(medicine)"
-        >
-          {{ medicine.name }} - {{ medicine.expirationDate | date: 'shortDate' }} - Supplier ID: {{ medicine.supplier?.id }}
-        </label>
-        <label *ngIf="isLoadingMedicines" class="loading-option">
-          Loading more medicines...
-        </label>
+<div class="warehouse-form-container">
+  <!-- Header Section -->
+  <div class="form-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Add to Warehouse</h1>
+        <p>Add medicine items to the warehouse inventory</p>
       </div>
     </div>
+  </div>
 
+  <!-- Form Container -->
+  <div class="form-content-container">
+    <form (ngSubmit)="onSubmit()" #warehouseForm="ngForm" class="warehouse-form">
+      <!-- Medicine Selection -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <path d="M12 8v8M8 12h8"></path>
+            </svg>
+          </div>
+          <h2>Medicine Selection</h2>
+        </div>
 
-    <div class="form-group">
-      <label for="quantity">Enter Quantity:</label>
-      <input
-        type="number"
-        id="quantity"
-        [(ngModel)]="quantity"
-        name="quantity"
-        min="1"
-        required
-      />
-    </div>
+        <div class="form-group medicine-search-group">
+          <label for="medicine-search">
+            <span class="label-text">Select Medicine</span>
+            <span class="required-indicator">*</span>
+          </label>
 
-    <button type="submit" class="submit-btn">Add to Warehouse</button>
-  </form>
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+
+            <input
+              type="text"
+              id="medicine-search"
+              name="medicineSearch"
+              class="form-control"
+              placeholder="Search by name or supplier ID..."
+              [value]="medicineSearchTerm"
+              (click)="toggleMedicineDropdown()"
+              (input)="filterMedicines($any($event.target).value)"
+              (blur)="hideMedicineDropdown()"
+              [class.is-invalid]="medicineSearchTerm === '' && warehouseForm.submitted"
+              required
+            />
+
+            <button *ngIf="medicineSearchTerm" type="button" class="clear-input" (click)="resetForm()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <div class="dropdown-container" *ngIf="showMedicineDropdown">
+            <div class="dropdown-list" (scroll)="onMedicineScroll($event)">
+              <div *ngIf="filteredMedicines.length === 0 && !isLoadingMedicines" class="empty-results">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                <span>No medicines found</span>
+              </div>
+
+              <div
+                *ngFor="let medicine of filteredMedicines"
+                class="dropdown-item"
+                (click)="selectMedicine(medicine)"
+              >
+                <div class="medicine-info">
+                  <div class="medicine-name">{{ medicine.name }}</div>
+                  <div class="medicine-details">
+                    <span class="expiry-date">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      Exp: {{ medicine.expirationDate | date: 'MMM d, y' }}
+                    </span>
+
+                    <span class="supplier-id" *ngIf="medicine.supplier?.id">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                      </svg>
+                      Supplier ID: {{ medicine.supplier?.id }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="isLoadingMedicines" class="loading-indicator">
+                <div class="spinner"></div>
+                <span>Loading more medicines...</span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="medicineSearchTerm === '' && warehouseForm.submitted" class="invalid-feedback">
+            Please select a medicine
+          </div>
+
+          <div *ngIf="selectedMedicineId" class="selected-medicine">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Medicine selected
+          </div>
+        </div>
+      </div>
+
+      <!-- Quantity Input -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+          <h2>Quantity Details</h2>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">
+            <span class="label-text">Quantity</span>
+            <span class="required-indicator">*</span>
+          </label>
+
+          <div class="quantity-input-container">
+            <div class="quantity-controls">
+              <button type="button" class="quantity-btn" (click)="decreaseQuantity()" [disabled]="quantity === 1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                [(ngModel)]="quantity"
+                class="form-control"
+                [class.is-invalid]="(quantity === null || quantity < 1) && warehouseForm.submitted"
+                min="1"
+                required
+              />
+
+              <button type="button" class="quantity-btn" (click)="increaseQuantity()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="(quantity === null || quantity < 1) && warehouseForm.submitted" class="invalid-feedback">
+            Please enter a valid quantity
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="resetForm()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          Reset
+        </button>
+
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+          <svg *ngIf="!isSubmitting" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 3v12"></path>
+          </svg>
+          <div *ngIf="isSubmitting" class="spinner-sm"></div>
+          <span>{{ isSubmitting ? 'Adding...' : 'Add to Warehouse' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
