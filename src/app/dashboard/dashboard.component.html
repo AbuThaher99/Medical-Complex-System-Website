@@ -1,131 +1,430 @@
-<div class="dashboard-content">
-  <!-- User Information Section -->
-  <div class="user-info-section">
-    <h2>User Information</h2>
-    <form (ngSubmit)="updateUserInfo()">
-      <!-- Profile Image Upload -->
-      <div class="form-group">
-        <label for="profileImage">Profile Image</label>
-        <div class="profile-image-container">
-          <img
-            [src]="user?.image || './assets/profile.png'"
-            alt="Profile Image"
-            class="profile-image-preview"
-          />
+<app-custom-alert></app-custom-alert>
 
-          <input
-            type="file"
-            id="profileImage"
-            (change)="onFileSelected($event)"
-            accept="image/*"
-            style="display: none;"
-          />
-          <label for="profileImage" class="upload-button">
-            <i class="fas fa-upload"></i> Change Image
-          </label>
-        </div>
+<div class="dashboard-container">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="page-title">My Profile</h1>
+        <p class="page-subtitle">Manage your personal information and account settings</p>
       </div>
-
-      <div class="user-form-grid">
-        <div class="form-group">
-          <label for="firstName">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            [(ngModel)]="user.firstName"
-            name="firstName"
-            required
-            placeholder="Enter your first name"
-          />
-        </div>
-        <div class="form-group">
-          <label for="lastName">Last Name</label>
-          <input
-            type="text"
-            id="lastName"
-            [(ngModel)]="user.lastName"
-            name="lastName"
-            required
-            placeholder="Enter your last name"
-          />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            [(ngModel)]="user.email"
-            name="email"
-            disabled
-            placeholder="Your email address"
-          />
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone</label>
-          <input
-            type="tel"
-            id="phone"
-            [(ngModel)]="user.phone"
-            name="phone"
-            required
-            placeholder="Enter your phone number"
-          />
-        </div>
-        <div class="form-group full-width-field">
-          <label for="address">Address</label>
-          <input
-            type="text"
-            id="address"
-            [(ngModel)]="user.address"
-            name="address"
-            required
-            placeholder="Enter your address"
-          />
-        </div>
-        <div class="form-group">
-          <label for="dateOfBirth">Date of Birth</label>
-          <input
-            type="date"
-            id="dateOfBirth"
-            [(ngModel)]="user.dateOfBirth"
-            name="dateOfBirth"
-            required
-          />
-        </div>
-      </div>
-      <button type="submit" class="save-button">Save Changes</button>
-    </form>
+    </div>
   </div>
 
-  <!-- Change Password Section -->
-  <div class="change-password-section">
-    <h2>Change Password</h2>
-    <form (ngSubmit)="changePassword()">
-      <div class="form-group">
-        <label for="oldPassword">Current Password</label>
-        <input
-          type="password"
-          id="oldPassword"
-          [(ngModel)]="password.oldPassword"
-          name="oldPassword"
-          required
-          placeholder="Enter your current password"
-        />
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-main-content">
+    <div class="container">
+      <!-- Profile Summary Card -->
+      <div class="profile-summary-card">
+        <div class="profile-summary-content">
+          <div class="profile-image-section">
+            <div class="profile-image-wrapper"
+                 [class.profile-image-uploading]="isUploading">
+              <img
+                [src]="user?.image || './assets/profile.png'"
+                alt="Profile Image"
+                class="profile-image"
+              />
+              <div class="profile-overlay">
+                <input
+                  type="file"
+                  id="profileImage"
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                  style="display: none;"
+                />
+                <label for="profileImage" class="profile-upload-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path>
+                  </svg>
+                  <span *ngIf="!isUploading">Upload</span>
+                  <span *ngIf="isUploading" class="spinner"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-info">
+            <h2 class="profile-name">{{ user.firstName || 'User' }} {{ user.lastName || '' }}</h2>
+            <p class="profile-email">{{ user.email || 'user@example.com' }}</p>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-label">Member Since</span>
+                <span class="stat-value">{{ user.createdAt | date:'mediumDate' || 'N/A' }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Role</span>
+                <span class="stat-value role-badge">{{ user.role || 'User' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input
-          type="password"
-          id="newPassword"
-          [(ngModel)]="password.newPassword"
-          name="newPassword"
-          required
-          placeholder="Enter your new password"
-          minlength="8"
-        />
+
+      <!-- Profile Tabs -->
+      <div class="profile-tabs">
+        <div class="tab-container">
+          <button [class.active]="activeTab === 'info'" (click)="setActiveTab('info')" class="tab-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Personal Information
+          </button>
+          <button [class.active]="activeTab === 'password'" (click)="setActiveTab('password')" class="tab-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Security
+          </button>
+        </div>
+
+        <!-- Personal Information Tab Content -->
+        <div class="tab-content" *ngIf="activeTab === 'info'">
+          <form (ngSubmit)="updateUserInfo()" #userInfoForm="ngForm">
+            <div class="form-header">
+              <h3>Personal Information</h3>
+              <p>Update your personal details and contact information</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="firstName">
+                  <span class="label-text">First Name</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <input
+                    type="text"
+                    id="firstName"
+                    [(ngModel)]="user.firstName"
+                    name="firstName"
+                    required
+                    placeholder="Enter your first name"
+                    class="input-field"
+                    [class.invalid]="firstNameInput.invalid && (firstNameInput.dirty || firstNameInput.touched || userInfoForm.submitted)"
+                    #firstNameInput="ngModel"
+                  />
+                </div>
+                <div *ngIf="firstNameInput.invalid && (firstNameInput.dirty || firstNameInput.touched || userInfoForm.submitted)" class="error-message">
+                  First name is required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="lastName">
+                  <span class="label-text">Last Name</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <input
+                    type="text"
+                    id="lastName"
+                    [(ngModel)]="user.lastName"
+                    name="lastName"
+                    required
+                    placeholder="Enter your last name"
+                    class="input-field"
+                    [class.invalid]="lastNameInput.invalid && (lastNameInput.dirty || lastNameInput.touched || userInfoForm.submitted)"
+                    #lastNameInput="ngModel"
+                  />
+                </div>
+                <div *ngIf="lastNameInput.invalid && (lastNameInput.dirty || lastNameInput.touched || userInfoForm.submitted)" class="error-message">
+                  Last name is required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">
+                  <span class="label-text">Email Address</span>
+                </label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  <input
+                    type="email"
+                    id="email"
+                    [(ngModel)]="user.email"
+                    name="email"
+                    disabled
+                    placeholder="Your email address"
+                    class="input-field disabled"
+                  />
+                </div>
+                <div class="input-note">Email address cannot be changed</div>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">
+                  <span class="label-text">Phone Number</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                  <input
+                    type="tel"
+                    id="phone"
+                    [(ngModel)]="user.phone"
+                    name="phone"
+                    required
+                    placeholder="Enter your phone number"
+                    class="input-field"
+                    [class.invalid]="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched || userInfoForm.submitted)"
+                    #phoneInput="ngModel"
+                  />
+                </div>
+                <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched || userInfoForm.submitted)" class="error-message">
+                  Phone number is required
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="address">
+                  <span class="label-text">Address</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <input
+                    type="text"
+                    id="address"
+                    [(ngModel)]="user.address"
+                    name="address"
+                    required
+                    placeholder="Enter your full address"
+                    class="input-field"
+                    [class.invalid]="addressInput.invalid && (addressInput.dirty || addressInput.touched || userInfoForm.submitted)"
+                    #addressInput="ngModel"
+                  />
+                </div>
+                <div *ngIf="addressInput.invalid && (addressInput.dirty || addressInput.touched || userInfoForm.submitted)" class="error-message">
+                  Address is required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="dateOfBirth">
+                  <span class="label-text">Date of Birth</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <input
+                    type="date"
+                    id="dateOfBirth"
+                    [(ngModel)]="user.dateOfBirth"
+                    name="dateOfBirth"
+                    required
+                    class="input-field date-input"
+                    [class.invalid]="dobInput.invalid && (dobInput.dirty || dobInput.touched || userInfoForm.submitted)"
+                    #dobInput="ngModel"
+                  />
+                </div>
+                <div *ngIf="dobInput.invalid && (dobInput.dirty || dobInput.touched || userInfoForm.submitted)" class="error-message">
+                  Date of birth is required
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" (click)="resetUserInfo()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"></path>
+                </svg>
+                Reset
+              </button>
+              <button type="submit" class="btn-primary" [disabled]="isUpdating">
+                <span *ngIf="!isUpdating">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                  </svg>
+                  Save Changes
+                </span>
+                <span *ngIf="isUpdating" class="spinner-text">
+                  <span class="spinner"></span>
+                  Saving...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Password Tab Content -->
+        <div class="tab-content" *ngIf="activeTab === 'password'">
+          <form (ngSubmit)="changePassword()" #passwordForm="ngForm">
+            <div class="form-header">
+              <h3>Change Password</h3>
+              <p>Update your password to maintain account security</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="oldPassword">
+                  <span class="label-text">Current Password</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container password-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <input
+                    [type]="showOldPassword ? 'text' : 'password'"
+                    id="oldPassword"
+                    [(ngModel)]="password.oldPassword"
+                    name="oldPassword"
+                    required
+                    placeholder="Enter your current password"
+                    class="input-field"
+                    [class.invalid]="oldPasswordInput.invalid && (oldPasswordInput.dirty || oldPasswordInput.touched || passwordForm.submitted)"
+                    #oldPasswordInput="ngModel"
+                  />
+                  <button type="button" class="password-toggle" (click)="toggleOldPassword()">
+                    <svg *ngIf="!showOldPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg *ngIf="showOldPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div *ngIf="oldPasswordInput.invalid && (oldPasswordInput.dirty || oldPasswordInput.touched || passwordForm.submitted)" class="error-message">
+                  Current password is required
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="newPassword">
+                  <span class="label-text">New Password</span>
+                  <span class="required-badge">Required</span>
+                </label>
+                <div class="input-container password-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <input
+                    [type]="showNewPassword ? 'text' : 'password'"
+                    id="newPassword"
+                    [(ngModel)]="password.newPassword"
+                    name="newPassword"
+                    required
+                    minlength="8"
+                    placeholder="Enter your new password"
+                    class="input-field"
+                    [class.invalid]="newPasswordInput.invalid && (newPasswordInput.dirty || newPasswordInput.touched || passwordForm.submitted)"
+                    #newPasswordInput="ngModel"
+                  />
+                  <button type="button" class="password-toggle" (click)="toggleNewPassword()">
+                    <svg *ngIf="!showNewPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg *ngIf="showNewPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div *ngIf="newPasswordInput.invalid && (newPasswordInput.dirty || newPasswordInput.touched || passwordForm.submitted)" class="error-message">
+                  <span *ngIf="newPasswordInput.errors?.['required']">New password is required</span>
+                  <span *ngIf="newPasswordInput.errors?.['minlength']">Password must be at least 8 characters</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="password-strength-meter" *ngIf="password.newPassword">
+              <div class="strength-label">Password Strength:</div>
+              <div class="strength-bars">
+                <div class="strength-bar" [class.active]="password.newPassword.length > 0"></div>
+                <div class="strength-bar" [class.active]="password.newPassword.length >= 8"></div>
+                <div class="strength-bar" [class.active]="hasUppercase(password.newPassword)"></div>
+                <div class="strength-bar" [class.active]="hasNumber(password.newPassword)"></div>
+              </div>
+            </div>
+
+            <div class="password-requirements">
+              <div class="requirement-title">Password Requirements:</div>
+              <ul class="requirements-list">
+                <li [class.met]="password.newPassword && password.newPassword.length >= 8">
+                  <svg *ngIf="password.newPassword && password.newPassword.length >= 8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="!password.newPassword || password.newPassword.length < 8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
+                  At least 8 characters
+                </li>
+                <li [class.met]="hasUppercase(password.newPassword)">
+                  <svg *ngIf="hasUppercase(password.newPassword)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="!hasUppercase(password.newPassword)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
+                  At least one uppercase letter
+                </li>
+                <li [class.met]="hasNumber(password.newPassword)">
+                  <svg *ngIf="hasNumber(password.newPassword)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="!hasNumber(password.newPassword)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
+                  At least one number
+                </li>
+              </ul>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" (click)="resetPasswordForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"></path>
+                </svg>
+                Cancel
+              </button>
+              <button type="submit" class="btn-primary" [disabled]="isChangingPassword">
+                <span *ngIf="!isChangingPassword">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  Update Password
+                </span>
+                <span *ngIf="isChangingPassword" class="spinner-text">
+                  <span class="spinner"></span>
+                  Updating...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-      <button type="submit" class="save-button">Update Password</button>
-    </form>
+    </div>
   </div>
 </div>
-<app-custom-alert></app-custom-alert>

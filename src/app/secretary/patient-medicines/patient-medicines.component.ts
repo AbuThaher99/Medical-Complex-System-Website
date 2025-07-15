@@ -10,7 +10,7 @@ import {CustomAlertService} from "../../services/custom-alert.service";
 @Component({
   selector: 'app-patient-medicines',
   templateUrl: './patient-medicines.component.html',
-  styleUrls: ['./patient-medicines.component.css']
+  styleUrls: ['./patient-medicines.component.css','./patient-medicnes-style.css']
 })
 export class PatientMedicinesComponent implements OnInit {
   patientMedicines: any[] = [];
@@ -67,7 +67,7 @@ export class PatientMedicinesComponent implements OnInit {
   filteredTreatmentsEdit: any[] = [];
   private treatmentSearchEditSubject = new Subject<string>();
   treatmentSearchEditQuery: string = '';
-
+  viewMode: 'table' | 'card' = 'table';
   constructor(
     private patientMedicineService: PatientMedicineService,
     private patientService: PatientService,
@@ -82,6 +82,12 @@ export class PatientMedicinesComponent implements OnInit {
     this.loadPatients();
     this.loadTreatments();
     this.loadMedicines();
+    this.checkScreenSize();
+
+    // Listen for window resize events
+    window.addEventListener('resize', () => {
+      this.checkScreenSize();
+    });
 
     this.medicineSearchEditSubject.pipe(
       debounceTime(300),
@@ -373,5 +379,91 @@ export class PatientMedicinesComponent implements OnInit {
   onTreatmentSearch(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.treatmentSearchEditSubject.next(target.value);
+  }
+
+  toggleView(mode: 'table' | 'card'): void {
+    this.viewMode = mode;
+    localStorage.setItem('medicineViewMode', mode);
+  }
+
+// Check screen size and set appropriate view
+  checkScreenSize(): void {
+    if (window.innerWidth <= 768) {
+      // On mobile, always use card view
+      this.viewMode = 'card';
+    } else {
+      // On desktop, use saved preference or default to table
+      const savedViewMode = localStorage.getItem('medicineViewMode') as 'table' | 'card';
+      this.viewMode = (savedViewMode === 'card') ? 'card' : 'table';
+    }
+  }
+
+// Get the initials from first and last name
+  getInitials(firstName: string, lastName: string): string {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  }
+
+// Remove filter from a list
+  removeFilter(list: number[], id: number): void {
+    const index = list.indexOf(id);
+    if (index > -1) {
+      list.splice(index, 1);
+      this.loadPatientMedicines();
+    }
+  }
+
+// Get patient name for display in filter chips
+  getPatientName(id: number): string {
+    const patient = this.patients.find(p => p.id === id);
+    if (patient) {
+      return `${patient.user.firstName} ${patient.user.lastName}`;
+    }
+    return `Patient #${id}`;
+  }
+
+// Get medicine name for display in filter chips
+  getMedicineName(id: number): string {
+    const medicine = this.medicines.find(m => m.medicine.id === id);
+    if (medicine) {
+      return medicine.medicine.name;
+    }
+    return `Medicine #${id}`;
+  }
+
+// Get total items count
+  getTotalItems(): number {
+    return this.totalPages * this.size;
+  }
+
+// Calculate total price for edit preview
+  calculateTotalPriceForEdit(): number {
+    if (!this.editingRecord || !this.editingRecord.treatment || !this.editingRecord.medicine) {
+      return 0;
+    }
+
+    const treatmentPrice = this.editingRecord.treatment.price || 0;
+    const medicinePrice = this.editingRecord.medicine.buyPrice || 0;
+    const quantity = this.editingRecord.quantity || 0;
+
+    return treatmentPrice + (medicinePrice * quantity);
+  }
+
+// Check if form is valid for submission
+  isFormValid(): boolean {
+    if (!this.editingRecord) return false;
+
+    return (
+      this.editingRecord.treatment &&
+      this.editingRecord.treatment.id &&
+      this.editingRecord.medicine &&
+      this.editingRecord.medicine.id &&
+      this.editingRecord.quantity > 0
+    );
+  }
+  ngOnDestroy(): void {
+    // Remove event listener to prevent memory leaks
+    window.removeEventListener('resize', () => {
+      this.checkScreenSize();
+    });
   }
 }

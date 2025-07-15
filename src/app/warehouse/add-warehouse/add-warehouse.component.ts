@@ -1,32 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { WarehouseService } from '../../services/warehouse.service';
-import {CustomAlertService} from "../../services/custom-alert.service";
+import { CustomAlertService } from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-warehouse',
   templateUrl: './add-warehouse.component.html',
-  styleUrl: './add-warehouse.component.css'
+  styleUrls: ['./add-warehouse.component.css']
 })
-export class AddWarehouseComponent {
+export class AddWarehouseComponent implements OnInit {
+  @ViewChild('warehouseForm') warehouseForm!: NgForm;
+
+  // Medicine selection data
   medicines: any[] = [];
   selectedMedicineId: number | null = null;
-  quantity: number | null = null;
+  quantity: number | null = 1; // Default to 1
   filteredMedicines: any[] = [];
 
-
+  // UI states
   medicinePage = 1;
   medicineSize = 10;
   totalMedicines = 0;
   medicineSearchTerm = '';
   isLoadingMedicines = false;
   showMedicineDropdown = false;
+  isSubmitting = false;
 
-  constructor(private warehouseService: WarehouseService,private customAlertService: CustomAlertService) {}
+  constructor(
+    private warehouseService: WarehouseService,
+    private customAlertService: CustomAlertService
+  ) {}
 
   ngOnInit(): void {
     this.fetchMedicines();
   }
 
+  // Fetch medicines with pagination
   fetchMedicines(reset: boolean = false): void {
     if (this.isLoadingMedicines || (this.totalMedicines && this.medicines.length >= this.totalMedicines && !reset)) return;
 
@@ -57,16 +66,20 @@ export class AddWarehouseComponent {
       error: (error) => {
         console.error('Failed to fetch medicines:', error);
         this.isLoadingMedicines = false;
+        this.customAlertService.show('Error', 'Failed to load medicines. Please try again.');
       }
     });
   }
 
+  // Handle scrolling in the dropdown to load more medicines
   onMedicineScroll(event: Event): void {
     const target = event.target as HTMLElement;
     if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
       this.fetchMedicines();
     }
   }
+
+  // Filter medicines based on search term
   filterMedicines(searchTerm: string): void {
     this.medicineSearchTerm = searchTerm;
     if (searchTerm) {
@@ -78,26 +91,55 @@ export class AddWarehouseComponent {
       this.filteredMedicines = this.medicines;
     }
   }
+
+  // Toggle medicine dropdown visibility
   toggleMedicineDropdown(): void {
     this.showMedicineDropdown = !this.showMedicineDropdown;
   }
 
+  // Hide dropdown after selection
   hideMedicineDropdown(): void {
     setTimeout(() => {
       this.showMedicineDropdown = false;
-    }, 200); // Allows selection before hiding
+    }, 200); // Short delay to allow click events to complete
   }
+
+  // Select a medicine from dropdown
   selectMedicine(medicine: any): void {
     this.selectedMedicineId = medicine.id;
-    this.medicineSearchTerm = `${medicine.name} - ${new Date(medicine.expirationDate).toLocaleDateString()} - Supplier ID: ${medicine.supplier?.id}`;
+
+    // Format a descriptive string for the selected medicine
+    const expiryDate = new Date(medicine.expirationDate).toLocaleDateString();
+    this.medicineSearchTerm = `${medicine.name} - ${expiryDate}${medicine.supplier?.id ? ` - Supplier ID: ${medicine.supplier.id}` : ''}`;
+
     this.showMedicineDropdown = false;
   }
 
+  // Quantity management
+  increaseQuantity(): void {
+    if (this.quantity === null) {
+      this.quantity = 1;
+    } else {
+      this.quantity++;
+    }
+  }
+
+  decreaseQuantity(): void {
+    if (this.quantity === null || this.quantity <= 1) {
+      this.quantity = 1;
+    } else {
+      this.quantity--;
+    }
+  }
+
+  // Form submission
   onSubmit(): void {
-    if (!this.selectedMedicineId || !this.quantity) {
-      this.customAlertService.show('Error', 'Please select a medicine and enter a valid quantity.');
+    if (!this.selectedMedicineId || !this.quantity || this.quantity < 1) {
+      // The form is invalid, validation errors will be shown
       return;
     }
+
+    this.isSubmitting = true;
 
     const payload = {
       quantity: this.quantity,
@@ -108,21 +150,27 @@ export class AddWarehouseComponent {
       next: (response) => {
         console.log('Medicine added to warehouse successfully:', response);
         this.customAlertService.show('Success', 'Medicine added to warehouse successfully!');
-        this.fetchMedicines();
         this.resetForm();
+        this.isSubmitting = false;
       },
       error: (error) => {
         console.error('Failed to add medicine to warehouse:', error);
         this.customAlertService.show('Error', 'Failed to add medicine to warehouse. Please try again.');
-
+        this.isSubmitting = false;
       },
     });
   }
 
+  // Reset form to initial state
   resetForm(): void {
     this.selectedMedicineId = null;
-    this.quantity = null;
+    this.quantity = 1;
     this.medicineSearchTerm = '';
     this.filteredMedicines = this.medicines; // Reset filtered medicines to show all
+
+    // Reset form validation state if the form exists
+    if (this.warehouseForm) {
+      this.warehouseForm.resetForm();
+    }
   }
 }

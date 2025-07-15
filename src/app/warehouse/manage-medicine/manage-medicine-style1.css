@@ -1,0 +1,497 @@
+/* ===== Table View ===== */
+.table-view {
+  overflow-x: auto;
+}
+
+.medicines-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.medicines-table th,
+.medicines-table td {
+  padding: 16px;
+  text-align: left;
+}
+
+.medicines-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333333;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.medicines-table th.sortable {
+  cursor: pointer;
+}
+
+.medicines-table th.sortable:hover {
+  background-color: #e9ecef;
+}
+
+.medicines-table th.sorted {
+  background-color: #e6ecff;
+  color: #4361ee;
+}
+
+.sort-icon {
+  display: inline-flex;
+  margin-left: 4px;
+  color: #4361ee;
+}
+
+.medicines-table tr {
+  transition: all 0.3s ease;
+}
+
+.medicines-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.medicines-table tr:not(:last-child) td {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.medicine-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.medicine-name {
+  font-weight: 500;
+  color: #333333;
+}
+
+.supplier-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e6ecff;
+  color: #4361ee;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 12px;
+  width: fit-content;
+}
+
+.supplier-badge.no-supplier {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.medicine-details {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.medicine-id {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.supplier-name {
+  display: inline-block;
+  background-color: #e6ecff;
+  color: #4361ee;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.no-supplier {
+  display: inline-block;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.price-cell {
+  font-weight: 500;
+  color: #333333;
+}
+
+.profit-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profit-amount {
+  font-weight: 600;
+  color: #00c853;
+}
+
+.profit-percent {
+  font-size: 12px;
+  color: #00c853;
+}
+
+.profit-amount.negative,
+.profit-percent.negative {
+  color: #e63946;
+}
+
+.expiry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.expiry-badge.expired {
+  background-color: #ffebee;
+  color: #e63946;
+}
+
+.expiry-badge.expiring-soon {
+  background-color: #fff8e6;
+  color: #f59f00;
+}
+
+.expiry-badge.expiring-warning {
+  background-color: #e5f6fd;
+  color: #0095ff;
+}
+
+.expiry-badge.valid {
+  background-color: #e0f7ea;
+  color: #00c853;
+}
+
+.expiry-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.expired .expiry-indicator {
+  background-color: #e63946;
+}
+
+.expiring-soon .expiry-indicator {
+  background-color: #f59f00;
+}
+
+.expiring-warning .expiry-indicator {
+  background-color: #0095ff;
+}
+
+.valid .expiry-indicator {
+  background-color: #00c853;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-btn {
+  background-color: #e6ecff;
+  color: #4361ee;
+}
+
+.edit-btn:hover {
+  background-color: #4361ee;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #ffebee;
+  color: #e63946;
+}
+
+.delete-btn:hover {
+  background-color: #e63946;
+  color: white;
+}
+
+/* ===== Grid View ===== */
+.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.medicine-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e9ecef;
+}
+
+.medicine-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.medicine-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.expired {
+  background-color: #ffebee;
+  color: #e63946;
+}
+
+.status-badge.expiring-soon {
+  background-color: #fff8e6;
+  color: #f59f00;
+}
+
+.status-badge.expiring-warning {
+  background-color: #e5f6fd;
+  color: #0095ff;
+}
+
+.status-badge.valid {
+  background-color: #e0f7ea;
+  color: #00c853;
+}
+
+.action-menu {
+  position: relative;
+}
+
+.menu-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.menu-trigger:hover {
+  background-color: #f8f9fa;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 160px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: none;
+}
+
+.action-menu.active .menu-dropdown {
+  display: block;
+  animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: #333333;
+  transition: all 0.3s ease;
+}
+
+.menu-dropdown button:hover {
+  background-color: #f8f9fa;
+}
+
+.menu-dropdown button.delete-option {
+  color: #e63946;
+}
+
+.menu-dropdown button.delete-option:hover {
+  background-color: #ffebee;
+}
+
+.card-content {
+  padding: 0 16px 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.medicine-details {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.supplier-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4361ee;
+  font-size: 14px;
+}
+
+.price-info {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.price-label {
+  color: #6c757d;
+}
+
+.price-value {
+  font-weight: 500;
+  color: #333333;
+}
+
+.price-value.negative {
+  color: #e63946;
+}
+
+.date-stock-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.expiry-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.expiry-info .expired {
+  color: #e63946;
+}
+
+.expiry-info .expiring-soon {
+  color: #f59f00;
+}
+
+.expiry-info .expiring-warning {
+  color: #0095ff;
+}
+
+.expiry-info .valid {
+  color: #00c853;
+}
+
+.card-actions {
+  padding: 16px;
+  border-top: 1px solid #e9ecef;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.card-btn.edit-btn {
+  background-color: #e6ecff;
+  color: #4361ee;
+}
+
+.card-btn.edit-btn:hover {
+  background-color: #4361ee;
+  color: white;
+}
+
+.card-btn.delete-btn {
+  background-color: #ffebee;
+  color: #e63946;
+}
+
+.card-btn.delete-btn:hover {
+  background-color: #e63946;
+  color: white;
+}
+

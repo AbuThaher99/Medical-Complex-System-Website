@@ -1,44 +1,170 @@
-<div class="donations-container">
-  <h2>Manage Donations</h2>
+<app-custom-alert></app-custom-alert>
 
-  <!-- Filters -->
-  <div class="filters">
-    <input type="text" placeholder="Search Donations..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+<div class="donations-card">
+  <!-- Header Section -->
+  <div class="donations-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a3 3 0 0 0-3 3v7h6V5a3 3 0 0 0-3-3z" />
+        <path d="M19 9h-1v3h-6V9H6a3 3 0 0 0-3 3v5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-5a3 3 0 0 0-2-2.82" />
+        <path d="M7 14a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-2z" />
+      </svg>
+    </div>
+    <div class="header-text">
+      <h2>Donations Management</h2>
+      <p>View and manage blood donation records</p>
+    </div>
+    <div class="view-toggle">
+      <button [class.active]="viewMode === 'table'" (click)="toggleView('table')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+          <line x1="3" y1="15" x2="21" y2="15" />
+          <line x1="9" y1="3" x2="9" y2="21" />
+          <line x1="15" y1="3" x2="15" y2="21" />
+        </svg>
+        Table
+      </button>
+      <button [class.active]="viewMode === 'card'" (click)="toggleView('card')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+        </svg>
+        Cards
+      </button>
+    </div>
+  </div>
 
-    <select [(ngModel)]="bloodType" (change)="onSearchChange()">
-      <option value="">All Blood Types</option>
-      <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
-    </select>
-
-    <input type="number" placeholder="Quantity" [(ngModel)]="quantity" (input)="onSearchChange()" min="1" />
-
-    <!-- Donors Dropdown -->
-    <div class="dropdown">
-      <input
-        type="text"
-        placeholder="Search Donors..."
-        [(ngModel)]="donorSearchQuery"
-        (input)="filterDonors()"
-        (focus)="showDonorDropdown = true"
-        (blur)="hideDropdown()"
-      />
-      <div class="dropdown-content" *ngIf="showDonorDropdown" (scroll)="onDropdownScroll($event)">
-        <label *ngFor="let donor of filteredDonors">
-          <input
-            type="checkbox"
-            [checked]="selectedDonorIds.includes(donor.id)"
-            (change)="toggleDonorSelection(donor.id, $event)"
-          />
-          {{ donor.id }} - {{ donor.name }}
-        </label>
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <div class="input-with-icon">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search donations..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+        />
       </div>
     </div>
 
+    <div class="filter-group">
+      <div class="input-with-icon">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 7V5H6v2M9 21h6M12 3v18" />
+          </svg>
+        </div>
+        <select [(ngModel)]="bloodType" (change)="onSearchChange()">
+          <option value="">All Blood Types</option>
+          <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+    </div>
 
+    <div class="filter-group">
+      <div class="input-with-icon">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="20" x2="12" y2="10" />
+            <line x1="18" y1="20" x2="18" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="16" />
+          </svg>
+        </div>
+        <input
+          type="number"
+          placeholder="Minimum quantity (ml)"
+          [(ngModel)]="quantity"
+          (input)="onSearchChange()"
+          min="1"
+        />
+      </div>
+    </div>
+
+    <div class="donor-filter">
+      <div class="input-with-icon modal-dropdown">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Filter by donor..."
+          [(ngModel)]="donorSearchQuery"
+          (input)="filterDonors()"
+          (focus)="showDonorDropdown = true"
+          (blur)="hideDropdown()"
+        />
+        <div class="dropdown-list" *ngIf="showDonorDropdown" (scroll)="onDropdownScroll($event)">
+          <div class="dropdown-header">
+            <span>Donor Filter</span>
+            <small>{{filteredDonors.length}} donor(s) found</small>
+          </div>
+          <div class="dropdown-items">
+            <label *ngFor="let donor of filteredDonors"
+                   class="dropdown-item"
+                   [class.selected]="selectedDonorIds.includes(donor.id)">
+              <input
+                type="checkbox"
+                [value]="donor.id"
+                [checked]="selectedDonorIds.includes(donor.id)"
+                (change)="toggleDonorSelection(donor.id, $event)"
+              />
+              <div class="donor-info">
+                <span class="donor-name">
+                  <span class="donor-id">#{{donor.id}}</span>
+                  {{donor.name}}
+                </span>
+                <span class="donor-bloodtype bloodtype-tag" [ngClass]="getBloodTypeClass(donor.bloodType)" *ngIf="donor.bloodType">
+                  {{donor.bloodType}}
+                </span>
+              </div>
+            </label>
+            <div *ngIf="loadingDonors" class="loading-option">
+              <div class="loading-spinner"></div>
+              <span>Loading more donors...</span>
+            </div>
+            <div *ngIf="filteredDonors.length === 0 && !loadingDonors" class="no-results">
+              No donors found
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="active-filters" *ngIf="selectedDonorIds.length > 0">
+        <div class="filter-chips">
+          <div class="chip" *ngFor="let id of selectedDonorIds">
+            <span>{{ getDonorName(id) }}</span>
+            <button class="remove-chip" (click)="removeDonorFilter(id)">×</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Donations Table -->
-  <div class="desktop-view">
+  <!-- Reset Filters Button -->
+  <div class="reset-filters" *ngIf="hasActiveFilters()">
+    <button class="reset-btn" (click)="resetFilters()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+      </svg>
+      Reset Filters
+    </button>
+  </div>
+
+  <!-- Table View -->
+  <div class="table-container" *ngIf="viewMode === 'table'">
     <table class="donations-table">
       <thead>
       <tr>
@@ -52,82 +178,128 @@
       </thead>
       <tbody>
       <tr *ngFor="let donation of donations">
-        <td>{{ donation.id }}</td>
+        <td><span class="donation-id-badge">{{ donation.id }}</span></td>
         <td>{{ donation.donor.name }}</td>
-        <td>{{ donation.donor.phone }}</td>
-        <td>{{ donation.bloodType }}</td>
-        <td>{{ donation.quantity }}</td>
-        <td>{{ donation.donationDate | date: 'medium' }}</td>
+        <td>
+          <div class="td-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+            </svg>
+            {{ donation.donor.phone }}
+          </div>
+        </td>
+        <td>
+          <span class="bloodtype-badge" [ngClass]="getBloodTypeClass(donation.bloodType)">{{ donation.bloodType }}</span>
+        </td>
+        <td>
+          <div class="td-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
+            {{ donation.quantity }} ml
+          </div>
+        </td>
+        <td>
+          <div class="td-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            {{ donation.donationDate | date: 'medium' }}
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="donations.length === 0">
+        <td colspan="6" class="no-results-row">
+          <div class="no-results-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M12 2a3 3 0 0 0-3 3v7h6V5a3 3 0 0 0-3-3z" />
+              <path d="M19 9h-1v3h-6V9H6a3 3 0 0 0-3 3v5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-5a3 3 0 0 0-2-2.82" />
+              <path d="M7 14a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-2z" />
+              <line x1="3" y1="3" x2="21" y2="21" />
+            </svg>
+            <p>No donations found</p>
+            <small>Try adjusting your search or filters</small>
+          </div>
+        </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="mobile-view">
-    <div class="donation-card" *ngFor="let donation of donations">
-      <!-- Card Header with Icon -->
-      <div class="donation-id">
-        <i class="fas fa-hand-holding-medical"></i>
-        #{{ donation.id }}
-      </div>
-
-      <!-- Blood Type Badge -->
-      <div class="blood-type-badge" [ngClass]="donation.bloodType.toLowerCase().replace('_', '')">
-        {{ donation.bloodType }}
-      </div>
-
-      <!-- Donation Information -->
-      <div class="donation-info">
-        <div class="info-group">
-          <label>Donor</label>
-          <span>{{ donation.donor.name }}</span>
+  <!-- Card View -->
+  <div class="cards-container" *ngIf="viewMode === 'card'">
+    <div class="donation-grid">
+      <div class="donation-card" *ngFor="let donation of donations">
+        <div class="card-header">
+          <span class="donation-id-badge">{{ donation.id }}</span>
+          <span class="bloodtype-badge" [ngClass]="getBloodTypeClass(donation.bloodType)">{{ donation.bloodType }}</span>
         </div>
-
-        <div class="info-group">
-          <label>Phone</label>
-          <span>{{ donation.donor.phone }}</span>
-        </div>
-
-        <div class="info-group">
-          <label>Blood Type</label>
-          <span>{{ donation.bloodType }}</span>
-        </div>
-
-        <div class="info-group">
-          <label>Quantity</label>
-          <span>{{ donation.quantity }} ml</span>
-        </div>
-
-        <div class="info-group date">
-          <label>Donation Date</label>
-          <span>{{ donation.donationDate | date: 'medium' }}</span>
+        <div class="card-content">
+          <div class="donor-avatar">{{ getInitials(donation.donor.name) }}</div>
+          <h3 class="donor-name">{{ donation.donor.name }}</h3>
+          <div class="donation-info">
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+              </svg>
+              <span>{{ donation.donor.phone }}</span>
+            </div>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+              </svg>
+              <span>{{ donation.quantity }} ml</span>
+            </div>
+            <div class="info-item date-item">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span>{{ donation.donationDate | date: 'medium' }}</span>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Card Footer with Timestamp -->
-      <div class="donation-footer">
-        <div class="donation-timestamp">
-          <i class="far fa-clock"></i> {{ donation.donationDate | date: 'shortTime' }}
-        </div>
+      <div class="no-results-card" *ngIf="donations.length === 0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M12 2a3 3 0 0 0-3 3v7h6V5a3 3 0 0 0-3-3z" />
+          <path d="M19 9h-1v3h-6V9H6a3 3 0 0 0-3 3v5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-5a3 3 0 0 0-2-2.82" />
+          <path d="M7 14a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-2z" />
+          <line x1="3" y1="3" x2="21" y2="21" />
+        </svg>
+        <h3>No donations found</h3>
+        <p>Try adjusting your search criteria or filters</p>
+        <button class="reset-btn" (click)="resetFilters()" *ngIf="hasActiveFilters()">Reset Filters</button>
       </div>
-    </div>
-
-    <!-- Empty State -->
-    <div class="no-data-container" *ngIf="donations.length === 0">
-      <i class="fas fa-tint-slash"></i>
-      <p>No donations found matching your criteria</p>
-      <button (click)="resetFilters()">Reset Filters</button>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="pagination-section">
-    <button (click)="page = page - 1; loadDonations()" [disabled]="page === 1">
-      Previous
-    </button>
-    <span>Page {{ page }} of {{ totalPages }}</span>
-    <button (click)="page = page + 1; loadDonations()" [disabled]="page === totalPages">
-      Next
-    </button>
+  <div class="pagination-container">
+    <div class="pagination-info">
+      <span>Showing {{ donations.length }} of {{ totalElements }} donations</span>
+    </div>
+    <div class="pagination-controls">
+      <button class="page-btn" (click)="page = page - 1; loadDonations()" [disabled]="page === 1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Previous
+      </button>
+      <div class="page-indicator">
+        <span>Page {{ page }} of {{ Math.ceil(totalElements / size) }}</span>
+      </div>
+      <button class="page-btn" (click)="page = page + 1; loadDonations()" [disabled]="page === Math.ceil(totalElements / size)">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
   </div>
 </div>

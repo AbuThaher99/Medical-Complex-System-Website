@@ -6,7 +6,7 @@ import { ConfigService } from "../../services/config.service";
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.css', './additionStyle.css']
+  styleUrls: ['./layout.component.css','./additionStyle.css']
 })
 export class LayoutComponent implements OnInit {
   user: any = {

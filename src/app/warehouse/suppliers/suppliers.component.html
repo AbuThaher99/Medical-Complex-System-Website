@@ -1,173 +1,627 @@
 <app-custom-alert></app-custom-alert>
-<div class="filter-container">
-  <form [formGroup]="filterForm">
-    <div class="form-group">
-      <label for="search">Search</label>
-      <input
-        type="text"
-        id="search"
-        formControlName="search"
-        placeholder="Search by name, phone, or address"
-      />
-    </div>
-    <div class="form-group">
-      <label for="companyName">Company Name</label>
-      <input
-        type="text"
-        id="companyName"
-        formControlName="companyName"
-        placeholder="Filter by company name"
-      />
-    </div>
-  </form>
 
-  <!-- Desktop Table View -->
-  <div class="desktop-view">
-    <div class="table-container">
-      <table>
+<div class="suppliers-dashboard">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Supplier Management</h1>
+        <p>Manage your product suppliers and their associated medicines</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" routerLink="/warehouse/add-supplier">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Add Supplier
+        </button>
+        <button class="btn-secondary" (click)="refreshData()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+          </svg>
+          Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-icon suppliers-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"></path>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value">{{ totalSuppliers }}</div>
+        <div class="stat-label">Total Suppliers</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon medicines-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value">{{ totalMedicines }}</div>
+        <div class="stat-label">Active Medicines</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon companies-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value">{{ uniqueCompanies }}</div>
+        <div class="stat-label">Companies</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="search-container">
+      <div class="search-input">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Search by name, phone, or address"
+          class="search-field"
+        >
+        <button *ngIf="searchControl.value" class="clear-search" (click)="clearSearch()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>Company</label>
+        <div class="custom-dropdown">
+          <!-- Dropdown Trigger -->
+          <div class="dropdown-trigger" (click)="toggleCompanyDropdown()">
+            <span>{{ companyControl.value || 'All Companies' }}</span>
+            <svg *ngIf="!isLoadingCompanies" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline [attr.points]="isCompanyDropdownOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"></polyline>
+            </svg>
+            <!-- Loading indicator -->
+            <div *ngIf="isLoadingCompanies" class="select-loading">
+              <div class="loading-spinner-sm"></div>
+            </div>
+          </div>
+
+          <!-- Dropdown Options -->
+          <div class="dropdown-options" *ngIf="isCompanyDropdownOpen">
+            <div class="dropdown-option" (click)="selectCompany('')" [class.selected]="!companyControl.value">
+              All Companies
+            </div>
+            <div
+              class="dropdown-option"
+              *ngFor="let company of companyList"
+              (click)="selectCompany(company)"
+              [class.selected]="companyControl.value === company"
+            >
+              {{ company }}
+            </div>
+            <!-- Empty state if no companies -->
+            <div class="dropdown-empty" *ngIf="!isLoadingCompanies && companyList.length === 0">
+              No companies available
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keep Reset button but hide Apply Filters since filtering is now automatic -->
+      <div class="filter-actions">
+        <button class="btn-reset" (click)="resetFilters()" [class.disabled]="!hasActiveFilters()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12a9 9 0 0 1-9 9"></path>
+            <path d="M3 12a9 9 0 0 1 9-9"></path>
+            <path d="M17 16l4-4-4-4"></path>
+            <path d="M7 8l-4 4 4 4"></path>
+          </svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading suppliers...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && suppliers.length === 0" class="empty-state">
+    <div class="empty-illustration">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96" fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"></path>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        <line x1="12" y1="10" x2="12" y2="16"></line>
+        <line x1="9" y1="13" x2="15" y2="13"></line>
+      </svg>
+    </div>
+    <h2>No Suppliers Found</h2>
+    <p *ngIf="hasActiveFilters()">Try changing your search criteria or reset filters to see all suppliers.</p>
+    <p *ngIf="!hasActiveFilters()">Get started by adding your first supplier to the system.</p>
+    <div class="empty-actions">
+      <button *ngIf="hasActiveFilters()" class="btn-secondary" (click)="resetFilters()">Reset Filters</button>
+      <button class="btn-primary" routerLink="/warehouse/add-supplier">Add New Supplier</button>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div *ngIf="!isLoading && suppliers.length > 0" class="content-section">
+    <div class="view-toggle" *ngIf="!isMobile">
+      <button [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+        Grid
+      </button>
+      <button [class.active]="viewMode === 'table'" (click)="setViewMode('table')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        Table
+      </button>
+    </div>
+
+    <!-- Table View -->
+    <div *ngIf="viewMode === 'table'" class="table-view">
+      <table class="suppliers-table">
         <thead>
         <tr>
-          <th>Name</th>
-          <th>Company Name</th>
+          <th class="sortable" (click)="sortBy('name')" [class.sorted]="sortField === 'name'">
+            Name
+            <span class="sort-icon" *ngIf="sortField === 'name'">
+                <svg *ngIf="sortDirection === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                <svg *ngIf="sortDirection === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+          </th>
+          <th class="sortable" (click)="sortBy('companyName')" [class.sorted]="sortField === 'companyName'">
+            Company Name
+            <span class="sort-icon" *ngIf="sortField === 'companyName'">
+                <svg *ngIf="sortDirection === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                <svg *ngIf="sortDirection === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+          </th>
           <th>Phone</th>
           <th>Address</th>
+          <th>Medicines</th>
           <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let supplier of suppliers">
           <td>{{ supplier.name }}</td>
-          <td>{{ supplier.companyName }}</td>
-          <td>{{ supplier.phone }}</td>
-          <td>{{ supplier.address }}</td>
-          <td class="actions">
-            <button class="btn-update" (click)="openEditModal(supplier)">
-              <i class="fas fa-edit"></i> Update
-            </button>
-            <button class="btn-delete" (click)="onDelete(supplier)">
-              <i class="fas fa-trash"></i> Delete
-            </button>
-            <button class="btn-medicines" (click)="openMedicinesModal(supplier)">
-              <i class="fas fa-pills"></i> Show Medicines
-            </button>
+          <td>
+            <span class="company-badge">{{ supplier.companyName }}</span>
+          </td>
+          <td>
+            <div class="phone-link">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <a href="tel:{{ supplier.phone }}">{{ supplier.phone }}</a>
+            </div>
+          </td>
+          <td class="address-cell">
+            <div class="truncated-text" [title]="supplier.address">{{ supplier.address }}</div>
+          </td>
+          <td>
+              <span class="medicine-count" [class.has-medicines]="supplier.medicines && supplier.medicines.length > 0">
+                {{ supplier.medicines ? supplier.medicines.length : 0 }} medicines
+              </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn edit-btn" (click)="openEditModal(supplier)" title="Edit Supplier">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              <button class="action-btn medicine-btn" (click)="openMedicinesModal(supplier)" title="View Medicines">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                </svg>
+              </button>
+              <button class="action-btn delete-btn" (click)="onDelete(supplier)" title="Delete Supplier">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- Mobile Card View -->
-  <div class="mobile-view">
-    <div class="supplier-card" *ngFor="let supplier of suppliers">
-      <div class="company-name">{{ supplier.companyName }}</div>
+    <!-- Grid View -->
+    <div *ngIf="viewMode === 'grid'" class="grid-view">
+      <div class="supplier-grid">
+        <div class="supplier-card" *ngFor="let supplier of suppliers">
+          <div class="card-header">
+            <div class="supplier-company">{{ supplier.companyName }}</div>
+            <div class="action-menu">
+              <button class="menu-trigger" (click)="toggleCardMenu($event)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="5" r="1"></circle>
+                  <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+              </button>
+              <div class="menu-dropdown">
+                <button (click)="openEditModal(supplier)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit
+                </button>
+                <button (click)="openMedicinesModal(supplier)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                  </svg>
+                  Medicines
+                </button>
+                <button (click)="onDelete(supplier)" class="delete-option">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="supplier-avatar">
+              {{ getSupplierInitials(supplier) }}
+            </div>
+            <h3 class="supplier-name">{{ supplier.name }}</h3>
 
-      <div class="supplier-info">
-        <div class="info-group">
-          <label>Name</label>
-          <span>{{ supplier.name }}</span>
-        </div>
-        <div class="info-group">
-          <label>Phone</label>
-          <span>{{ supplier.phone }}</span>
-        </div>
-        <div class="info-group">
-          <label>Address</label>
-          <span>{{ supplier.address }}</span>
+            <div class="supplier-details">
+              <div class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <span>{{ supplier.phone }}</span>
+              </div>
+              <div class="detail-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span class="address-text">{{ supplier.address }}</span>
+              </div>
+              <div class="detail-item medicines-detail" *ngIf="supplier.medicines">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                </svg>
+                <span>{{ supplier.medicines.length }} medicines</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="card-btn edit-btn" (click)="openEditModal(supplier)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Edit
+            </button>
+            <button class="card-btn view-btn" (click)="openMedicinesModal(supplier)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+              </svg>
+              Medicines
+            </button>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div class="actions">
-        <button class="btn-update" (click)="openEditModal(supplier)">
-          <i class="fas fa-edit"></i> Update
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        <span>Showing {{ (page - 1) * size + 1 }} to {{ Math.min(page * size, totalItems) }} of {{ totalItems }} suppliers</span>
+      </div>
+      <div class="pagination-controls">
+        <button class="pagination-btn" [disabled]="page === 1" (click)="previousPage()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Previous
         </button>
-        <button class="btn-delete" (click)="onDelete(supplier)">
-          <i class="fas fa-trash"></i> Delete
-        </button>
-        <button class="btn-medicines" (click)="openMedicinesModal(supplier)">
-          <i class="fas fa-pills"></i> Show Medicines
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let pageNum of getPageNumbers()"
+            [class.active]="pageNum === page"
+            [class.ellipsis]="pageNum === -1"
+            [disabled]="pageNum === -1"
+            (click)="goToPage(pageNum)"
+          >
+            {{ pageNum === -1 ? '...' : pageNum }}
+          </button>
+        </div>
+
+        <button class="pagination-btn" [disabled]="page === totalPages" (click)="nextPage()">
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Edit Modal -->
-<div *ngIf="showEditModal" class="modal">
-  <div class="modal-content">
-    <span class="close" (click)="closeEditModal()">&times;</span>
-    <h2>Update Supplier</h2>
-    <form (ngSubmit)="saveUpdatedSupplier()">
-      <div>
-        <label for="name">Name:</label>
-        <input
-          id="name"
-          [(ngModel)]="selectedSupplier.name"
-          name="name"
-          required
-        />
-      </div>
-      <div>
-        <label for="companyName">Company Name:</label>
-        <input
-          id="companyName"
-          [(ngModel)]="selectedSupplier.companyName"
-          name="companyName"
-          required
-        />
-      </div>
-      <div>
-        <label for="phone">Phone:</label>
-        <input
-          id="phone"
-          [(ngModel)]="selectedSupplier.phone"
-          name="phone"
-          required
-        />
-      </div>
-      <div>
-        <label for="address">Address:</label>
-        <input
-          id="address"
-          [(ngModel)]="selectedSupplier.address"
-          name="address"
-          required
-        />
-      </div>
-      <button type="submit">Save</button>
-    </form>
+<!-- Edit Supplier Modal -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Update Supplier</h2>
+      <button class="close-btn" (click)="closeEditModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form (ngSubmit)="saveUpdatedSupplier()" #editForm="ngForm">
+        <div class="form-group">
+          <label for="edit-name">Contact Name</label>
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <input
+              type="text"
+              id="edit-name"
+              name="name"
+              [(ngModel)]="selectedSupplier.name"
+              #nameInput="ngModel"
+              required
+              minlength="2"
+            />
+          </div>
+          <div class="validation-message" *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Name is required and must be at least 2 characters
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-company">Company Name</label>
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            <input
+              type="text"
+              id="edit-company"
+              name="companyName"
+              [(ngModel)]="selectedSupplier.companyName"
+              #companyInput="ngModel"
+              required
+            />
+          </div>
+          <div class="validation-message" *ngIf="companyInput.invalid && (companyInput.dirty || companyInput.touched)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Company name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-phone">Phone Number</label>
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <input
+              type="tel"
+              id="edit-phone"
+              name="phone"
+              [(ngModel)]="selectedSupplier.phone"
+              #phoneInput="ngModel"
+              required
+              pattern="^[0-9+-\s()]{8,15}$"
+            />
+          </div>
+          <div class="validation-message" *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Please enter a valid phone number
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-address">Address</label>
+          <div class="input-with-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <input
+              type="text"
+              id="edit-address"
+              name="address"
+              [(ngModel)]="selectedSupplier.address"
+              #addressInput="ngModel"
+              required
+            />
+          </div>
+          <div class="validation-message" *ngIf="addressInput.invalid && (addressInput.dirty || addressInput.touched)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Address is required
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeEditModal()">Cancel</button>
+      <button
+        class="btn-save"
+        [disabled]="editForm.invalid || isSubmitting"
+        (click)="saveUpdatedSupplier()"
+      >
+        <span *ngIf="!isSubmitting">Save Changes</span>
+        <span *ngIf="isSubmitting" class="loading-spinner-sm"></span>
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- Show Medicines Modal -->
-<div *ngIf="showMedicinesModal" class="modal">
-  <div class="modal-content">
-    <span class="close" (click)="closeMedicinesModal()">&times;</span>
-    <h2>Medicines for {{ selectedSupplier.name }}</h2>
-    <table *ngIf="medicines.length > 0" class="medicines-table">
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Buy Price</th>
-        <th>Purchase Price</th>
-        <th>Expiration Date</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let medicine of medicines">
-        <td>{{ medicine.name }}</td>
-        <td>{{ medicine.buyPrice }}</td>
-        <td>{{ medicine.purchasePrice }}</td>
-        <td>{{ medicine.expirationDate | date: 'shortDate' }}</td>
-      </tr>
-      </tbody>
-    </table>
-    <p *ngIf="medicines.length === 0">No medicines found for this supplier.</p>
+<!-- Medicines Modal -->
+<div class="modal-overlay" *ngIf="showMedicinesModal" (click)="closeMedicinesModal()">
+  <div class="modal-content medicines-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+        </svg>
+        Medicines from {{ selectedSupplier?.companyName }}
+      </h2>
+      <button class="close-btn" (click)="closeMedicinesModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="medicine-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          placeholder="Search medicines..."
+          [(ngModel)]="medicineSearch"
+          (input)="filterMedicines()"
+        >
+      </div>
+
+      <div *ngIf="filteredMedicines.length > 0" class="medicines-list">
+        <div class="medicine-item" *ngFor="let medicine of filteredMedicines">
+          <div class="medicine-info">
+            <div class="medicine-name">{{ medicine.name }}</div>
+            <div class="medicine-meta">
+              <div class="medicine-price">
+                <span class="label">Buy:</span>
+                <span class="value">${{ medicine.buyPrice }}</span>
+              </div>
+              <div class="medicine-price">
+                <span class="label">Sell:</span>
+                <span class="value">${{ medicine.purchasePrice }}</span>
+              </div>
+              <div class="medicine-expiry" [class.expiring-soon]="isExpiringWithin(medicine.expirationDate, 90)" [class.expired]="isExpired(medicine.expirationDate)">
+                <span class="label">Expires:</span>
+                <span class="value">{{ medicine.expirationDate | date: 'shortDate' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="filteredMedicines.length === 0" class="no-medicines">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+          <line x1="4" y1="4" x2="20" y2="20"></line>
+        </svg>
+        <p>No medicines found for this supplier</p>
+        <button class="btn-secondary" routerLink="/warehouse/add-medicine">Add Medicine</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="pagination">
-  <button (click)="previousPage()" [disabled]="page === 1">Previous</button>
-  <span>Page {{ page }} of {{ totalPages }}</span>
-  <button (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+  <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+    <div class="delete-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+
+    <h2>Delete Supplier</h2>
+    <p>Are you sure you want to delete the supplier <strong>{{ selectedSupplier?.name }}</strong> from <strong>{{ selectedSupplier?.companyName }}</strong>?</p>
+
+    <div *ngIf="selectedSupplier?.medicines && selectedSupplier?.medicines.length > 0" class="delete-warning">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <p>This supplier has {{ selectedSupplier?.medicines?.length }} medicines. Deleting this supplier will affect these medicines in your inventory.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+      <button class="btn-delete" (click)="confirmDelete()" [class.loading]="isDeleting">
+        <span *ngIf="!isDeleting">Delete Supplier</span>
+        <span *ngIf="isDeleting" class="loading-spinner-sm"></span>
+      </button>
+    </div>
+  </div>
 </div>

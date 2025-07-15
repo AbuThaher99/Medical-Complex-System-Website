@@ -1,163 +1,544 @@
 <app-custom-alert></app-custom-alert>
-<div class="patientMedicine-container">
-  <h2>Manage Patient Medicines</h2>
 
-  <div class="filters">
-    <input type="text" placeholder="Search..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+<div class="medicine-card">
+  <!-- Header Section -->
+  <div class="medicine-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <path d="M12 8v8M8 12h8"></path>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h2>Patient Medicines</h2>
+      <p>Manage medicine prescriptions</p>
+    </div>
+    <div class="view-toggle">
+      <button [class.active]="viewMode === 'table'" (click)="toggleView('table')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+          <line x1="3" y1="15" x2="21" y2="15" />
+          <line x1="9" y1="3" x2="9" y2="21" />
+          <line x1="15" y1="3" x2="15" y2="21" />
+        </svg>
+        Table
+      </button>
+      <button [class.active]="viewMode === 'card'" (click)="toggleView('card')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+        </svg>
+        Cards
+      </button>
+    </div>
+  </div>
 
-    <!-- Patients Filter (Lazy Loading) -->
-    <div class="dropdown">
-      <input type="text" placeholder="Search Patients..."
-             [(ngModel)]="patientSearchQuery"
-             (focus)="showPatientDropdown = true"
-             (input)="filterPatients()"
-             (blur)="hideDropdown($event, 'patient', 'filter')" />
-      <div #patientDropdown class="dropdown-content" *ngIf="showPatientDropdown" (scroll)="onDropdownScroll($event, 'patient')">
-        <label *ngFor="let patient of filteredPatients">
-          <input type="checkbox" [checked]="selectedPatientIds.includes(patient.id)"
-                 (change)="toggleSelection(selectedPatientIds, patient.id, $event)" />
-          {{ patient.id }} - {{ patient.user.firstName }} {{ patient.user.lastName }} - {{ patient.user.email }}
-        </label>
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <div class="input-with-icon">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search medicines..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+        />
       </div>
     </div>
 
-    <!-- Treatments Filter (Lazy Loading) -->
-    <div class="dropdown">
-      <input type="text" placeholder="Search Treatments..."
-             [(ngModel)]="treatmentSearchQuery"
-             (focus)="showTreatmentDropdownFilter = true"
-             (input)="filterTreatments()"
-             (blur)="hideDropdown($event, 'treatment', 'filter')" />
-      <div #treatmentDropdown class="dropdown-content" *ngIf="showTreatmentDropdownFilter" (scroll)="onDropdownScroll($event, 'treatment')">
-        <label *ngFor="let treatment of filteredTreatments">
-          <input type="checkbox" [checked]="selectedTreatmentIds.includes(treatment.id)"
-                 (change)="toggleSelection(selectedTreatmentIds, treatment.id, $event)" />
-          {{ treatment.id }} - ${{ treatment.price }}
-        </label>
+    <div class="filter-group">
+      <!-- Patient Filter -->
+      <div class="filter-dropdown">
+        <div class="input-with-icon modal-dropdown">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Filter by patient..."
+            [(ngModel)]="patientSearchQuery"
+            (input)="filterPatients()"
+            (focus)="showPatientDropdown = true"
+            (blur)="hideDropdown($event, 'patient', 'filter')"
+          />
+          <div class="dropdown-list" *ngIf="showPatientDropdown" (scroll)="onDropdownScroll($event, 'patient')">
+            <div class="dropdown-header">
+              <span>Patient Filter</span>
+              <small>{{filteredPatients.length}} patient(s)</small>
+            </div>
+            <div class="dropdown-items">
+              <label *ngFor="let patient of filteredPatients" class="dropdown-item" [class.selected]="selectedPatientIds.includes(patient.id)">
+                <input
+                  type="checkbox"
+                  [checked]="selectedPatientIds.includes(patient.id)"
+                  (change)="toggleSelection(selectedPatientIds, patient.id, $event)"
+                />
+                <div class="filter-info">
+                  <span class="filter-name">
+                    <span class="filter-id">#{{patient.id}}</span>
+                    {{patient.user.firstName}} {{patient.user.lastName}}
+                  </span>
+                  <span class="filter-detail">{{patient.user.email}}</span>
+                </div>
+              </label>
+              <div *ngIf="loadingPatients" class="loading-option">
+                <div class="loading-spinner"></div>
+                <span>Loading more patients...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Treatment Filter -->
+      <div class="filter-dropdown">
+        <div class="input-with-icon modal-dropdown">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Filter by treatment..."
+            [(ngModel)]="treatmentSearchQuery"
+            (input)="filterTreatments()"
+            (focus)="showTreatmentDropdownFilter = true"
+            (blur)="hideDropdown($event, 'treatment', 'filter')"
+          />
+          <div class="dropdown-list" *ngIf="showTreatmentDropdownFilter" (scroll)="onDropdownScroll($event, 'treatment')">
+            <div class="dropdown-header">
+              <span>Treatment Filter</span>
+              <small>{{filteredTreatments.length}} treatment(s)</small>
+            </div>
+            <div class="dropdown-items">
+              <label *ngFor="let treatment of filteredTreatments" class="dropdown-item" [class.selected]="selectedTreatmentIds.includes(treatment.id)">
+                <input
+                  type="checkbox"
+                  [checked]="selectedTreatmentIds.includes(treatment.id)"
+                  (change)="toggleSelection(selectedTreatmentIds, treatment.id, $event)"
+                />
+                <div class="filter-info">
+                  <span class="filter-name">
+                    <span class="filter-id">#{{treatment.id}}</span>
+                    Treatment
+                  </span>
+                  <span class="filter-detail price">{{treatment.price | currency}}</span>
+                </div>
+              </label>
+              <div *ngIf="loadingTreatments" class="loading-option">
+                <div class="loading-spinner"></div>
+                <span>Loading more treatments...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medicine Filter -->
+      <div class="filter-dropdown">
+        <div class="input-with-icon modal-dropdown">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Filter by medicine..."
+            [(ngModel)]="medicineSearchQuery"
+            (input)="filterMedicines()"
+            (focus)="showMedicineDropdownFilter = true"
+            (blur)="hideDropdown($event, 'medicine', 'filter')"
+          />
+          <div class="dropdown-list" *ngIf="showMedicineDropdownFilter" (scroll)="onDropdownScroll($event, 'medicine')">
+            <div class="dropdown-header">
+              <span>Medicine Filter</span>
+              <small>{{filteredMedicines.length}} medicine(s)</small>
+            </div>
+            <div class="dropdown-items">
+              <label *ngFor="let medicine of filteredMedicines" class="dropdown-item" [class.selected]="selectedMedicineIds.includes(medicine.medicine.id)">
+                <input
+                  type="checkbox"
+                  [checked]="selectedMedicineIds.includes(medicine.medicine.id)"
+                  (change)="toggleSelection(selectedMedicineIds, medicine.medicine.id, $event)"
+                />
+                <div class="filter-info">
+                  <span class="filter-name">
+                    <span class="filter-id">#{{medicine.medicine.id}}</span>
+                    {{medicine.medicine.name}}
+                  </span>
+                  <span class="filter-detail price">{{medicine.medicine.buyPrice | currency}}</span>
+                </div>
+              </label>
+              <div *ngIf="loadingMedicines" class="loading-option">
+                <div class="loading-spinner"></div>
+                <span>Loading more medicines...</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Medicines Filter (Lazy Loading) -->
-    <div class="dropdown">
-      <input type="text" placeholder="Search Medicines..."
-             [(ngModel)]="medicineSearchQuery"
-             (focus)="showMedicineDropdownFilter = true"
-             (input)="filterMedicines()"
-             (blur)="hideDropdown($event, 'medicine', 'filter')" />
-      <div #medicineDropdown class="dropdown-content" *ngIf="showMedicineDropdownFilter" (scroll)="onDropdownScroll($event, 'medicine')">
-        <label *ngFor="let medicine of filteredMedicines">
-          <input type="checkbox" [checked]="selectedMedicineIds.includes(medicine.medicine.id)"
-                 (change)="toggleSelection(selectedMedicineIds, medicine.medicine.id, $event)" />
-          {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
-        </label>
+    <!-- Active Filters -->
+    <div class="active-filters" *ngIf="selectedPatientIds.length > 0 || selectedTreatmentIds.length > 0 || selectedMedicineIds.length > 0">
+      <div class="filter-chips">
+        <div class="chip patient-chip" *ngFor="let id of selectedPatientIds">
+          <span>{{getPatientName(id)}}</span>
+          <button class="remove-chip" (click)="removeFilter(selectedPatientIds, id)">×</button>
+        </div>
+        <div class="chip treatment-chip" *ngFor="let id of selectedTreatmentIds">
+          <span>Treatment #{{id}}</span>
+          <button class="remove-chip" (click)="removeFilter(selectedTreatmentIds, id)">×</button>
+        </div>
+        <div class="chip medicine-chip" *ngFor="let id of selectedMedicineIds">
+          <span>{{getMedicineName(id)}}</span>
+          <button class="remove-chip" (click)="removeFilter(selectedMedicineIds, id)">×</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Table View -->
+  <div class="table-container" [class.active]="viewMode === 'table'">
+    <table class="patientMedicine-table">
+      <thead>
+      <tr>
+        <th class="id-column">ID</th>
+        <th>Patient</th>
+        <th>Treatment</th>
+        <th>Medicine</th>
+        <th class="number-column">Quantity</th>
+        <th class="price-column">Total Price</th>
+        <th class="actions-column">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let record of patientMedicines">
+        <td><span class="id-badge">{{ record.id }}</span></td>
+        <td>
+          <div class="patient-cell">
+            <div class="patient-avatar">{{ getInitials(record.treatment.patient.user.firstName, record.treatment.patient.user.lastName) }}</div>
+            <div class="patient-info">
+              <span class="patient-name">{{ record.treatment.patient.user.firstName }} {{ record.treatment.patient.user.lastName }}</span>
+              <span class="patient-email">{{ record.treatment.patient.user.email }}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="treatment-cell">
+            <span class="treatment-id">#{{ record.treatment.id }}</span>
+            <span class="treatment-price">{{ record.treatment.price | currency }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="medicine-cell">
+            <div class="medicine-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              </svg>
+            </div>
+            <div class="medicine-info">
+              <span class="medicine-name">{{ record.medicine.name }}</span>
+              <span class="medicine-price">{{ record.medicine.buyPrice | currency }}</span>
+            </div>
+          </div>
+        </td>
+        <td class="quantity-cell">{{ record.quantity }}</td>
+        <td class="price-cell">{{ calculateTotalPrice(record) | currency }}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-btn" (click)="openEditModal(record)" title="Edit">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+            <button class="delete-btn" (click)="deletePatientMedicine(record.id)" title="Delete">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="patientMedicines.length === 0">
+        <td colspan="7" class="no-results-row">
+          <div class="no-results-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <path d="M12 8v8M8 12h8"></path>
+              <line x1="4" y1="4" x2="20" y2="20" />
+            </svg>
+            <p>No medicine records found</p>
+            <small>Try adjusting your search or filters</small>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <!-- Patient Medicines Table -->
-  <table class="patientMedicine-table">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Patient</th>
-      <th>Treatment</th>
-      <th>Medicine</th>
-      <th>Quantity</th>
-      <th>Total Price</th> <!-- New column -->
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let record of patientMedicines">
-      <td>{{ record.id }}</td>
-      <td>{{ record.treatment.patient.user.firstName }} {{ record.treatment.patient.user.lastName }}</td>
-      <td>{{ record.treatment.id }} - ${{ record.treatment.price }}</td>
-      <td>{{ record.medicine.id }} - {{ record.medicine.name }} - ${{ record.medicine.buyPrice }}</td>
-      <td>{{ record.quantity }}</td>
-      <td>{{ calculateTotalPrice(record) | currency:'USD' }}</td>
-      <td class="action-buttons">
-        <button class="edit-btn" (click)="openEditModal(record)">Edit</button>
-        <button class="delete-btn" (click)="deletePatientMedicine(record.id)">Delete</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- Card View -->
+  <div class="cards-container" [class.active]="viewMode === 'card'">
+    <div class="medicine-grid">
+      <div class="medicine-item" *ngFor="let record of patientMedicines">
+        <div class="item-header">
+          <div class="item-patient">
+            <div class="patient-avatar">{{ getInitials(record.treatment.patient.user.firstName, record.treatment.patient.user.lastName) }}</div>
+            <div class="patient-info">
+              <span class="patient-name">{{ record.treatment.patient.user.firstName }} {{ record.treatment.patient.user.lastName }}</span>
+              <span class="patient-email">{{ record.treatment.patient.user.email }}</span>
+            </div>
+          </div>
+          <span class="item-id">{{ record.id }}</span>
+        </div>
+        <div class="item-details">
+          <div class="detail-row">
+            <span class="detail-label">Treatment:</span>
+            <div class="detail-value">
+              <span class="treatment-id">#{{ record.treatment.id }}</span>
+              <span class="treatment-price">{{ record.treatment.price | currency }}</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Medicine:</span>
+            <div class="detail-value">
+              <span class="medicine-name">{{ record.medicine.name }}</span>
+              <span class="medicine-price">{{ record.medicine.buyPrice | currency }}</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Quantity:</span>
+            <span class="detail-value quantity">{{ record.quantity }}</span>
+          </div>
+          <div class="detail-row total">
+            <span class="detail-label">Total:</span>
+            <span class="detail-value total-price">{{ calculateTotalPrice(record) | currency }}</span>
+          </div>
+        </div>
+        <div class="item-actions">
+          <button class="edit-btn" (click)="openEditModal(record)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Edit
+          </button>
+          <button class="delete-btn" (click)="deletePatientMedicine(record.id)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+            Delete
+          </button>
+        </div>
+      </div>
 
-  <div class="medicine-cards">
-    <div *ngFor="let record of patientMedicines" class="medicine-card">
-      <div class="card-header">
-        <h3>{{ record.treatment.patient.user.firstName }} {{ record.treatment.patient.user.lastName }}</h3>
-        <span class="medicine-id">#{{ record.id }}</span>
-      </div>
-      <div class="card-body">
-        <p><strong>Treatment:</strong> {{ record.treatment.id }} - ${{ record.treatment.price }}</p>
-        <p><strong>Medicine:</strong> {{ record.medicine.name }} (${{ record.medicine.buyPrice }})</p>
-        <p><strong>Quantity:</strong> {{ record.quantity }}</p>
-        <p><strong>Total Price:</strong> ${{ calculateTotalPrice(record) }}</p>
-      </div>
-      <div class="card-actions">
-        <button class="edit-btn" (click)="openEditModal(record)">Edit</button>
-        <button class="delete-btn" (click)="deletePatientMedicine(record.id)">Delete</button>
+      <div class="no-results-card" *ngIf="patientMedicines.length === 0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <path d="M12 8v8M8 12h8"></path>
+          <line x1="4" y1="4" x2="20" y2="20" />
+        </svg>
+        <h3>No medicine records found</h3>
+        <p>Try adjusting your search criteria or filters</p>
       </div>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="pagination">
-    <button (click)="onPageChange(page - 1)" [disabled]="page === 1">Previous</button>
-    <span>Page {{ page }} of {{ totalPages }}</span>
-    <button (click)="onPageChange(page + 1)" [disabled]="page === totalPages">Next</button>
+  <div class="pagination-container">
+    <div class="pagination-info">
+      <span>Showing {{ patientMedicines.length }} of {{ getTotalItems() }} items</span>
+    </div>
+    <div class="pagination-controls">
+      <button class="page-btn" (click)="onPageChange(page - 1)" [disabled]="page === 1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Previous
+      </button>
+      <div class="page-indicator">
+        <span>Page {{ page }} of {{ totalPages }}</span>
+      </div>
+      <button class="page-btn" (click)="onPageChange(page + 1)" [disabled]="page === totalPages">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
+
 <!-- Edit Patient Medicine Modal -->
-<div class="modal" *ngIf="showEditModal">
-  <div class="modal-content">
-    <span class="close" (click)="closeEditModal()">&times;</span>
-    <h2>Edit Patient Medicine</h2>
-    <form (ngSubmit)="updatePatientMedicine()">
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Edit Patient Medicine</h2>
+      <button class="close-btn" (click)="closeEditModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
 
-      <!-- Lazy Load Treatments -->
-      <div class="modal-dropdown">
-        <label for="treatment">Treatment:</label>
-        <input type="text" id="treatment-search"
-               placeholder="Search Treatments..."
-               [value]="selectedTreatmentName"
-               (focus)="showTreatmentDropdownModal = true"
-               (blur)="hideDropdown($event, 'treatment', 'modal')"
-                (input)="onTreatmentSearch($event)"
-        />
-        <div #treatmentDropdown class="dropdown-list" *ngIf="showTreatmentDropdownModal" (scroll)="onDropdownScroll($event, 'treatment')">
-          <label *ngFor="let treatment of filteredTreatmentsEdit" (click)="selectTreatment(treatment)">
-            {{ treatment.id }} - ${{ treatment.price }}
+    <div class="modal-body">
+      <form (ngSubmit)="updatePatientMedicine()">
+        <!-- Treatment Dropdown -->
+        <div class="form-group">
+          <label for="treatment">
+            <span class="label-text">Treatment</span>
+            <span class="required-indicator">*</span>
           </label>
+          <div class="input-with-icon modal-dropdown">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              id="treatment-search"
+              placeholder="Search treatments..."
+              [value]="selectedTreatmentName"
+              (focus)="showTreatmentDropdownModal = true"
+              (blur)="hideDropdown($event, 'treatment', 'modal')"
+              (input)="onTreatmentSearch($event)"
+            />
+            <div class="dropdown-list" *ngIf="showTreatmentDropdownModal" (scroll)="onDropdownScroll($event, 'treatment')">
+              <div class="dropdown-header">
+                <span>Select Treatment</span>
+              </div>
+              <div class="dropdown-items">
+                <label *ngFor="let treatment of filteredTreatmentsEdit" class="dropdown-item" (click)="selectTreatment(treatment)">
+                  <div class="filter-info">
+                    <span class="filter-name">
+                      <span class="filter-id">#{{treatment.id}}</span>
+                      Treatment
+                    </span>
+                    <span class="filter-detail price">{{treatment.price | currency}}</span>
+                  </div>
+                </label>
+                <div *ngIf="loadingTreatments" class="loading-option">
+                  <div class="loading-spinner"></div>
+                  <span>Loading more treatments...</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-
-      <!-- Lazy Load Medicines -->
-      <div class="modal-dropdown">
-        <label for="medicine">Medicine:</label>
-        <input type="text" id="medicine-search"
-               placeholder="Search Medicines..."
-               [value]="selectedMedicineName"
-               (focus)="showMedicineDropdownModal = true"
-               (blur)="hideDropdown($event, 'medicine', 'modal')"
-                (input)="onMedicineSearch($event)"
-        />
-        <div #medicineDropdown class="dropdown-list" *ngIf="showMedicineDropdownModal" (scroll)="onDropdownScroll($event, 'medicine')">
-          <label *ngFor="let medicine of filteredMedicinesEdit" (click)="selectMedicine(medicine)">
-            {{ medicine.medicine.id }} - {{ medicine.medicine.name }} - ${{ medicine.medicine.buyPrice }}
+        <!-- Medicine Dropdown -->
+        <div class="form-group">
+          <label for="medicine">
+            <span class="label-text">Medicine</span>
+            <span class="required-indicator">*</span>
           </label>
+          <div class="input-with-icon modal-dropdown">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              id="medicine-search"
+              placeholder="Search medicines..."
+              [value]="selectedMedicineName"
+              (focus)="showMedicineDropdownModal = true"
+              (blur)="hideDropdown($event, 'medicine', 'modal')"
+              (input)="onMedicineSearch($event)"
+            />
+            <div class="dropdown-list" *ngIf="showMedicineDropdownModal" (scroll)="onDropdownScroll($event, 'medicine')">
+              <div class="dropdown-header">
+                <span>Select Medicine</span>
+              </div>
+              <div class="dropdown-items">
+                <label *ngFor="let medicine of filteredMedicinesEdit" class="dropdown-item" (click)="selectMedicine(medicine)">
+                  <div class="filter-info">
+                    <span class="filter-name">
+                      <span class="filter-id">#{{medicine.medicine.id}}</span>
+                      {{medicine.medicine.name}}
+                    </span>
+                    <span class="filter-detail price">{{medicine.medicine.buyPrice | currency}}</span>
+                  </div>
+                </label>
+                <div *ngIf="loadingMedicines" class="loading-option">
+                  <div class="loading-spinner"></div>
+                  <span>Loading more medicines...</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
+        <!-- Quantity Input -->
+        <div class="form-group">
+          <label for="quantity">
+            <span class="label-text">Quantity</span>
+            <span class="required-indicator">*</span>
+          </label>
+          <div class="input-with-icon">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+            </div>
+            <input
+              type="number"
+              id="quantity"
+              [(ngModel)]="editingRecord.quantity"
+              name="quantity"
+              min="1"
+              required
+              placeholder="Enter quantity"
+            />
+          </div>
+        </div>
 
-      <label for="quantity">Quantity:</label>
-      <input type="number" id="quantity" [(ngModel)]="editingRecord.quantity" name="quantity" min="1" required />
+        <!-- Price Preview -->
+        <div class="price-preview" *ngIf="editingRecord">
+          <div class="price-breakdown">
+            <div class="price-item">
+              <span class="price-label">Treatment Price:</span>
+              <span class="price-value">{{ editingRecord.treatment?.price | currency }}</span>
+            </div>
+            <div class="price-item">
+              <span class="price-label">Medicine Price:</span>
+              <span class="price-value">{{ editingRecord.medicine?.buyPrice | currency }} × {{ editingRecord.quantity || 0 }}</span>
+            </div>
+            <div class="price-item total">
+              <span class="price-label">Total Price:</span>
+              <span class="price-value total">{{ calculateTotalPriceForEdit() | currency }}</span>
+            </div>
+          </div>
+        </div>
 
-      <button type="submit">Save Changes</button>
-    </form>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeEditModal()">Cancel</button>
+          <button type="submit" class="save-btn" [disabled]="!isFormValid()">Save Changes</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
-

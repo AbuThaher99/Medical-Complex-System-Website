@@ -1,0 +1,451 @@
+/* ===== Grid View ===== */
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.medicine-card {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e9ecef;
+}
+
+.medicine-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.medicine-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.deleted-badge {
+    background-color: #ffebee;
+    color: #e63946;
+}
+
+.card-content {
+    padding: 0 16px 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333333;
+}
+
+.supplier-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #e6ecff;
+    color: #4361ee;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 12px;
+    width: fit-content;
+}
+
+.supplier-badge.no-supplier {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+.medicine-details {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.price-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.price-label {
+    color: #6c757d;
+}
+
+.price-value {
+    font-weight: 500;
+    color: #333333;
+}
+
+.date-stock-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.expiry-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.expiry-info .expired {
+    color: #e63946;
+}
+
+.expiry-info .expiring-soon {
+    color: #f59f00;
+}
+
+.expiry-info .expiring-warning {
+    color: #0095ff;
+}
+
+.expiry-info .valid {
+    color: #00c853;
+}
+
+.card-actions {
+    padding: 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.restore-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #10b981;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.restore-btn:hover {
+    background-color: #0ea271;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Pagination ===== */
+.pagination-container {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: white;
+    color: #333333;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #e6ecff;
+    color: #4361ee;
+}
+
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-numbers button {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: white;
+    color: #333333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.page-numbers button.active {
+    background-color: #4361ee;
+    color: white;
+    border-color: #4361ee;
+}
+
+.page-numbers button.ellipsis {
+    border: none;
+    background: none;
+}
+
+/* ===== Restore Modal ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+    animation: scaleIn 0.3s ease;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333333;
+}
+
+.close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background-color: #f8f9fa;
+    color: #333333;
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.restore-icon-large {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0f7ea;
+    border-radius: 50%;
+}
+
+.restore-message {
+    margin-bottom: 16px;
+}
+
+.restore-message p {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #333333;
+}
+
+.restore-details {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .filter-section {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .medicine-dashboard {
+        padding: 12px;
+    }
+
+    .dashboard-header {
+        padding: 16px;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .view-toggle button:last-child {
+        display: none;
+    }
+
+    .view-toggle button:first-child {
+        flex-grow: 1;
+        justify-content: center;
+        border-radius: 6px;
+        pointer-events: none;
+        background-color: #f0f2f5;
+    }
+
+    /* Force grid view on very small screens */
+    .table-view {
+        display: none !important;
+    }
+
+    .grid-view {
+        display: grid !important;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .pagination-info {
+        text-align: center;
+        width: 100%;
+    }
+
+    .pagination-controls {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-actions {
+        flex-direction: column;
+    }
+
+    .header-actions button {
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer button {
+        width: 100%;
+    }
+
+    .grid-view {
+        grid-template-columns: 1fr;
+    }
+}

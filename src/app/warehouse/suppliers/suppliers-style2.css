@@ -1,0 +1,464 @@
+/* Medicine Modal Styles */
+.medicine-search {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.medicine-search svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+.medicine-search input {
+  width: 100%;
+  padding: 10px 10px 10px 36px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.medicine-search input:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px #e6ecff;
+}
+
+.medicines-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.medicine-item {
+  background-color: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.medicine-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.medicine-name {
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.medicine-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.medicine-price {
+  font-size: 13px;
+}
+
+.medicine-expiry {
+  grid-column: span 2;
+  font-size: 13px;
+}
+
+.medicine-expiry.expiring-soon {
+  color: #f9c74f;
+}
+
+.medicine-expiry.expired {
+  color: #e63946;
+}
+
+.label {
+  color: #6c757d;
+  margin-right: 4px;
+}
+
+.value {
+  font-weight: 500;
+  color: #333333;
+}
+
+.no-medicines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.no-medicines svg {
+  margin-bottom: 16px;
+  color: #ced4da;
+}
+
+.no-medicines p {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+}
+
+/* Delete Modal Styles */
+.delete-modal {
+  max-width: 450px;
+  text-align: center;
+}
+
+.delete-icon {
+  margin: 0 auto 20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #ffebee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e63946;
+}
+
+.delete-modal h2 {
+  margin: 0 0 16px 0;
+  color: #333333;
+}
+
+.delete-modal p {
+  margin: 0 0 24px 0;
+  color: #6c757d;
+}
+
+.delete-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background-color: #fff8e1;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.delete-warning svg {
+  flex-shrink: 0;
+  color: #f9c74f;
+}
+
+.delete-warning p {
+  margin: 0;
+  font-size: 14px;
+  color: #856404;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.btn-delete {
+  background-color: #e63946;
+  color: white;
+  border: none;
+}
+
+.btn-delete:hover:not(.loading) {
+  background-color: #d32f2f;
+}
+
+.loading {
+  opacity: 0.8;
+  cursor: wait;
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 1200px) {
+  .supplier-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-actions {
+    flex-direction: row;
+  }
+
+  .supplier-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 20px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+  }
+
+  .pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .supplier-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .medicines-list {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .suppliers-dashboard {
+    padding: 10px;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .filter-actions button {
+    width: 100%;
+  }
+
+  .action-buttons {
+    flex-wrap: wrap;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+@media (max-width: 768px) {
+  .view-toggle {
+    display: none !important; /* Hide the toggle on mobile */
+  }
+
+  /* Force table view to be hidden on mobile */
+  .table-view {
+    display: none !important;
+  }
+
+  /* Always show grid view on mobile */
+  .grid-view {
+    display: block !important;
+  }
+
+  /* Improve card styling for mobile */
+  .supplier-card {
+    margin-bottom: 16px;
+  }
+
+  /* Make pagination more mobile-friendly */
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Improve filter section on mobile */
+  .filter-section {
+    padding: 16px;
+  }
+
+  .search-container {
+    margin-bottom: 16px;
+  }
+}
+/* Improved dropdown options styling */
+.dropdown-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 300px; /* Set maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Higher z-index to ensure it appears above other elements */
+  animation: fadeIn 0.2s ease;
+}
+
+/* Ensure options have sufficient padding and height for touch targets */
+.dropdown-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-height: 44px; /* Better for touch targets */
+  display: flex;
+  align-items: center;
+}
+
+/* Make the selected option more visible */
+.dropdown-option.selected {
+  background-color: #e6ecff;
+  color: #4361ee;
+  font-weight: 500;
+}
+
+/* Improved scrollbar styling for WebKit browsers (Chrome, Safari, etc.) */
+.dropdown-options::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* Firefox scrollbar */
+.dropdown-options {
+  scrollbar-width: thin;
+  scrollbar-color: #aaa #f1f1f1;
+}
+
+/* Make dropdown more visible on focus/active state */
+.dropdown-trigger:focus,
+.dropdown-trigger.active,
+.dropdown-trigger:hover {
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+/* Custom Dropdown Styles */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.dropdown-trigger:hover {
+  border-color: #ced4da;
+}
+
+.dropdown-trigger:focus,
+.dropdown-trigger.active {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px #e6ecff;
+}
+
+.dropdown-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-option:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-option.selected {
+  background-color: #e6ecff;
+  color: #4361ee;
+  font-weight: 500;
+}
+
+.dropdown-empty {
+  padding: 12px 16px;
+  color: #6c757d;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Scrollbar styling */
+.dropdown-options::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* Firefox scrollbar */
+.dropdown-options {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f1f1f1;
+}

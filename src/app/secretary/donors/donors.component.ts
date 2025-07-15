@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DonorService } from '../../services/donor.service';
-import {CustomAlertService} from "../../services/custom-alert.service";
+import { CustomAlertService } from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-donors',
   templateUrl: './donors.component.html',
-  styleUrls: ['./donors.component.css'],
+  styleUrls: ['./donors.component.css','./donors-style.css'],
 })
 export class DonorsComponent implements OnInit {
   donors: any[] = []; // Donors displayed in the table
@@ -17,6 +17,7 @@ export class DonorsComponent implements OnInit {
   size = 10; // Number of items per page
   donorSize = 5; // Number of items per page for the dropdown
   totalPages = 1; // Total number of pages
+  totalElements = 0; // Total number of donors
   searchQuery = ''; // Search text
   bloodType = ''; // Selected blood type filter
   gender = ''; // Selected gender filter
@@ -37,11 +38,51 @@ export class DonorsComponent implements OnInit {
   loadingDonors = false; // To prevent multiple simultaneous API calls
   donorPage = 1; // Current page number for the dropdown
   donorTotalPages = 1; // Total number of pages for the dropdown
-  constructor(private donorService: DonorService,private customAlertService: CustomAlertService) {}
+  viewMode: 'table' | 'card' = 'card'; // Current view mode
+  constructor(
+    private donorService: DonorService,
+    private customAlertService: CustomAlertService
+  ) {}
 
   ngOnInit(): void {
+    // Check screen size to set appropriate view
+    this.checkScreenSize();
+
+    // Listen for window resize events
+    window.addEventListener('resize', () => {
+      this.checkScreenSize();
+    });
+
     this.loadDonors(); // Load donors for the table
     this.loadDonorList(); // Load donors for the dropdown
+  }
+
+  ngOnDestroy(): void {
+    // Remove event listener to prevent memory leaks
+    window.removeEventListener('resize', () => {
+      this.checkScreenSize();
+    });
+  }
+
+  // Check screen size and set view mode accordingly
+  checkScreenSize(): void {
+    if (window.innerWidth <= 768) {
+      // On mobile, always use card view
+      this.viewMode = 'card';
+    } else {
+      // On desktop, use saved preference or default to table
+      const savedViewMode = localStorage.getItem('donorViewMode') as 'table' | 'card';
+      this.viewMode = savedViewMode || 'table';
+    }
+  }
+
+  // Toggle between table and card view
+  toggleView(mode: 'table' | 'card'): void {
+    // Only allow toggling on desktop
+    if (window.innerWidth > 768) {
+      this.viewMode = mode;
+      localStorage.setItem('donorViewMode', mode);
+    }
   }
 
   // Fetch donors for the dropdown
@@ -65,6 +106,8 @@ export class DonorsComponent implements OnInit {
       }
     );
   }
+
+  // Filter donors in the dropdown based on search query
   filterDonors(): void {
     if (this.donorSearchQuery.trim()) {
       this.filteredDonors = this.donorsList.filter((donor) =>
@@ -81,6 +124,7 @@ export class DonorsComponent implements OnInit {
       (data) => {
         this.donors = data.content; // Populate table
         this.totalPages = data.totalPages; // Update total pages
+        this.totalElements = data.totalElements; // Update total elements
       },
       (error) => {
         console.error('Failed to load donors:', error.message);
@@ -113,18 +157,24 @@ export class DonorsComponent implements OnInit {
     this.donorService.updateDonor(this.editingDonor.id, this.editingDonor).subscribe(
       () => {
         this.customAlertService.show('Success', 'Donor updated successfully!');
-
         this.closeEditModal();
         this.loadDonors();
+
+        // Update the donor in the dropdown list
+        const index = this.donorsList.findIndex(d => d.id === this.editingDonor.id);
+        if (index !== -1) {
+          this.donorsList[index] = { ...this.editingDonor };
+          this.filteredDonors = [...this.donorsList];
+        }
       },
       (error) => {
         console.error('Failed to update donor:', error.message);
         this.customAlertService.show('Error', 'Failed to update donor: ' + error.message);
-
       }
     );
   }
 
+  // Delete a donor
   deleteDonor(id: number): void {
     this.customAlertService.confirm('Confirm Delete', 'Are you sure you want to delete this donor?').then((confirmed) => {
       if (!confirmed) {
@@ -133,7 +183,15 @@ export class DonorsComponent implements OnInit {
       this.donorService.deleteDonor(id).subscribe({
         next: () => {
           this.customAlertService.show('Success', 'Donor deleted successfully!');
-          this.loadDonors()
+
+          // Remove donor from selected list if present
+          this.selectedDonorIds = this.selectedDonorIds.filter(donorId => donorId !== id);
+
+          // Remove donor from dropdown list
+          this.donorsList = this.donorsList.filter(donor => donor.id !== id);
+          this.filteredDonors = this.filteredDonors.filter(donor => donor.id !== id);
+
+          this.loadDonors();
         },
         error: (error) => {
           console.error('Failed to delete donor:', error.message);
@@ -146,7 +204,8 @@ export class DonorsComponent implements OnInit {
   // Open the add donation modal
   openAddDonationModal(donor: any): void {
     this.currentDonorId = donor.id;
-    this.donation = { quantity: null, donationDate: null }; // Reset donation form
+    this.currentDonor = donor;
+    this.donation = { quantity: null, donationDate: new Date().toISOString().slice(0, 16) }; // Reset donation form with current date/time
     this.showAddDonationModal = true;
   }
 
@@ -160,26 +219,32 @@ export class DonorsComponent implements OnInit {
   addDonation(): void {
     if (!this.currentDonorId) {
       this.customAlertService.show('Error', 'No donor selected!');
-
       return;
     }
 
     this.donorService.addDonation(this.currentDonorId, this.donation).subscribe(
-      () => {
+      (response) => {
         this.customAlertService.show('Success', 'Donation added successfully!');
-
         this.closeAddDonationModal();
+
+        // Update current donor if donation modal is open
+        if (this.showViewDonationsModal && this.currentDonor?.id === this.currentDonorId) {
+          if (!this.currentDonor.donations) {
+            this.currentDonor.donations = [];
+          }
+          this.currentDonor.donations.push(response);
+        }
+
         this.loadDonors(); // Reload donors to reflect the new donation
       },
       (error) => {
         console.error('Failed to add donation:', error.message);
         this.customAlertService.show('Error', 'Failed to add donation: ' + error.message);
-
       }
     );
   }
 
-
+  // Toggle donor selection in dropdown
   toggleDonorSelection(donorId: number, event: any): void {
     if (event.target.checked) {
       // Add the donor ID to the selected list
@@ -191,22 +256,26 @@ export class DonorsComponent implements OnInit {
     this.onSearchChange(); // Apply filter when selection changes
   }
 
+  // Hide dropdown after selection
   hideDropdown(event: FocusEvent): void {
     setTimeout(() => {
       this.showDonorDropdown = false;
     }, 200); // Delay to allow checkbox click to register
   }
+
+  // Open the donations modal
   openViewDonationsModal(donor: any): void {
     this.currentDonor = donor; // Set the current donor to show their donations
     this.showViewDonationsModal = true;
   }
 
-// Close the donations modal
+  // Close the donations modal
   closeViewDonationsModal(): void {
     this.showViewDonationsModal = false;
     this.currentDonor = null;
   }
 
+  // Load more donors on dropdown scroll
   onDropdownScroll(event: any): void {
     const bottomReached = event.target.scrollHeight - event.target.scrollTop <= event.target.clientHeight + 10;
     if (bottomReached) {
@@ -214,4 +283,39 @@ export class DonorsComponent implements OnInit {
     }
   }
 
+  // Get donor name from ID
+  getDonorName(id: number): string {
+    const donor = this.donorsList.find(donor => donor.id === id);
+    if (donor) {
+      return donor.name;
+    }
+    return `Donor #${id}`;
+  }
+
+  // Remove a donor filter
+  removeDonorFilter(id: number): void {
+    this.selectedDonorIds = this.selectedDonorIds.filter(donorId => donorId !== id);
+    this.onSearchChange();
+  }
+
+  // Get initials from name
+  getInitials(name: string): string {
+    if (!name) return '';
+
+    const parts = name.split(' ');
+    if (parts.length === 1) {
+      return name.charAt(0).toUpperCase();
+    }
+
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  // Get blood type CSS class
+  getBloodTypeClass(bloodType: string): string {
+    if (!bloodType) return 'default';
+
+    return this.bloodTypes.includes(bloodType) ? bloodType : 'default';
+  }
+
+  protected readonly Math = Math;
 }

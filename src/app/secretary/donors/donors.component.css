@@ -1,688 +1,587 @@
-/* General Container */
-.donor-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 20px;
-  background: linear-gradient(to bottom, #ffffff, #f9f9f9);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Title */
-.donor-container h2 {
-  font-size: 26px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-/* Filters Section */
-.filters {
-  display: flex;
-  gap: 15px;
-  justify-content: space-between;
-  margin-bottom: 25px;
-}
-
-
-.filters input,
-.filters select {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.filters input:focus,
-.filters select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-}
-
-.filters select {
-  min-width: 220px;
-}
-
-/* donor Table */
-.donor-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.donor-table th,
-.donor-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: left;
-  font-size: 14px;
-}
-
-.donor-table th {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-}
-
-.donor-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.donor-table tr:hover {
-  background-color: #f1f1f1;
-  transition: background-color 0.3s ease;
-}
-/*================*/
-/* donation Table */
-.donation-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.donation-table th,
-.donation-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: left;
-  font-size: 14px;
-}
-
-.donation-table th {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-}
-
-.donation-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.donation-table tr:hover {
-  background-color: #f1f1f1;
-  transition: background-color 0.3s ease;
-}
-/*================*/
-.dropdown {
-  position: relative;
-  display: inline-block;
-  width: 300px;
-}
-
-.dropdown-content {
-  position: absolute;
+/* Main Container */
+.donors-card {
+  max-width: 1100px;
+  margin: 30px auto;
   background: white;
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
-.dropdown-content label {
-  display: block;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.dropdown-content label:hover {
-  background: #f1f1f1;
-}
-
-.hint-text {
-  font-size: 12px;
-  color: gray;
-  margin-top: 5px;
-}
-/* Action Buttons */
-.action-buttons {
+/* Header Section */
+.donors-header {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  padding: 20px 30px;
+  color: white;
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.action-buttons .edit-btn,
-.action-buttons .delete-btn,
-.action-buttons .add-medicine-btn{
+.donors-header .header-icon {
+  background: rgba(255, 255, 255, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+}
+
+.donors-header .header-text {
+  flex: 1;
+}
+
+.donors-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.donors-header p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.view-toggle button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 12px;
+  background: transparent;
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.3s ease;
   font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.view-toggle button.active {
+  background: white;
+  color: #e74c3c;
+}
+
+.view-toggle button svg {
+  stroke-width: 2;
+}
+
+/* Filters Section */
+.filters-section {
+  padding: 20px 30px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.search-bar {
+  flex: 1;
+  min-width: 220px;
+}
+
+.filter-group {
+  width: 200px;
+}
+
+.donor-filter {
+  flex: 2;
+  min-width: 250px;
+}
+
+/* Input with Icon */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-with-icon input,
+.input-with-icon select {
+  width: 100%;
+  padding: 12px 15px 12px 40px;
+  font-size: 14px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+.input-with-icon input {
+  width: 80%;
+}
+
+
+.input-with-icon input:focus,
+.input-with-icon select:focus {
+  outline: none;
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+/* Dropdown */
+.modal-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-list {
+  position: absolute;
+  width: 100%;
+  max-height: 320px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  margin-top: 5px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dee2e6;
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.dropdown-header span {
+  font-weight: 600;
+  font-size: 15px;
+  color: #e74c3c;
+}
+
+.dropdown-header small {
+  background: #fee2e0;
+  color: #e74c3c;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dropdown-items {
+  flex-grow: 1;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.dropdown-item:hover {
+  background-color: #fff5f4;
+}
+
+.dropdown-item input[type="checkbox"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid #e74c3c;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-item input[type="checkbox"]:checked {
+  background-color: #e74c3c;
+}
+
+.dropdown-item input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.dropdown-item .donor-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dropdown-item .donor-name {
+  font-weight: 500;
+  color: #343a40;
+  margin-bottom: 2px;
+}
+
+.dropdown-item .donor-bloodtype {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dropdown-item .donor-id {
+  color: #6c757d;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.loading-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  color: #6c757d;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e9ecef;
+  border-top: 2px solid #e74c3c;
+  border-radius: 50%;
+  margin-right: 10px;
+  animation: spin 1s linear infinite;
+}
+
+.no-results {
+  text-align: center;
+  padding: 25px;
+  color: #6c757d;
+  font-style: italic;
+  background: #f8f9fa;
+}
+
+/* Custom scrollbar */
+.dropdown-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-list::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 0 10px 10px 0;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb {
+  background-color: #cfd4da;
+  border-radius: 20px;
+  border: 2px solid #f8f9fa;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb:hover {
+  background-color: #adb5bd;
+}
+
+/* Donor selection indicator */
+.dropdown-item.selected {
+  background-color: #fff5f4;
+}
+
+.dropdown-item.selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #e74c3c;
+}
+
+/* Active Filters */
+.active-filters {
+  margin-top: 12px;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  background: #fee2e0;
+  border: 1px solid #faada7;
+  border-radius: 20px;
+  padding: 5px 12px 5px 10px;
+  font-size: 13px;
+  color: #e74c3c;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.chip:hover {
+  background: #fdd3d0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.action-buttons .edit-btn {
+.chip::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #e74c3c;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.remove-chip {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 0 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-left: 3px;
+}
+
+.remove-chip:hover {
+  color: #c0392b;
+  transform: scale(1.15);
+}
+
+/* Blood Type Tags with Different Colors */
+.bloodtype-tag, .bloodtype-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bloodtype-tag.A_POSITIVE, .bloodtype-badge.A_POSITIVE {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.bloodtype-tag.A_NEGATIVE, .bloodtype-badge.A_NEGATIVE {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.bloodtype-tag.B_POSITIVE, .bloodtype-badge.B_POSITIVE {
+  background-color: #fff8e1;
+  color: #ffa000;
+}
+
+.bloodtype-tag.B_NEGATIVE, .bloodtype-badge.B_NEGATIVE {
+  background-color: #fce4ec;
+  color: #d81b60;
+}
+
+.bloodtype-tag.O_POSITIVE, .bloodtype-badge.O_POSITIVE {
+  background-color: #f3e5f5;
+  color: #8e24aa;
+}
+
+.bloodtype-tag.O_NEGATIVE, .bloodtype-badge.O_NEGATIVE {
+  background-color: #e8eaf6;
+  color: #3949ab;
+}
+
+.bloodtype-tag.AB_POSITIVE, .bloodtype-badge.AB_POSITIVE {
+  background-color: #e0f2f1;
+  color: #00897b;
+}
+
+.bloodtype-tag.AB_NEGATIVE, .bloodtype-badge.AB_NEGATIVE {
+  background-color: #ffe0b2;
+  color: #f57c00;
+}
+
+.bloodtype-tag.default, .bloodtype-badge.default {
+  background-color: #f5f5f5;
+  color: #616161;
+}
+
+/* Table Styles */
+.table-container {
+  padding: 20px 30px;
+  overflow-x: auto;
+}
+
+.donors-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.donors-table th,
+.donors-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.donors-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.donors-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.donors-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.donors-table tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.donors-table tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+.donors-table tr:hover td {
+  background-color: #f8f9fa;
+}
+
+.td-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.td-with-icon svg {
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.donor-id-badge {
+  display: inline-block;
+  background: #fee2e0;
+  color: #e74c3c;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #138496;
+  transform: translateY(-2px);
+}
+
+.edit-btn {
   background-color: #28a745;
   color: white;
 }
 
-.action-buttons .edit-btn:hover {
+.edit-btn:hover {
   background-color: #218838;
   transform: translateY(-2px);
 }
 
-.action-buttons .delete-btn {
+.delete-btn {
   background-color: #dc3545;
   color: white;
 }
 
-.action-buttons .delete-btn:hover {
+.delete-btn:hover {
   background-color: #c82333;
   transform: translateY(-2px);
 }
-.action-buttons .add-medicine-btn {
-  background-color: #007bff; /* Blue */
+
+.add-donation-btn {
+  background-color: #e74c3c;
   color: white;
-}
-.action-buttons .add-medicine-btn:hover {
-  background-color: #0056b3; /* Darker blue */
-  transform: scale(1.05); /* Slight zoom effect */
-}
-
-.action-buttons .add-medicine-btn:active {
-  background-color: #004494; /* Even darker blue */
-  transform: scale(1);
-}
-
-.view-donations-btn {
-  background-color: #ffc107; /* Yellow */
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.view-donations-btn:hover {
-  background-color: #e0a800;
-  transform: scale(1.05);
-}
-
-.view-donations-btn:active {
-  background-color: #c69500;
-  transform: scale(1);
-}
-
-/* Pagination Section */
-.pagination {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.pagination button {
-  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
   border: none;
   border-radius: 6px;
   font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.pagination button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-.pagination button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.pagination span {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-}
-
-/* Modal Styling */
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-}
-
-.modal-content {
-  background-color: #ffffff;
-  padding: 25px;
-  border-radius: 10px;
-  width: 40%;
-  max-width: 500px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  text-align: center;
-}
-
-.modal-content h2 {
-  margin-bottom: 15px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.modal-content label {
-  display: block;
-  margin-bottom: 5px;
   font-weight: 500;
-  color: #333;
-  text-align: left;
-}
-
-.modal-content input,
-.modal-content textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.modal-content input:focus,
-.modal-content textarea:focus {
-  border-color: #0052cc;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 82, 204, 0.3);
-}
-
-.modal-content button {
-  margin-top: 15px;
-  background-color: #0052cc;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.modal-content button:hover {
-  background-color: #003a99;
+.add-donation-btn:hover {
+  background-color: #c0392b;
   transform: translateY(-2px);
 }
 
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease;
+.action-buttons .add-donation-btn {
+  width: auto;
+  padding: 0;
 }
 
-.close:hover,
-.close:focus {
-  color: #333;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .modal-content {
-    width: 80%;
-  }
-
-  .donor-container {
-    max-width: 90%;
-  }
-
-  .filters {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal-content {
-    width: 90%;
-  }
-
-  .donor-container {
-    max-width: 95%;
-    padding: 15px;
-  }
-
-  .filters {
-    flex-direction: column;
-  }
-}
-.modal-dropdown {
-  position: relative;
-  width: 100%;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Dropdown button */
-.modal-dropdown select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  background-color: #fff;
-  cursor: pointer;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Hover & focus effects */
-.modal-dropdown select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-}
-
-/* Dropdown list */
-.modal-dropdown .dropdown-list {
-  position: absolute;
-  width: 100%;
-  max-height: 200px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
-  z-index: 10;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: translateY(-5px);
-}
-
-/* Show dropdown */
-.modal-dropdown.open .dropdown-list {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-/* Dropdown options */
-.modal-dropdown .dropdown-list label {
-  display: block;
-  padding: 10px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-/* Hover effect */
-.modal-dropdown .dropdown-list label:hover {
-  background: #f1f1f1;
-}
-
-/* Selected option */
-.modal-dropdown .dropdown-list input:checked + label {
-  background: #007bff;
-  color: white;
-  font-weight: bold;
-}
-
-/* Scrollbar styling */
-.modal-dropdown .dropdown-list {
-  scrollbar-width: thin;
-  scrollbar-color: #007bff #f1f1f1;
-}
-
-.modal-dropdown .dropdown-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-dropdown .dropdown-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.modal-dropdown .dropdown-list::-webkit-scrollbar-thumb {
-  background: #007bff;
-  border-radius: 10px;
-}
-
-.modal-dropdown .dropdown-list::-webkit-scrollbar-thumb:hover {
-  background: #0056b3;
-}
-.donor-cards{
-  display: none;
-}
-@media (max-width: 768px) {
-  .donor-table {
-    display: none;
-  }
-
-  .donor-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .donor-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
-    position: relative;
-    overflow: hidden;
-    border-left: 5px solid #007bff;
-  }
-
-  .donor-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    text-transform: capitalize;
-  }
-
-  .donor-id {
-    background: #007bff;
-    color: white;
-    padding: 6px 12px;
-    font-size: 14px;
-    border-radius: 20px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .card-body {
-    padding: 10px 0;
-  }
-
-  .card-body p {
-    font-size: 1rem;
-    margin: 8px 0;
-    color: #555;
-  }
-
-  .card-body p strong {
-    color: #222;
-    font-weight: 600;
-  }
-
-  /* Action Buttons */
-  .card-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .card-actions button {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    text-align: center;
-  }
-
-  .edit-btn {
-    background: #28a745;
-    color: white;
-  }
-
-  .edit-btn:hover {
-    background: #218838;
-    transform: scale(1.05);
-  }
-
-  .delete-btn {
-    background: #dc3545;
-    color: white;
-  }
-
-  .delete-btn:hover {
-    background: #c82333;
-    transform: scale(1.05);
-  }
-
-  .add-donation-btn {
-    background: #007bff;
-    color: white;
-  }
-
-  .add-donation-btn:hover {
-    background: #0056b3;
-    transform: scale(1.05);
-  }
-
-  .view-donations-btn {
-    background: #ffc107;
-    color: white;
-  }
-
-  .view-donations-btn:hover {
-    background: #e0a800;
-    transform: scale(1.05);
-  }
-
-  .donation-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
-  .donation-table th,
-  .donation-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-size: 14px;
-  }
-
-  .donation-table th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-  }
-
-  .donation-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  .donation-table tr:hover {
-    background-color: #f1f1f1;
-    transition: background-color 0.3s ease;
-  }
-
-  /* Ensure modal content is fully visible on mobile */
-  .modal-content {
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-}
-/* Mobile Modal Adjustments */
-@media (max-width: 480px) {
-  .modal-content {
-    width: 95%;
-    padding: 15px;
-  }
-}
-
-/* Modal Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.dropdown-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.dropdown-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 8px;
-}
-
-.dropdown-content::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 8px;
-}
-
-.dropdown-content::-webkit-scrollbar-thumb:hover {
-  background: #a0a0a0;
-}

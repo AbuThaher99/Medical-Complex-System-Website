@@ -1,0 +1,455 @@
+/* ===== Grid View ===== */
+.supplier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.supplier-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e9ecef;
+}
+
+.supplier-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 16px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.supplier-company {
+  font-weight: 600;
+  color: #4361ee;
+}
+
+.deleted-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #ffebee;
+  color: #e63946;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.card-content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.supplier-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #ffebee;
+  color: #e63946;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.supplier-name {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  text-align: center;
+}
+
+.supplier-details {
+  width: 100%;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.detail-item svg {
+  flex-shrink: 0;
+  color: #6c757d;
+}
+
+.address-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-actions {
+  padding: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.card-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.card-btn.restore-btn {
+  background-color: #e0f7ea;
+  color: #00c853;
+}
+
+.card-btn.restore-btn:hover:not(:disabled) {
+  background-color: #00c853;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2);
+}
+
+.card-btn.restore-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ===== Pagination ===== */
+.pagination-container {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pagination-info {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  color: #333333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #e6ecff;
+  color: #4361ee;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-numbers button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  color: #333333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-numbers button.active {
+  background-color: #4361ee;
+  color: white;
+  border-color: #4361ee;
+}
+
+.page-numbers button.ellipsis {
+  border: none;
+  background: none;
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.restore-icon {
+  margin: 20px auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #e0f7ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00c853;
+}
+
+.restore-modal h2 {
+  margin: 0 0 16px 0;
+  color: #333333;
+  text-align: center;
+}
+
+.restore-modal p {
+  margin: 0 0 24px 0;
+  color: #6c757d;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.restore-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 24px 24px;
+  padding: 16px;
+  background-color: #e6ecff;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.restore-notice svg {
+  flex-shrink: 0;
+  color: #4361ee;
+}
+
+.restore-notice p {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  color: #4361ee;
+  text-align: left;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px 24px;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  background-color: white;
+  color: #333333;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-restore {
+  padding: 10px 20px;
+  background-color: #00c853;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-restore:hover:not(.loading) {
+  background-color: #00a844;
+}
+
+.loading {
+  opacity: 0.8;
+  cursor: wait;
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 1200px) {
+  .supplier-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-actions {
+    flex-direction: row;
+  }
+
+  .supplier-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .suppliers-dashboard {
+    padding: 10px;
+  }
+
+  .dashboard-header {
+    padding: 20px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+  }
+
+  .pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .supplier-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .view-toggle {
+    display: none !important; /* Hide the toggle on mobile */
+  }
+
+  /* Force table view to be hidden on mobile */
+  .table-view {
+    display: none !important;
+  }
+
+  /* Always show grid view on mobile */
+  .grid-view {
+    display: block !important;
+  }
+
+  /* Improve card styling for mobile */
+  .supplier-card {
+    margin-bottom: 16px;
+  }
+
+  /* Make pagination more mobile-friendly */
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Improve filter section on mobile */
+  .filter-section {
+    padding: 16px;
+  }
+
+  .search-container {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .filter-actions button {
+    width: 100%;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}

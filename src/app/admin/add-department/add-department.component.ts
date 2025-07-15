@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from '../../services/config.service';
-import {CustomAlertService} from "../../services/custom-alert.service";
+import { CustomAlertService } from "../../services/custom-alert.service";
 
 @Component({
   selector: 'app-add-department',
@@ -12,11 +12,9 @@ import {CustomAlertService} from "../../services/custom-alert.service";
 export class AddDepartmentComponent implements OnInit {
   addDepartmentForm: FormGroup;
 
-  // Head & Secretary Data
   heads: any[] = [];
   secretaries: any[] = [];
 
-  // Pagination Variables
   headPage = 1;
   headSize = 5;
   totalHeads = 0;
@@ -29,17 +27,15 @@ export class AddDepartmentComponent implements OnInit {
   secretarySearchTerm = '';
   filteredSecretaries: any[] = [];
 
-  // Loading States
+
   isLoadingHeads = false;
   isLoadingSecretaries = false;
 
-  // Dropdown Info
+
   selectedHeadInfo: string = '';
   selectedSecretaryInfo: string = '';
   showHeadDropdown = false;
   showSecretaryDropdown = false;
-
-
 
   private readonly apiUrl = `${this.configService.apiUrl}admin`;
   private readonly token = localStorage.getItem('access_token');
@@ -48,7 +44,11 @@ export class AddDepartmentComponent implements OnInit {
     'Content-Type': 'application/json',
   });
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private configService: ConfigService,private customAlertService: CustomAlertService
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private configService: ConfigService,
+    private customAlertService: CustomAlertService
   ) {
     this.addDepartmentForm = this.fb.group({
       name: ['', Validators.required],
@@ -62,13 +62,19 @@ export class AddDepartmentComponent implements OnInit {
     this.fetchSecretaries();
   }
 
-  // Toggle Dropdown Visibility
+
   toggleHeadDropdown(): void {
     this.showHeadDropdown = !this.showHeadDropdown;
+    if (this.showHeadDropdown) {
+      this.showSecretaryDropdown = false;
+    }
   }
 
   toggleSecretaryDropdown(): void {
     this.showSecretaryDropdown = !this.showSecretaryDropdown;
+    if (this.showSecretaryDropdown) {
+      this.showHeadDropdown = false;
+    }
   }
 
   hideDropdown(type: 'head' | 'secretary'): void {
@@ -78,10 +84,11 @@ export class AddDepartmentComponent implements OnInit {
       } else if (type === 'secretary') {
         this.showSecretaryDropdown = false;
       }
-    }, 200);
+    }, 350);
   }
 
-  // Lazy Loading: Fetch Heads
+
+  
   fetchHeads(reset: boolean = false): void {
     if (this.isLoadingHeads || (this.totalHeads && this.heads.length >= this.totalHeads && !reset)) return;
 
@@ -113,21 +120,20 @@ export class AddDepartmentComponent implements OnInit {
         (error) => {
           console.error('Error fetching heads:', error);
           this.isLoadingHeads = false;
+          this.customAlertService.show('Error', 'Failed to fetch doctors. Please try again.');
         }
       );
   }
 
 
-
-  // Lazy Load Heads on Scroll
   onHeadScroll(event: Event): void {
     const target = event.target as HTMLElement;
-    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 20) {
       this.fetchHeads();
     }
   }
 
-  // Filter Heads
+
   filterHeads(searchTerm: string): void {
     this.headSearchTerm = searchTerm;
     if (searchTerm) {
@@ -138,13 +144,14 @@ export class AddDepartmentComponent implements OnInit {
       this.filteredHeads = this.heads;
     }
   }
+
   selectHead(head: any): void {
     this.addDepartmentForm.patchValue({ headId: head.id });
     this.selectedHeadInfo = head.displayText;
     this.showHeadDropdown = false;
   }
 
-  // Lazy Loading: Fetch Secretaries
+
   fetchSecretaries(reset: boolean = false): void {
     if (this.isLoadingSecretaries || (this.totalSecretaries && this.secretaries.length >= this.totalSecretaries && !reset)) return;
 
@@ -176,21 +183,20 @@ export class AddDepartmentComponent implements OnInit {
         (error) => {
           console.error('Error fetching secretaries:', error);
           this.isLoadingSecretaries = false;
+          this.customAlertService.show('Error', 'Failed to fetch secretaries. Please try again.');
         }
       );
   }
 
 
-
-  // Lazy Load Secretaries on Scroll
   onSecretaryScroll(event: Event): void {
     const target = event.target as HTMLElement;
-    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 10) {
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 20) {
       this.fetchSecretaries();
     }
   }
 
-  // Filter Secretaries
+
   filterSecretaries(searchTerm: string): void {
     this.secretarySearchTerm = searchTerm;
     if (searchTerm) {
@@ -201,13 +207,14 @@ export class AddDepartmentComponent implements OnInit {
       this.filteredSecretaries = this.secretaries;
     }
   }
+
   selectSecretary(secretary: any): void {
     this.addDepartmentForm.patchValue({ secretaryId: secretary.id });
     this.selectedSecretaryInfo = secretary.displayText;
     this.showSecretaryDropdown = false;
   }
 
-  // Submit Form
+
   onSubmit(): void {
     if (this.addDepartmentForm.valid) {
       const departmentData = {
@@ -235,8 +242,7 @@ export class AddDepartmentComponent implements OnInit {
           },
           (error) => {
             console.error('Error adding department:', error);
-            this.customAlertService.show('Error', 'Failed to add department.');
-
+            this.customAlertService.show('Error', 'Failed to add department. Please try again.');
           }
         );
     }

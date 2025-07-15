@@ -202,5 +202,14 @@ export class AddTreatmentComponent implements OnInit {
       patient.displayText.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
+  openDatePicker(event: Event): void {
+    // This method ensures the native calendar picker works
+    const input = event.target as HTMLInputElement;
 
+    // Make sure the input is focused
+    if (document.activeElement !== input) {
+      input.focus();
+      input.click();
+    }
+  }
 }

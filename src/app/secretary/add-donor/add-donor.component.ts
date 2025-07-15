@@ -14,7 +14,10 @@ export class AddDonorComponent {
     bloodType: '',
     gender: '',
   };
-
+  nameFocused = false;
+  phoneFocused = false;
+  bloodTypeFocused = false;
+  genderFocused = false;
   bloodTypes = ['A_POSITIVE', 'A_NEGATIVE', 'B_POSITIVE', 'B_NEGATIVE', 'O_POSITIVE', 'O_NEGATIVE', 'AB_POSITIVE', 'AB_NEGATIVE'];
   genders = ['MALE', 'FEMALE'];
 
@@ -28,13 +31,11 @@ export class AddDonorComponent {
           this.resetForm();
         },
         (error) => {
-          this.customAlertService.show('Error', 'Failed to add donor');
-
+          this.customAlertService.show('Error', 'Failed to add donor: ' + error.message);
         }
       );
     } else {
       this.customAlertService.show('Error', 'Please fill in all the fields.');
-
     }
   }
 
@@ -45,5 +46,18 @@ export class AddDonorComponent {
       bloodType: '',
       gender: '',
     };
+  }
+
+  formatBloodType(type: string): string {
+    if (!type) return '';
+
+    // Convert from A_POSITIVE to A+
+    const parts = type.split('_');
+    if (parts.length !== 2) return type;
+
+    const bloodGroup = parts[0];
+    const rhFactor = parts[1] === 'POSITIVE' ? '+' : '-';
+
+    return `${bloodGroup}${rhFactor}`;
   }
 }
